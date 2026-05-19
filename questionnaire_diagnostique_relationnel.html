@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire Diagnostique Relationnel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F8F4EE;
+    --warm-white: #FDFAF6;
+    --ink: #1A1612;
+    --charcoal: #2E2A26;
+    --muted: #7A7269;
+    --gold: #B8935A;
+    --gold-light: #D4B483;
+    --gold-pale: #F0E8D8;
+    --terracotta: #8B5E52;
+    --sage: #6B7B6E;
+    --lavender: #7B748A;
+    --divider: rgba(26,22,18,0.1);
+    --shadow: 0 2px 40px rgba(26,22,18,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--ink);
+    color: var(--cream);
+    text-align: center;
+    padding: 60px 24px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(184,147,90,0.04) 40px,
+      rgba(184,147,90,0.04) 41px
+    );
+  }
+  .header-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 5vw, 54px);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: var(--warm-white);
+  }
+  .header-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .header-desc {
+    font-size: 15px;
+    color: rgba(248,244,238,0.6);
+    max-width: 520px;
+    margin: 0 auto 30px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .header-divider {
+    width: 48px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto;
+  }
+
+  /* ── Instructions ── */
+  .instructions {
+    max-width: 760px;
+    margin: 48px auto 0;
+    padding: 0 24px;
+  }
+  .instruction-card {
+    background: var(--warm-white);
+    border: 1px solid var(--divider);
+    border-left: 3px solid var(--gold);
+    padding: 24px 28px;
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+  }
+  .instruction-card p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 12px;
+  }
+  .instruction-card p:last-child { margin-bottom: 0; }
+  .levels-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--charcoal);
+    font-weight: 400;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── Progress Bar ── */
+  .progress-wrapper {
+    max-width: 760px;
+    margin: 32px auto 0;
+    padding: 0 24px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .progress-label {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .progress-count {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--gold);
+    font-weight: 400;
+  }
+  .progress-bar-track {
+    height: 2px;
+    background: var(--divider);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  /* ── Questionnaire ── */
+  .questionnaire {
+    max-width: 760px;
+    margin: 40px auto 80px;
+    padding: 0 24px;
+  }
+
+  /* ── Axis Section ── */
+  .axis-section {
+    margin-bottom: 56px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .axis-section:nth-child(1) { animation-delay: 0.1s; }
+  .axis-section:nth-child(2) { animation-delay: 0.2s; }
+  .axis-section:nth-child(3) { animation-delay: 0.3s; }
+  .axis-section:nth-child(4) { animation-delay: 0.4s; }
+  .axis-section:nth-child(5) { animation-delay: 0.5s; }
+  .axis-section:nth-child(6) { animation-delay: 0.6s; }
+  .axis-section:nth-child(7) { animation-delay: 0.7s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .axis-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--divider);
+  }
+  .axis-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .axis-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+    font-style: italic;
+  }
+
+  /* ── Category Block ── */
+  .category-block {
+    margin-bottom: 32px;
+    background: var(--warm-white);
+    border: 1px solid var(--divider);
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s;
+  }
+  .category-block:hover {
+    box-shadow: 0 4px 48px rgba(26,22,18,0.12);
+  }
+
+  .category-header {
+    padding: 16px 24px;
+    background: var(--gold-pale);
+    border-bottom: 1px solid rgba(184,147,90,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .category-icon {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .category-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--charcoal);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Question Row ── */
+  .question-row {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--divider);
+    transition: background 0.15s;
+  }
+  .question-row:last-child { border-bottom: none; }
+  .question-row:hover { background: rgba(184,147,90,0.02); }
+  .question-row.answered { background: rgba(107,123,110,0.04); }
+
+  .question-text {
+    font-size: 14px;
+    color: var(--charcoal);
+    line-height: 1.65;
+    margin-bottom: 14px;
+    font-weight: 400;
+  }
+
+  /* ── Radio Scale ── */
+  .radio-scale {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .scale-option {
+    position: relative;
+  }
+  .scale-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .scale-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 8px 4px;
+    border: 1px solid var(--divider);
+    border-radius: 4px;
+    transition: all 0.2s;
+    user-select: none;
+    background: transparent;
+    min-height: 64px;
+    justify-content: center;
+  }
+  .scale-label:hover {
+    border-color: var(--gold-light);
+    background: var(--gold-pale);
+  }
+  .scale-option input:checked + .scale-label {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--cream);
+  }
+  .scale-option input:checked + .scale-label .scale-radio-dot {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .scale-option input:checked + .scale-label .scale-text {
+    color: var(--gold-light);
+  }
+
+  .scale-radio-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid var(--divider);
+    background: transparent;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .scale-text {
+    font-size: 10px;
+    text-align: center;
+    color: var(--muted);
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  /* Color coding for levels */
+  .scale-option:nth-child(1) .scale-label:hover,
+  .scale-option:nth-child(1) input:checked + .scale-label { background: #E8EFF0; border-color: #6B9BA4; }
+  .scale-option:nth-child(1) input:checked + .scale-label .scale-radio-dot { background: #6B9BA4; border-color: #6B9BA4; }
+
+  .scale-option:nth-child(2) .scale-label:hover { background: #EEF0E8; border-color: #8B9B6B; }
+  .scale-option:nth-child(2) input:checked + .scale-label { background: #8B9B6B; border-color: #8B9B6B; }
+  .scale-option:nth-child(2) input:checked + .scale-label .scale-radio-dot { background: #fff; border-color: #fff; }
+  .scale-option:nth-child(2) input:checked + .scale-label .scale-text { color: rgba(255,255,255,0.85); }
+
+  .scale-option:nth-child(3) .scale-label:hover { background: #F0EDE8; border-color: var(--gold); }
+  .scale-option:nth-child(3) input:checked + .scale-label { background: var(--gold); border-color: var(--gold); }
+  .scale-option:nth-child(3) input:checked + .scale-label .scale-radio-dot { background: #fff; border-color: #fff; }
+  .scale-option:nth-child(3) input:checked + .scale-label .scale-text { color: rgba(255,255,255,0.85); }
+
+  .scale-option:nth-child(4) .scale-label:hover { background: #F0EAE8; border-color: var(--terracotta); }
+  .scale-option:nth-child(4) input:checked + .scale-label { background: var(--terracotta); border-color: var(--terracotta); }
+  .scale-option:nth-child(4) input:checked + .scale-label .scale-radio-dot { background: #fff; border-color: #fff; }
+  .scale-option:nth-child(4) input:checked + .scale-label .scale-text { color: rgba(255,255,255,0.85); }
+
+  .scale-option:nth-child(5) .scale-label:hover { background: #F0E8EC; border-color: #8B526B; }
+  .scale-option:nth-child(5) input:checked + .scale-label { background: #3D1F2A; border-color: #3D1F2A; }
+  .scale-option:nth-child(5) input:checked + .scale-label .scale-radio-dot { background: #D4A0B0; border-color: #D4A0B0; }
+  .scale-option:nth-child(5) input:checked + .scale-label .scale-text { color: #D4A0B0; }
+
+  /* Reset color overrides for checked states defaults */
+  .scale-option:nth-child(1) input:checked + .scale-label .scale-radio-dot { background: #fff; border-color: #fff; }
+  .scale-option:nth-child(1) input:checked + .scale-label .scale-text { color: rgba(255,255,255,0.85); }
+
+  /* ── Submit Section ── */
+  .submit-section {
+    max-width: 760px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+    text-align: center;
+  }
+
+  .completion-bar {
+    margin-bottom: 28px;
+    padding: 20px 24px;
+    background: var(--warm-white);
+    border: 1px solid var(--divider);
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .completion-text {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .completion-fraction {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--gold);
+  }
+
+  .btn-submit {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--cream);
+    background: var(--ink);
+    border: none;
+    padding: 18px 48px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-submit::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    z-index: 0;
+  }
+  .btn-submit:hover::after { transform: translateX(0); }
+  .btn-submit span { position: relative; z-index: 1; }
+  .btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-submit:disabled::after { display: none; }
+
+  /* ── Results Panel ── */
+  #results {
+    display: none;
+    max-width: 760px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+  }
+
+  .results-header {
+    text-align: center;
+    padding: 48px 0 36px;
+    border-bottom: 1px solid var(--divider);
+    margin-bottom: 40px;
+  }
+  .results-header .header-label { color: var(--sage); }
+  .results-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink);
+    margin-top: 12px;
+    line-height: 1.2;
+  }
+
+  .result-axis {
+    margin-bottom: 40px;
+  }
+  .result-axis-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--divider);
+    font-style: italic;
+  }
+
+  .result-category {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(26,22,18,0.05);
+  }
+  .result-category:last-child { border-bottom: none; }
+
+  .result-cat-name {
+    font-size: 13px;
+    color: var(--charcoal);
+    font-weight: 400;
+    min-width: 160px;
+    flex-shrink: 0;
+  }
+  .result-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--divider);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .result-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  }
+  .result-score {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--gold);
+    min-width: 60px;
+    text-align: right;
+    font-weight: 500;
+  }
+
+  .result-highlight {
+    background: var(--gold-pale);
+    border: 1px solid rgba(184,147,90,0.3);
+    border-radius: 3px;
+    padding: 20px 24px;
+    margin-top: 24px;
+  }
+  .result-highlight-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .result-highlight-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .btn-reset {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--divider);
+    padding: 12px 32px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    margin-top: 32px;
+  }
+  .btn-reset:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 560px) {
+    .radio-scale {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+    }
+    .scale-text { font-size: 9px; }
+    .scale-label { padding: 6px 2px; min-height: 56px; }
+    .result-cat-name { min-width: 110px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="header-label">Outil d'auto-évaluation</div>
+  <h1 class="header-title">Questionnaire<br><em>Diagnostique Relationnel</em></h1>
+  <p class="header-desc">Un outil de connaissance de soi pour mieux comprendre vos dynamiques relationnelles, vos blessures et votre potentiel d'évolution.</p>
+  <div class="header-divider"></div>
+</header>
+
+<!-- Instructions -->
+<div class="instructions">
+  <div class="instruction-card">
+    <p>Pour chaque affirmation, évaluez dans quelle mesure elle vous ressemble, de manière spontanée et honnête. Il n'y a pas de bonnes ou mauvaises réponses.</p>
+    <p>Choisissez parmi les 5 niveaux de présence :</p>
+    <div class="levels-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#6B9BA4"></div> Faible présence</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8B9B6B"></div> Présence modérée</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div> Présence importante</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--terracotta)"></div> Dominant</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#3D1F2A"></div> Très dominant / structurant</div>
+    </div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="progress-wrapper">
+  <div class="progress-meta">
+    <span class="progress-label">Progression</span>
+    <span class="progress-count"><span id="answeredCount">0</span> / <span id="totalCount">0</span></span>
+  </div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<!-- Questionnaire -->
+<div class="questionnaire" id="questionnaireSection">
+</div>
+
+<!-- Submit -->
+<div class="submit-section" id="submitSection">
+  <div class="completion-bar">
+    <span class="completion-text">Questions répondues</span>
+    <span class="completion-fraction"><span id="answeredCount2">0</span> / <span id="totalCount2">0</span></span>
+  </div>
+  <button class="btn-submit" id="submitBtn" onclick="showResults()">
+    <span>Voir mon profil relationnel</span>
+  </button>
+</div>
+
+<!-- Results -->
+<div id="results">
+  <div class="results-header">
+    <div class="header-label">Analyse complète</div>
+    <h2 class="results-title">Votre Profil Relationnel</h2>
+  </div>
+  <div id="resultsContent"></div>
+  <div style="text-align:center">
+    <button class="btn-reset" onclick="resetQuestionnaire()">Recommencer le questionnaire</button>
+  </div>
+</div>
+
+<script>
+const LEVELS = [
+  { label: "Faible présence", value: 1, color: "#6B9BA4" },
+  { label: "Présence modérée", value: 2, color: "#8B9B6B" },
+  { label: "Présence importante", value: 3, color: "#B8935A" },
+  { label: "Dominant", value: 4, color: "#8B5E52" },
+  { label: "Très dominant", value: 5, color: "#3D1F2A" }
+];
+
+const AXES = [
+  {
+    "categories": [
+      {
+        "questions": [
+          "Je préfère me retirer plutôt que risquer d'être rejeté(e).",
+          "Je cache facilement mes émotions pour éviter d'être exposé(e).",
+          "Je me sens souvent « à part » ou difficile à comprendre.",
+          "Je minimise mes besoins affectifs.",
+          "Je prends beaucoup de distance quand je me sens vulnérable."
+        ]
+      },
+      {
+        "questions": [
+          "La distance émotionnelle me fait rapidement souffrir.",
+          "J'ai besoin de signes réguliers d'attention ou de réassurance.",
+          "Je crains qu'on finisse par me quitter.",
+          "Je m'attache très vite émotionnellement.",
+          "La solitude affective est difficile à supporter."
+        ]
+      },
+      {
+        "questions": [
+          "J'ai du mal à faire confiance complètement.",
+          "Je veux garder le contrôle dans les relations importantes.",
+          "Je détecte rapidement les incohérences chez les autres.",
+          "Je supporte difficilement les promesses non tenues.",
+          "Je peux devenir méfiant(e) ou vigilant(e) sans preuve claire."
+        ]
+      },
+      {
+        "questions": [
+          "Je suis très exigeant(e) envers moi-même.",
+          "J'ai du mal avec l'imprévu émotionnel.",
+          "Je valorise fortement le contrôle et la discipline.",
+          "J'ai tendance à cacher ma sensibilité derrière la maîtrise.",
+          "Je critique facilement ce qui manque de rigueur."
+        ]
+      },
+      {
+        "questions": [
+          "Je passe souvent les besoins des autres avant les miens.",
+          "J'ai du mal à poser des limites claires.",
+          "Je culpabilise quand je prends trop de place.",
+          "J'accepte parfois des situations qui me frustrent intérieurement.",
+          "Je préfère éviter le conflit quitte à m'effacer."
+        ]
+      }
+    ]
+  },
+  {
+    "categories": [
+      {
+        "questions": [
+          "J'analyse beaucoup mes émotions avant de les exprimer.",
+          "Comprendre est plus facile pour moi que ressentir.",
+          "Je prends du recul intellectuel face aux conflits.",
+          "Je cherche la logique dans les comportements humains.",
+          "Je peux sembler distant(e) émotionnellement."
+        ]
+      },
+      {
+        "questions": [
+          "Je ressens fortement les émotions des autres.",
+          "Je veux naturellement aider ou soutenir.",
+          "Je me préoccupe facilement du bien-être relationnel.",
+          "Je peux absorber la charge émotionnelle des autres.",
+          "Je cherche l'harmonie affective."
+        ]
+      },
+      {
+        "questions": [
+          "Je prends naturellement les décisions dans un groupe.",
+          "J'aime garder la maîtrise des situations importantes.",
+          "Je supporte mal l'indécision prolongée.",
+          "Je protège activement ceux que j'aime.",
+          "J'ai besoin de sentir que les choses avancent."
+        ]
+      },
+      {
+        "questions": [
+          "Je me sens responsable de la stabilité autour de moi.",
+          "Je préfère anticiper les problèmes.",
+          "Je suis rassuré(e) quand les règles sont claires.",
+          "Je peux devenir rigide pour éviter le chaos.",
+          "Je cache souvent ma vulnérabilité."
+        ]
+      },
+      {
+        "questions": [
+          "J'essaie d'éviter les tensions relationnelles.",
+          "Je cherche naturellement des compromis.",
+          "Je prends souvent sur moi pour préserver le lien.",
+          "J'ai du mal à exprimer ma colère directement.",
+          "Je privilégie la paix plutôt que l'affirmation."
+        ]
+      }
+    ]
+  },
+  {
+    "categories": [
+      {
+        "questions": [
+          "Je cherche du sens avant tout.",
+          "L'observation est plus naturelle pour moi que l'action impulsive.",
+          "Je prends du recul avant de réagir émotionnellement.",
+          "Je valorise la compréhension profonde des situations."
+        ]
+      },
+      {
+        "questions": [
+          "Je prends soin des autres spontanément.",
+          "Je me sens utile quand je soutiens émotionnellement quelqu'un.",
+          "J'ai tendance à materner ou protéger affectivement."
+        ]
+      },
+      {
+        "questions": [
+          "Je réagis rapidement quand je sens une menace ou une injustice.",
+          "Je préfère agir plutôt que subir.",
+          "J'aime relever les défis relationnels ou personnels."
+        ]
+      },
+      {
+        "questions": [
+          "Je cherche à maintenir ordre et stabilité.",
+          "J'aime structurer les situations complexes.",
+          "Je peux devenir exigeant(e) quand quelque chose m'échappe."
+        ]
+      },
+      {
+        "questions": [
+          "Je cherche l'intensité émotionnelle et relationnelle.",
+          "Je privilégie la connexion affective avant tout.",
+          "Je peux m'oublier dans le lien émotionnel."
+        ]
+      }
+    ]
+  },
+  {
+    "categories": [
+      {
+        "questions": [
+          "Sous stress, je me coupe émotionnellement.",
+          "J'ai besoin de solitude quand ça va mal.",
+          "Je disparais ou réponds moins quand je souffre."
+        ]
+      },
+      {
+        "questions": [
+          "Sous stress, je cherche davantage de proximité.",
+          "J'ai besoin d'être rassuré(e) rapidement.",
+          "Je deviens plus dépendant(e) émotionnellement."
+        ]
+      },
+      {
+        "questions": [
+          "Sous stress, je veux maîtriser les détails.",
+          "Je deviens plus vigilant(e) ou autoritaire.",
+          "Je supporte mal l'incertitude relationnelle."
+        ]
+      },
+      {
+        "questions": [
+          "Sous stress, je deviens plus strict(e) ou fermé(e).",
+          "J'ai du mal à lâcher prise émotionnellement.",
+          "Je fonctionne davantage par règles et discipline."
+        ]
+      },
+      {
+        "questions": [
+          "Sous stress, je m'efface facilement.",
+          "Je préfère céder plutôt que créer un conflit.",
+          "Je retiens souvent ce que je ressens réellement."
+        ]
+      }
+    ]
+  },
+  {
+    "categories": [
+      {
+        "questions": [
+          "J'explique souvent mes émotions au lieu de les vivre.",
+          "Je prends de la distance mentale face à la douleur.",
+          "Je préfère comprendre plutôt que montrer ma vulnérabilité."
+        ]
+      },
+      {
+        "questions": [
+          "J'ai besoin de signes visibles d'intérêt ou d'amour.",
+          "Je me sens rapidement oublié(e) sans interaction affective.",
+          "Je cherche parfois à provoquer une réaction émotionnelle."
+        ]
+      },
+      {
+        "questions": [
+          "Je reste attentif(ve) aux changements de comportement des autres.",
+          "J'anticipe souvent les risques de déception.",
+          "Je vérifie mentalement la fiabilité des personnes."
+        ]
+      },
+      {
+        "questions": [
+          "J'ai du mal à accepter l'erreur ou l'imperfection.",
+          "Je compense l'insécurité par l'exigence.",
+          "Je contrôle beaucoup pour éviter les critiques."
+        ]
+      },
+      {
+        "questions": [
+          "Je minimise mes besoins personnels.",
+          "Je laisse souvent les autres décider.",
+          "J'ai du mal à demander clairement ce dont j'ai besoin."
+        ]
+      }
+    ]
+  },
+  {
+    "categories": [
+      {
+        "questions": [
+          "Je garde une distance émotionnelle même dans l'intimité.",
+          "Je préfère gérer seul(e) mes difficultés.",
+          "Je me ferme quand le lien devient trop intense."
+        ]
+      },
+      {
+        "questions": [
+          "J'ai peur de perdre le lien émotionnel.",
+          "Mon équilibre dépend beaucoup de la qualité relationnelle.",
+          "Je supporte difficilement l'éloignement affectif."
+        ]
+      },
+      {
+        "questions": [
+          "J'ai besoin de garder l'avantage relationnel.",
+          "Je peux tester la loyauté des autres.",
+          "Je réagis fortement aux rapports de domination."
+        ]
+      },
+      {
+        "questions": [
+          "Je coupe facilement mes émotions dans les conflits.",
+          "Je peux sembler dur(e) ou inaccessible.",
+          "Je privilégie la logique au détriment de l'affect."
+        ]
+      },
+      {
+        "questions": [
+          "Je garde intérieurement certaines frustrations.",
+          "J'évite parfois d'exprimer mes vraies limites.",
+          "Je peux accumuler silencieusement de la colère."
+        ]
+      }
+    ]
+  },
+  {
+    "categories": [
+      {
+        "questions": [
+          "Je suis capable d'exprimer mes émotions avec authenticité.",
+          "Je peux demander du soutien sans honte.",
+          "J'accepte d'être imparfait(e) dans la relation."
+        ]
+      },
+      {
+        "questions": [
+          "Je sais me rassurer sans dépendre entièrement des autres.",
+          "Je peux aimer sans fusionner.",
+          "Je garde mon équilibre même dans la distance relationnelle."
+        ]
+      },
+      {
+        "questions": [
+          "Je peux faire confiance sans vouloir tout contrôler.",
+          "J'accepte l'incertitude relationnelle avec plus de calme.",
+          "Je différencie intuition et méfiance."
+        ]
+      },
+      {
+        "questions": [
+          "Je peux adapter mes attentes et mon fonctionnement.",
+          "J'accepte plus facilement les imperfections humaines.",
+          "Je sais rester connecté(e) émotionnellement même dans l'inconfort."
+        ]
+      },
+      {
+        "questions": [
+          "Je pose mes limites clairement.",
+          "Je peux dire non sans culpabilité excessive.",
+          "Je respecte mes besoins autant que ceux des autres."
+        ]
+      }
+    ]
+  }
+];
+
+let answers = {}; // key: "axisIdx_catIdx_qIdx", value: 1-5
+let totalQuestions = 0;
+
+function buildQuestionnaire() {
+  const container = document.getElementById('questionnaireSection');
+  container.innerHTML = '';
+  totalQuestions = 0;
+  let qGlobalIdx = 0;
+
+  AXES.forEach((axis, aIdx) => {
+    const section = document.createElement('div');
+    section.className = 'axis-section';
+
+    axis.categories.forEach((cat, cIdx) => {
+      const block = document.createElement('div');
+      block.className = 'category-block';
+
+      cat.questions.forEach((q, qIdx) => {
+        const key = `${aIdx}_${cIdx}_${qIdx}`;
+        totalQuestions++;
+        const qNum = qIdx + 1;
+
+        const row = document.createElement('div');
+        row.className = 'question-row';
+        row.id = `row_${key}`;
+
+        let radiosHtml = LEVELS.map((level, lIdx) => `
+          <div class="scale-option">
+            <input type="radio" name="${key}" id="${key}_${lIdx}" value="${level.value}" onchange="onAnswer('${key}', this)">
+            <label class="scale-label" for="${key}_${lIdx}">
+              <div class="scale-radio-dot"></div>
+              <span class="scale-text">${level.label}</span>
+            </label>
+          </div>
+        `).join('');
+
+        row.innerHTML = `
+          <div class="question-text">${qNum}. ${q}</div>
+          <div class="radio-scale">${radiosHtml}</div>
+        `;
+
+        block.appendChild(row);
+      });
+
+      section.appendChild(block);
+    });
+
+    container.appendChild(section);
+  });
+
+  document.getElementById('totalCount').textContent = totalQuestions;
+  document.getElementById('totalCount2').textContent = totalQuestions;
+  updateProgress();
+}
+
+function onAnswer(key, input) {
+  answers[key] = parseInt(input.value);
+  const row = document.getElementById('row_' + key);
+  if (row) row.classList.add('answered');
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(answers).length;
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('answeredCount2').textContent = answered;
+  const pct = totalQuestions > 0 ? (answered / totalQuestions * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('submitBtn').disabled = (answered < totalQuestions);
+}
+
+function showResults() {
+  document.getElementById('questionnaireSection').style.display = 'none';
+  document.getElementById('submitSection').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+
+  const content = document.getElementById('resultsContent');
+  content.innerHTML = '';
+
+  const barColors = ["#6B9BA4","#8B9B6B","#B8935A","#8B5E52","#3D1F2A"];
+
+  AXES.forEach((axis, aIdx) => {
+    const axisDiv = document.createElement('div');
+    axisDiv.className = 'result-axis';
+
+    axisDiv.innerHTML = '';
+
+    let topCat = null;
+    let topScore = -1;
+
+    axis.categories.forEach((cat, cIdx) => {
+      let total = 0;
+      let count = cat.questions.length;
+      cat.questions.forEach((_, qIdx) => {
+        const key = `${aIdx}_${cIdx}_${qIdx}`;
+        total += (answers[key] || 0);
+      });
+      const maxScore = count * 5;
+      const pct = maxScore > 0 ? Math.round(total / maxScore * 100) : 0;
+      const avg = count > 0 ? (total / count) : 0;
+
+      if (avg > topScore) { topScore = avg; topCat = cat.name; }
+
+      const colorIdx = Math.min(Math.floor(avg) - 1, 4);
+      const color = colorIdx >= 0 ? barColors[colorIdx] : barColors[0];
+
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'result-category';
+      rowDiv.innerHTML = `
+        <div class="result-bar-track">
+          <div class="result-bar-fill" style="width:0%;background:${color}" data-width="${pct}"></div>
+        </div>
+        <div class="result-score">${pct}%</div>
+      `;
+      axisDiv.appendChild(rowDiv);
+    });
+
+    // (dominant category not displayed)
+
+    content.appendChild(axisDiv);
+  });
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.result-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.width + '%';
+    });
+  }, 100);
+}
+
+function resetQuestionnaire() {
+  answers = {};
+  buildQuestionnaire();
+  document.getElementById('questionnaireSection').style.display = 'block';
+  document.getElementById('submitSection').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Init
+buildQuestionnaire();
+</script>
+</body>
+</html>
