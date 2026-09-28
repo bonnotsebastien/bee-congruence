@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articles & Newsletter — Développement Personnel & Relations Saines | BEE Congruence</title>
+<meta name="description" content="Découvrez nos articles et ressources sur le développement personnel, l'intelligence émotionnelle et l'harmonie relationnelle. Abonnez-vous à la newsletter de la ruche.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.beecongruence.com/articles.html">
+<link rel="icon" href="logo.jpg" type="image/jpeg">
+
+<meta property="og:site_name" content="BEE Congruence">
+<meta property="og:title" content="Articles & Newsletter — BEE Congruence">
+<meta property="og:description" content="Ressources, réflexions et outils concrets pour cultiver votre intelligence émotionnelle et relationnelle.">
+<meta property="og:url" content="https://www.beecongruence.com/articles.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://www.beecongruence.com/og-image.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+/* ── Header ── */
+.art-hero {
+  background: linear-gradient(160deg, #FAF7F2 0%, #FDF5E8 100%);
+  padding: 80px 24px 50px;
+  text-align: center;
+  border-bottom: 1px solid #EDE0CC;
+  position: relative;
+  overflow: hidden;
+}
+.art-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(217,119,6,0.1);
+  border: 1px solid rgba(217,119,6,0.25);
+  border-radius: 50px;
+  padding: 7px 18px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #D97706;
+  margin-bottom: 18px;
+}
+.art-hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 5vw, 54px);
+  font-style: italic;
+  color: #3D2710;
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+.art-hero-desc {
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  color: #6B4C2A;
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ── Layout ── */
+.art-layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 48px;
+  align-items: start;
+}
+@media (max-width: 880px) {
+  .art-layout {
+    grid-template-columns: 1fr;
+    padding: 36px 18px;
+    gap: 40px;
+  }
+}
+
+/* ── Articles List ── */
+.art-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.art-card {
+  background: white;
+  border-radius: 20px;
+  border: 1.5px solid #EDE0CC;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(61,39,16,0.03);
+}
+.art-card:hover {
+  box-shadow: 0 16px 40px rgba(61,39,16,0.1);
+  border-color: #D97706;
+  transform: translateY(-4px);
+}
+.art-card-featured {
+  border-color: rgba(217,119,6,0.4);
+  background: linear-gradient(135deg, rgba(217,119,6,0.02) 0%, #FFFFFF 100%);
+}
+.art-card-banner {
+  padding: 8px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #D97706;
+  background: rgba(217,119,6,0.08);
+  border-bottom: 1px solid rgba(217,119,6,0.15);
+}
+.art-card-body {
+  padding: 28px 28px 24px;
+}
+.art-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.art-card-cat {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(217,119,6,0.1);
+  color: #D97706;
+}
+.art-card-date, .art-card-read {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  color: #9A7B5A;
+}
+.art-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 3.2vw, 28px);
+  font-style: italic;
+  color: #3D2710;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.art-card-excerpt {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: #6B4C2A;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+.art-card-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.art-tag {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #FAF7F2;
+  color: #9A7B5A;
+  border: 1px solid #EDE0CC;
+  font-family: 'Nunito', sans-serif;
+}
+.art-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #D97706;
+  text-decoration: none;
+  transition: gap 0.2s;
+}
+.art-card-link:hover {
+  gap: 10px;
+}
+
+/* ── Sidebar ── */
+.art-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 90px;
+}
+.art-widget {
+  background: white;
+  border-radius: 20px;
+  border: 1.5px solid #EDE0CC;
+  padding: 24px;
+}
+.art-widget-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: #3D2710;
+  margin-bottom: 14px;
+}
+
+/* Newsletter Widget */
+.art-nl-widget {
+  background: linear-gradient(145deg, #2D1F0E 0%, #1A1612 100%);
+  border: none;
+  color: #FDFAF6;
+  box-shadow: 0 10px 30px rgba(45,31,14,0.2);
+}
+.art-nl-widget .art-widget-title {
+  color: #F59E0B;
+}
+.art-nl-desc {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  color: rgba(253,250,246,0.75);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.art-nl-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.art-nl-input {
+  padding: 12px 16px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: #FDFAF6;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.art-nl-input::placeholder {
+  color: rgba(253,250,246,0.4);
+}
+.art-nl-input:focus {
+  outline: none;
+  border-color: #D97706;
+}
+.art-nl-btn {
+  padding: 12px;
+  border-radius: 50px;
+  background: #D97706;
+  color: white;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.art-nl-btn:hover {
+  background: #B45309;
+}
+.art-nl-ok {
+  display: none;
+  text-align: center;
+  padding: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  color: #34D399;
+  background: rgba(52,211,153,0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(52,211,153,0.2);
+}
+
+/* Categories Widget */
+.art-cats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.art-cat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  color: #6B4C2A;
+}
+.art-cat-item:hover, .art-cat-item.active {
+  background: rgba(217,119,6,0.08);
+  color: #D97706;
+  font-weight: 700;
+}
+.art-cat-count {
+  font-size: 11px;
+  background: #FAF7F2;
+  padding: 2px 8px;
+  border-radius: 20px;
+  color: #9A7B5A;
+}
+
+/* Full Article View */
+.art-full {
+  display: none;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+}
+.art-full.open {
+  display: block;
+}
+.art-full-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #9A7B5A;
+  cursor: pointer;
+  margin-bottom: 28px;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.art-full-back:hover {
+  color: #D97706;
+}
+.art-full-header {
+  margin-bottom: 32px;
+}
+.art-full-cat {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(217,119,6,0.1);
+  color: #D97706;
+  margin-bottom: 16px;
+}
+.art-full-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 5vw, 42px);
+  font-style: italic;
+  color: #3D2710;
+  line-height: 1.25;
+  margin-bottom: 18px;
+}
+.art-full-meta {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  color: #9A7B5A;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.art-full-divider {
+  height: 2px;
+  background: linear-gradient(90deg, #D97706 0%, rgba(217,119,6,0.1) 100%);
+  margin: 28px 0 36px;
+}
+.art-full-content {
+  font-family: 'Lora', serif;
+  font-size: 17px;
+  color: #2D2218;
+  line-height: 1.95;
+}
+.art-full-content p {
+  margin-bottom: 22px;
+}
+.art-full-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-style: italic;
+  color: #3D2710;
+  margin: 40px 0 16px;
+  position: relative;
+  padding-left: 18px;
+  border-left: 3px solid #D97706;
+}
+.art-full-content strong {
+  color: #B45309;
+  font-weight: 600;
+}
+.art-full-cta {
+  margin-top: 56px;
+  background: linear-gradient(135deg, rgba(217,119,6,0.08) 0%, rgba(146,64,14,0.04) 100%);
+  border: 1.5px solid rgba(217,119,6,0.25);
+  border-radius: 24px;
+  padding: 36px;
+  text-align: center;
+}
+.art-full-cta-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-style: italic;
+  color: #3D2710;
+  margin-bottom: 10px;
+}
+.art-full-cta-desc {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: #6B4C2A;
+  margin-bottom: 22px;
+  line-height: 1.7;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.art-full-cta-btn {
+  display: inline-block;
+  padding: 14px 34px;
+  background: #D97706;
+  color: white;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  box-shadow: 0 4px 18px rgba(217,119,6,0.3);
+  transition: all 0.2s;
+}
+.art-full-cta-btn:hover {
+  background: #B45309;
+  transform: translateY(-2px);
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="logo">
+    <img src="logo.jpg" alt="BEE Congruence">
+    <div class="logo-fallback"><span class="logo-bee">BEE</span><span class="logo-cong">Congruence</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="nav-link">Accueil</a></li>
+    <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+    <li><a href="articles.html" class="nav-link active">Articles</a></li>
+    <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="connexion.html" class="btn-outline">Se connecter</a>
+    <a href="inscription.html" class="btn-primary">Rejoins la ruche</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="art-hero" id="artHero">
+  <div class="art-hero-badge">🍯 La gazette de la ruche</div>
+  <h1 class="art-hero-title">Articles &amp; Newsletter</h1>
+  <p class="art-hero-desc">Ressources, réflexions et outils concrets pour cultiver votre intelligence émotionnelle et relationnelle.</p>
+</div>
+
+<!-- LIST VIEW -->
+<div id="artListView">
+  <div class="art-layout">
+    <!-- Articles List -->
+    <div class="art-list" id="artList"></div>
+
+    <!-- Sidebar -->
+    <aside class="art-sidebar">
+      <!-- Newsletter Widget -->
+      <div class="art-widget art-nl-widget">
+        <div class="art-widget-title">📬 La newsletter de la ruche</div>
+        <p class="art-nl-desc">Un article, un exercice concret et une clé d'alignement directement dans votre boîte mail chaque semaine.</p>
+        <div class="art-nl-form" id="nlForm">
+          <input type="email" class="art-nl-input" id="nlEmail" placeholder="votre.email@exemple.com">
+          <button class="art-nl-btn" onclick="subscribeNewsletter()">S'abonner gratuitement →</button>
+        </div>
+        <div class="art-nl-ok" id="nlOk">✅ Merci ! Vous êtes bien inscrit(e) à la newsletter BEE Congruence.</div>
+      </div>
+
+      <!-- Categories Widget -->
+      <div class="art-widget">
+        <div class="art-widget-title">Thématiques</div>
+        <div class="art-cats" id="artCats"></div>
+      </div>
+
+      <!-- Scenarios CTA -->
+      <div class="art-widget" style="background:linear-gradient(135deg,rgba(217,119,6,0.06),rgba(146,64,14,0.03));border-color:rgba(217,119,6,0.25);text-align:center;">
+        <div style="font-size:32px;margin-bottom:10px;">🏃</div>
+        <div class="art-widget-title" style="text-align:center;">Entraînez votre sportif relationnel</div>
+        <p style="font-family:'Nunito',sans-serif;font-size:13px;color:#6B4C2A;margin-bottom:18px;line-height:1.7;">
+          La lecture inspire, mais c'est par l'entraînement interactif que la congruence se construit.
+        </p>
+        <a href="inscription.html" style="display:inline-block;padding:11px 24px;background:#D97706;color:white;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;text-decoration:none;">
+          Démarrer un scénario gratuit →
+        </a>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- FULL ARTICLE VIEW -->
+<div class="art-full" id="artFullView">
+  <button class="art-full-back" onclick="closeArticle()">← Retour à la liste des articles</button>
+  <div id="artFullContent"></div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="logo.jpg" alt="BEE Congruence" style="height:76px;">
+      <p class="footer-tagline">Équilibre &amp; Harmonie Relationnelle</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité (RGPD)</a>
+      <a href="contact.html">Contact</a>
+      <a href="articles.html">Articles</a>
+      <a href="https://instagram.com/bee.congruence" target="_blank">Instagram</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+<script>
+const ARTICLES = [
+  {
+    id: 'piliers-dev-perso',
+    title: 'Les 7 piliers du développement personnel : la clé d’une vie alignée',
+    excerpt: 'Le développement personnel est souvent perçu comme une quête complexe, un idéal lointain vers lequel on avance à tâtons. Pourtant, son efficacité repose sur des bases simples et structurées.',
+    category: 'Développement personnel',
+    date: '28 septembre 2026',
+    readTime: '6 min',
+    featured: true,
+    tags: ['Connaissance de soi', 'Émotions', 'Objectifs', 'Discipline', 'Corps & Esprit', 'Relations', 'Action'],
+    content: `
+      <p>Le développement personnel est souvent perçu comme une quête complexe, un idéal lointain vers lequel on avance à tâtons. Pourtant, son efficacité repose sur des bases simples et structurées. Pour transformer sa vie de manière durable et trouver un véritable équilibre, il s’avère essentiel de s’appuyer sur des fondations solides.</p>
+      <p>Découvrez les 7 piliers incontournables du développement personnel et comment les activer pour vivre en parfaite cohérence avec vous-même.</p>
+
+      <h2>1. La connaissance de soi</h2>
+      <p>Impossible de savoir où l'on va si l'on ignore qui l'on est. Ce premier pilier consiste à explorer ses forces, ses vulnérabilités, ses besoins fondamentaux et ses valeurs motrices. Mieux se connaître permet de faire des choix conscients et de ne plus vivre en mode automatique.</p>
+
+      <h2>2. La gestion et la compréhension des émotions</h2>
+      <p>Les émotions ne sont pas des obstacles, mais des messagères. Apprendre à identifier et accueillir ses réactions émotionnelles permet de décoder ce qu'elles tentent de nous dire (comme un besoin non satisfait). C'est en développant cette intelligence émotionnelle que l’on évite les mécanismes de protection inconscients qui finissent par nous saboter.</p>
+
+      <h2>3. La vision et la clarté des objectifs</h2>
+      <p>L’ambition sans direction s'éparpille. Ce pilier demande de définir des buts précis, mesurables et surtout alignés avec vos valeurs profondes. Avoir une vision claire donne un sens à chaque action quotidienne.</p>
+
+      <h2>4. La motivation et la discipline</h2>
+      <p>Si la motivation est l'étincelle qui fait démarrer le moteur, la discipline est le carburant qui permet de tenir sur la distance. Cultiver de bonnes habitudes et une régularité, même les jours sans inspiration, est le secret de toute transformation durable.</p>
+
+      <h2>5. L'équilibre du corps et de l'esprit</h2>
+      <p>Le développement personnel est une approche globale. Prendre soin de sa santé physique, de son sommeil, de son alimentation et s'accorder des moments de reconnexion mentale est indispensable. Un esprit serein ne peut s'épanouir durablement que dans un corps respecté.</p>
+
+      <h2>6. La qualité des relations et l'harmonie relationnelle</h2>
+      <p>Nous sommes des êtres de lien. Le sixième pilier concerne notre capacité à interagir avec le monde. Il s’agit d’apprendre à exprimer ses besoins avec clarté, à poser des limites fermes mais bienveillantes, et à désamorcer les conflits latents. Lorsque l'on sait interagir sainement avec les autres, on crée des connexions sincères et profondes.</p>
+
+      <h2>7. L'action et l'amélioration continue</h2>
+      <p>La théorie ne remplace jamais l’expérience. Ce dernier pilier invite à oser passer à l'action au présent, à accepter de faire des erreurs et à ajuster sa trajectoire en permanence. C'est l’art d’avancer pas à pas vers une amélioration continue.</p>
+
+      <h2>Passer de la théorie à la congruence</h2>
+      <p>Le point commun entre tous ces piliers ? <strong>L’alignement</strong>. Lorsque vos pensées, vos émotions et vos actions avancent dans la même direction, vous atteignez un état de congruence indispensable à votre paix intérieure.</p>
+      <p>Si vous ressentez le besoin d'explorer plus particulièrement les dimensions émotionnelles et relationnelles de votre vie, une approche pas à pas basée sur des outils concrets d'entraînement et d'écoute de soi s'avère souvent le meilleur déclic pour débloquer votre potentiel.</p>
+    `
+  }
+];
+
+const CATEGORIES = [
+  { label: 'Développement personnel', count: 1 },
+  { label: 'Intelligence émotionnelle', count: 0 },
+  { label: 'Relations saines', count: 0 },
+  { label: 'Parentalité & Famille', count: 0 }
+];
+
+let activeCategory = null;
+
+function renderList() {
+  const container = document.getElementById('artList');
+  const filtered = activeCategory
+    ? ARTICLES.filter(a => a.category === activeCategory)
+    : ARTICLES;
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<p style="font-family:Nunito,sans-serif;color:#9A7B5A;font-size:15px;padding:32px 0;">Aucun article dans cette catégorie pour le moment.</p>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(a => `
+    <article class="art-card ${a.featured ? 'art-card-featured' : ''}" onclick="openArticle('${a.id}')">
+      ${a.featured ? '<div class="art-card-banner">✦ Article à la une</div>' : ''}
+      <div class="art-card-body">
+        <div class="art-card-meta">
+          <span class="art-card-cat">${a.category}</span>
+          <span class="art-card-date">📅 ${a.date}</span>
+          <span class="art-card-read">⏱ ${a.readTime}</span>
+        </div>
+        <h2 class="art-card-title">${a.title}</h2>
+        <p class="art-card-excerpt">${a.excerpt}</p>
+        <div class="art-card-tags">
+          ${a.tags.map(t => `<span class="art-tag">${t}</span>`).join('')}
+        </div>
+        <span class="art-card-link">Lire l'article complet →</span>
+      </div>
+    </article>
+  `).join('');
+}
+
+function renderCategories() {
+  const container = document.getElementById('artCats');
+  let html = `
+    <div class="art-cat-item ${!activeCategory ? 'active' : ''}" onclick="filterCategory(null)">
+      <span>Toutes les thématiques</span>
+      <span class="art-cat-count">${ARTICLES.length}</span>
+    </div>
+  `;
+  CATEGORIES.forEach(c => {
+    html += `
+      <div class="art-cat-item ${activeCategory === c.label ? 'active' : ''}" onclick="filterCategory('${c.label}')">
+        <span>${c.label}</span>
+        <span class="art-cat-count">${c.count}</span>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function filterCategory(cat) {
+  activeCategory = cat;
+  renderList();
+  renderCategories();
+}
+
+function openArticle(id) {
+  const a = ARTICLES.find(x => x.id === id);
+  if (!a) return;
+  document.getElementById('artListView').style.display = 'none';
+  document.getElementById('artHero').style.display = 'none';
+  const full = document.getElementById('artFullView');
+  full.classList.add('open');
+
+  document.getElementById('artFullContent').innerHTML = `
+    <div class="art-full-header">
+      <span class="art-full-cat">${a.category}</span>
+      <h1 class="art-full-title">${a.title}</h1>
+      <div class="art-full-meta">
+        <span>📅 ${a.date}</span>
+        <span>⏱ ${a.readTime} de lecture</span>
+        <span>🏷 ${a.tags.join(', ')}</span>
+      </div>
+    </div>
+    <div class="art-full-divider"></div>
+    <div class="art-full-content">
+      ${a.content}
+    </div>
+    <div class="art-full-cta">
+      <div class="art-full-cta-title">Passez de la théorie à la congruence</div>
+      <p class="art-full-cta-desc">
+        BEE Congruence vous permet d'entraîner concrètement votre "sportif relationnel" à travers des scénarios immersifs et guidés.
+      </p>
+      <a href="inscription.html" class="art-full-cta-btn">Commencer l'entraînement gratuit →</a>
+    </div>
+  `;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeArticle() {
+  document.getElementById('artFullView').classList.remove('open');
+  document.getElementById('artListView').style.display = '';
+  document.getElementById('artHero').style.display = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function subscribeNewsletter() {
+  const emailInput = document.getElementById('nlEmail');
+  const email = emailInput.value.trim();
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    emailInput.style.borderColor = '#EF4444';
+    emailInput.focus();
+    return;
+  }
+  const emails = JSON.parse(localStorage.getItem('bee_newsletter_subscribers') || '[]');
+  if (!emails.includes(email)) {
+    emails.push({ email, date: new Date().toISOString() });
+    localStorage.setItem('bee_newsletter_subscribers', JSON.stringify(emails));
+  }
+  document.getElementById('nlForm').style.display = 'none';
+  document.getElementById('nlOk').style.display = 'block';
+}
+
+renderList();
+renderCategories();
+</script>
+</body>
+</html>

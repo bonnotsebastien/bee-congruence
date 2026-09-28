@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introspection guidée — BEE Congruence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+/* ── Surcharges spécifiques à la page ── */
+body { margin: 0; padding: 0; background: #1A1612; overflow-x: hidden; }
+
+.intro-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* Header */
+.intro-header {
+  padding: 16px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(26,22,18,0.95); backdrop-filter: blur(8px);
+}
+.intro-logo {
+  font-family: 'Playfair Display', serif; font-size: 18px;
+  color: #D97706; font-style: italic; text-decoration: none;
+}
+.intro-stepper { display: flex; align-items: center; gap: 10px; }
+.intro-step-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(255,255,255,0.18); transition: background 0.4s, transform 0.2s;
+  cursor: pointer;
+}
+.intro-step-dot.active  { background: #D97706; transform: scale(1.3); }
+.intro-step-dot.done    { background: #4A7C59; }
+.intro-step-label {
+  font-family: 'Nunito', sans-serif; font-size: 12px;
+  color: rgba(253,250,246,0.5);
+}
+
+/* TTS Button */
+.tts-float {
+  position: fixed; top: 70px; right: 16px; z-index: 200;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50px; padding: 8px 14px;
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Nunito', sans-serif; font-size: 12px;
+  color: rgba(253,250,246,0.7); cursor: pointer;
+  transition: all 0.2s; backdrop-filter: blur(6px);
+}
+.tts-float:hover { background: rgba(255,255,255,0.14); }
+.tts-float.speaking { border-color: #D97706; color: #D97706; }
+
+/* Contenu */
+.intro-content {
+  flex: 1; max-width: 640px; margin: 0 auto;
+  padding: 40px 24px 20px; width: 100%;
+}
+
+/* Étapes */
+.intro-step { display: none; }
+.intro-step.active { display: block; animation: stepIn 0.4s cubic-bezier(.16,1,.3,1); }
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.step-badge {
+  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #D97706; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.step-icon { font-size: 20px; }
+
+h2.intro-step-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 5vw, 36px); font-style: italic;
+  color: #FDFAF6; margin-bottom: 8px; line-height: 1.2;
+}
+.intro-step-sub {
+  font-family: 'Nunito', sans-serif; font-size: 14px;
+  color: rgba(253,250,246,0.5); margin-bottom: 32px; line-height: 1.7;
+}
+
+/* Émojis */
+.emotion-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  margin-bottom: 28px;
+}
+.emotion-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 14px 6px; border-radius: 16px;
+  border: 2px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04); cursor: pointer;
+  transition: all 0.2s; font-family: 'Nunito', sans-serif;
+  outline: none;
+}
+.emotion-btn:hover  { border-color: rgba(217,119,6,0.5); background: rgba(217,119,6,0.1); }
+.emotion-btn.sel    { border-color: #D97706; background: rgba(217,119,6,0.22); }
+.emotion-emoji      { font-size: 28px; line-height: 1; }
+.emotion-label      { font-size: 10px; color: rgba(253,250,246,0.65); text-align: center; line-height: 1.3; }
+
+/* Slider */
+.slider-group { margin-bottom: 28px; }
+.slider-top   { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.slider-name  { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 600; color: rgba(253,250,246,0.85); }
+.slider-val   { font-family: 'Playfair Display', serif; font-size: 20px; color: #D97706; font-weight: 700; }
+.slider-poles { display: flex; justify-content: space-between; margin-top: 4px;
+  font-family: 'Nunito', sans-serif; font-size: 10px; color: rgba(253,250,246,0.3); }
+
+input[type="range"].irange {
+  -webkit-appearance: none; width: 100%; height: 6px;
+  border-radius: 3px; outline: none; cursor: pointer; margin: 4px 0;
+  background: rgba(255,255,255,0.12);
+}
+input[type="range"].irange::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 24px; height: 24px;
+  border-radius: 50%; background: #D97706;
+  box-shadow: 0 2px 10px rgba(217,119,6,0.4); cursor: pointer;
+  transition: transform 0.15s;
+}
+input[type="range"].irange::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+/* Zones corporelles */
+.zone-section-label {
+  font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: rgba(253,250,246,0.4); margin-bottom: 10px;
+}
+.body-zones { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.zone-btn {
+  padding: 9px 16px; border-radius: 50px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04); cursor: pointer;
+  font-family: 'Nunito', sans-serif; font-size: 13px;
+  color: rgba(253,250,246,0.75); transition: all 0.2s; outline: none;
+}
+.zone-btn:hover { border-color: rgba(217,119,6,0.5); }
+.zone-btn.sel   { border-color: #D97706; background: rgba(217,119,6,0.2); color: #FDFAF6; }
+
+/* Textarea mental */
+.intro-textarea {
+  width: 100%; padding: 14px 16px;
+  background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 14px; font-family: 'Nunito', sans-serif; font-size: 14px;
+  color: #FDFAF6; resize: vertical; min-height: 80px; outline: none;
+  transition: border-color 0.2s; line-height: 1.6;
+}
+.intro-textarea:focus { border-color: #D97706; }
+.intro-textarea::placeholder { color: rgba(253,250,246,0.3); }
+
+/* Synthèse */
+.synthesis-box {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px; padding: 24px; margin-bottom: 24px;
+}
+.synthesis-title {
+  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: rgba(253,250,246,0.4); margin-bottom: 16px;
+}
+
+/* Radar SVG synthèse */
+.synthesis-radar { display: flex; justify-content: center; margin-bottom: 16px; }
+.synthesis-svg   { max-width: 220px; width: 100%; }
+
+/* Texte synthèse */
+.synthesis-text {
+  font-family: 'Lora', serif; font-size: 15px;
+  color: rgba(253,250,246,0.8); line-height: 1.85; font-style: italic;
+  border-left: 3px solid #D97706; padding-left: 16px; margin-top: 16px;
+}
+
+/* Scénario cible info */
+.scenario-target-box {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(217,119,6,0.1); border: 1px solid rgba(217,119,6,0.25);
+  border-radius: 16px; padding: 16px 20px; margin-bottom: 32px;
+}
+.sct-icon    { font-size: 32px; flex-shrink: 0; }
+.sct-label   { font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; color: rgba(217,119,6,0.8); margin-bottom: 4px; }
+.sct-title   { font-family: 'Playfair Display', serif; font-size: 16px; font-style: italic; color: #FDFAF6; }
+
+/* Navigation */
+.intro-nav {
+  padding: 20px 24px 32px; max-width: 640px; margin: 0 auto; width: 100%;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.intro-prev {
+  padding: 12px 22px; background: rgba(255,255,255,0.07);
+  color: rgba(253,250,246,0.6); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50px; font-family: 'Nunito', sans-serif;
+  font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;
+}
+.intro-prev:hover { background: rgba(255,255,255,0.12); }
+.intro-prev:disabled { opacity: 0.25; cursor: not-allowed; }
+.intro-next {
+  flex: 1; max-width: 280px; padding: 15px 28px; background: #D97706; color: white;
+  border: none; border-radius: 50px;
+  font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 15px;
+  cursor: pointer; transition: background 0.2s; text-align: center;
+}
+.intro-next:hover   { background: #B45309; }
+.intro-next:disabled { background: rgba(217,119,6,0.3); cursor: not-allowed; }
+.intro-skip {
+  font-family: 'Nunito', sans-serif; font-size: 12px;
+  color: rgba(253,250,246,0.3); cursor: pointer; background: none; border: none;
+  transition: color 0.2s; padding: 8px;
+}
+.intro-skip:hover { color: rgba(253,250,246,0.6); }
+
+/* Intensité label */
+.intensity-desc {
+  font-family: 'Nunito', sans-serif; font-size: 12px;
+  color: rgba(253,250,246,0.5); text-align: center; margin-top: 6px;
+  min-height: 18px;
+}
+
+/* Checkbox mental */
+.intro-checkbox-row {
+  display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px;
+  cursor: pointer;
+}
+.intro-checkbox {
+  width: 20px; height: 20px; flex-shrink: 0; accent-color: #D97706;
+  margin-top: 2px; cursor: pointer;
+}
+.intro-checkbox-label {
+  font-family: 'Nunito', sans-serif; font-size: 14px; color: rgba(253,250,246,0.75);
+  line-height: 1.5; cursor: pointer;
+}
+
+/* Section divider */
+.intro-divider {
+  height: 1px; background: rgba(255,255,255,0.07); margin: 24px 0;
+}
+
+/* Enfant : variantes */
+body.age-enfant h2.intro-step-title { font-size: 28px; }
+body.age-enfant .emotion-emoji      { font-size: 36px; }
+body.age-enfant .emotion-label      { font-size: 12px; }
+body.age-enfant .slider-name        { font-size: 15px; }
+
+@media (max-width: 480px) {
+  .intro-content    { padding: 28px 16px 16px; }
+  .emotion-grid     { grid-template-columns: repeat(3, 1fr); }
+  .intro-nav        { flex-wrap: wrap; }
+  .intro-next       { max-width: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="intro-wrap" id="introWrap">
+
+  <!-- Header -->
+  <div class="intro-header">
+    <a href="dashboard.html" class="intro-logo">🐝 BEE</a>
+    <div class="intro-stepper" id="stepperDots"></div>
+    <span class="intro-step-label" id="stepLabel">1 / 4</span>
+  </div>
+
+  <!-- TTS -->
+  <button class="tts-float" id="ttsBtn" onclick="toggleTTS()" title="Écouter cette étape">
+    🔊 <span id="ttsBtnLabel">Écouter</span>
+  </button>
+
+  <!-- Contenu -->
+  <div class="intro-content">
+
+    <!-- Scénario cible -->
+    <div class="scenario-target-box" id="scenarioBox">
+      <div class="sct-icon">🎯</div>
+      <div>
+        <div class="sct-label">Avant le scénario</div>
+        <div class="sct-title" id="scenarioTitle">Chargement…</div>
+      </div>
+    </div>
+
+    <!-- ═══ ÉTAPE 1 — Émotionnel ═══ -->
+    <div class="intro-step active" id="step-0">
+      <div class="step-badge"><span class="step-icon">💛</span> Étape 1 / 4 — État émotionnel</div>
+      <h2 class="intro-step-title" data-age-key="intro_emotion_title">Comment te sens-tu en ce moment ?</h2>
+      <p class="intro-step-sub" data-age-key="intro_emotion_sub">Sélectionne 1 à 3 émotions qui te correspondent le mieux en ce moment. Il n'y a pas de bonne ou mauvaise réponse.</p>
+
+      <div class="emotion-grid" id="emotionGrid">
+        <!-- Généré en JS -->
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-top">
+          <span class="slider-name">Intensité ressentie</span>
+          <span class="slider-val" id="intensiteVal">5</span>
+        </div>
+        <input type="range" class="irange" id="intensiteSlider" min="1" max="10" value="5"
+               oninput="updateSliderVal('intensiteSlider','intensiteVal'); updateIntensityDesc(this.value)">
+        <div class="slider-poles"><span>Légère</span><span>Très intense</span></div>
+        <div class="intensity-desc" id="intensityDesc">Intensité modérée</div>
+      </div>
+
+      <div class="intro-divider"></div>
+      <div class="zone-section-label">Émotions secondaires présentes (max 2)</div>
+      <div class="body-zones" id="secEmotionZones">
+        <!-- Généré en JS -->
+      </div>
+    </div>
+
+    <!-- ═══ ÉTAPE 2 — Corporel ═══ -->
+    <div class="intro-step" id="step-1">
+      <div class="step-badge"><span class="step-icon">⚡</span> Étape 2 / 4 — Ressenti corporel</div>
+      <h2 class="intro-step-title" data-age-key="intro_body_title">Comment est ton corps ?</h2>
+      <p class="intro-step-sub" data-age-key="intro_body_sub">Évalue ton état physique en ce moment. Ces informations permettront de mesurer ton évolution après le scénario.</p>
+
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">⚡ Énergie</span><span class="slider-val" id="energieVal">5</span></div>
+        <input type="range" class="irange" id="energieSlider" min="0" max="10" value="5"
+               oninput="updateSliderVal('energieSlider','energieVal')">
+        <div class="slider-poles"><span>Épuisé(e)</span><span>Plein(e) d'énergie</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">🔧 Tensions</span><span class="slider-val" id="tensionsVal">3</span></div>
+        <input type="range" class="irange" id="tensionsSlider" min="0" max="10" value="3"
+               oninput="updateSliderVal('tensionsSlider','tensionsVal')">
+        <div class="slider-poles"><span>Détendu(e)</span><span>Très tendu(e)</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">😴 Fatigue</span><span class="slider-val" id="fatigueVal">3</span></div>
+        <input type="range" class="irange" id="fatigueSlider" min="0" max="10" value="3"
+               oninput="updateSliderVal('fatigueSlider','fatigueVal')">
+        <div class="slider-poles"><span>Reposé(e)</span><span>Épuisé(e)</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">🌿 Légèreté</span><span class="slider-val" id="legereteVal">6</span></div>
+        <input type="range" class="irange" id="legereteSlider" min="0" max="10" value="6"
+               oninput="updateSliderVal('legereteSlider','legereteVal')">
+        <div class="slider-poles"><span>Lourd(e)</span><span>Léger(e)</span></div>
+      </div>
+
+      <div class="intro-divider"></div>
+      <div class="zone-section-label">Où ressens-tu des tensions ? (plusieurs choix)</div>
+      <div class="body-zones" id="bodyZones">
+        <button class="zone-btn" data-zone="Tête"     onclick="toggleZone(this)">🧠 Tête</button>
+        <button class="zone-btn" data-zone="Épaules"  onclick="toggleZone(this)">🤝 Épaules</button>
+        <button class="zone-btn" data-zone="Mâchoire" onclick="toggleZone(this)">😬 Mâchoire</button>
+        <button class="zone-btn" data-zone="Poitrine" onclick="toggleZone(this)">❤️ Poitrine</button>
+        <button class="zone-btn" data-zone="Ventre"   onclick="toggleZone(this)">🌀 Ventre</button>
+        <button class="zone-btn" data-zone="Jambes"   onclick="toggleZone(this)">🦵 Jambes</button>
+        <button class="zone-btn" data-zone="Nulle part" onclick="toggleZone(this)">✨ Nulle part</button>
+      </div>
+    </div>
+
+    <!-- ═══ ÉTAPE 3 — Mental ═══ -->
+    <div class="intro-step" id="step-2">
+      <div class="step-badge"><span class="step-icon">🧠</span> Étape 3 / 4 — État mental</div>
+      <h2 class="intro-step-title" data-age-key="intro_mental_title">Comment est ton esprit ?</h2>
+      <p class="intro-step-sub" data-age-key="intro_mental_sub">Évalue ta disponibilité mentale avant de démarrer l'exercice.</p>
+
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">☀️ Clarté d'esprit</span><span class="slider-val" id="clarteVal">6</span></div>
+        <input type="range" class="irange" id="clarteSlider" min="0" max="10" value="6"
+               oninput="updateSliderVal('clarteSlider','clarteVal')">
+        <div class="slider-poles"><span>Brouillard</span><span>Très clair</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">🎯 Concentration</span><span class="slider-val" id="concentrationVal">5</span></div>
+        <input type="range" class="irange" id="concentrationSlider" min="0" max="10" value="5"
+               oninput="updateSliderVal('concentrationSlider','concentrationVal')">
+        <div class="slider-poles"><span>Dispersé(e)</span><span>Très concentré(e)</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">📦 Charge mentale</span><span class="slider-val" id="chargeVal">4</span></div>
+        <input type="range" class="irange" id="chargeSlider" min="0" max="10" value="4"
+               oninput="updateSliderVal('chargeSlider','chargeVal')">
+        <div class="slider-poles"><span>Légère</span><span>Surchargé(e)</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">🌀 Disponibilité</span><span class="slider-val" id="disponibiliteVal">7</span></div>
+        <input type="range" class="irange" id="disponibiliteSlider" min="0" max="10" value="7"
+               oninput="updateSliderVal('disponibiliteSlider','disponibiliteVal')">
+        <div class="slider-poles"><span>Fermé(e)</span><span>Pleinement disponible</span></div>
+      </div>
+
+      <div class="intro-divider"></div>
+      <label class="intro-checkbox-row">
+        <input type="checkbox" class="intro-checkbox" id="penseeCheck" onchange="togglePenseeField()">
+        <span class="intro-checkbox-label">Y a-t-il quelque chose qui occupe ton esprit en ce moment ?</span>
+      </label>
+      <div id="penseeField" style="display:none;">
+        <textarea class="intro-textarea" id="penseeText"
+          placeholder="Note librement ce qui occupe ton esprit… ça restera privé."></textarea>
+      </div>
+    </div>
+
+    <!-- ═══ ÉTAPE 4 — Synthèse ═══ -->
+    <div class="intro-step" id="step-3">
+      <div class="step-badge"><span class="step-icon">🕸️</span> Étape 4 / 4 — Photographie initiale</div>
+      <h2 class="intro-step-title">Ton état du moment</h2>
+      <p class="intro-step-sub">Voici ta photographie intérieure avant le scénario. Elle sera comparée à ton état après l'exercice.</p>
+
+      <div class="synthesis-box">
+        <div class="synthesis-title">Toile d'état — 6 dimensions</div>
+        <div class="synthesis-radar">
+          <svg class="synthesis-svg" viewBox="-110 -110 220 220" id="synthesisSvg">
+            <g id="synthGrid"></g>
+            <g id="synthAxes"></g>
+            <polygon id="synthPolygon"
+              style="fill:rgba(217,119,6,0.2);stroke:#D97706;stroke-width:2;stroke-linejoin:round;"/>
+            <g id="synthLabels"></g>
+          </svg>
+        </div>
+        <div class="synthesis-text" id="synthesisText">
+          Calcul en cours…
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /intro-content -->
+
+  <!-- Navigation -->
+  <div class="intro-nav">
+    <button class="intro-prev" id="prevBtn" onclick="navigate(-1)" disabled>← Retour</button>
+    <button class="intro-skip" onclick="skipIntro()" id="skipBtn">Passer →</button>
+    <button class="intro-next" id="nextBtn" onclick="navigate(1)">Continuer →</button>
+  </div>
+
+</div><!-- /intro-wrap -->
+
+<script src="supabase.js"></script>
+<script src="bee-engine.js"></script>
+<script>
+
+// ══════════════════════════════════════════════════════
+//  CONFIGURATION
+// ══════════════════════════════════════════════════════
+
+const EMOTIONS = [
+  { emoji: '😊', label: 'Bien' },
+  { emoji: '😌', label: 'Calme' },
+  { emoji: '😔', label: 'Triste' },
+  { emoji: '😤', label: 'Frustré(e)' },
+  { emoji: '😰', label: 'Anxieux(se)' },
+  { emoji: '😴', label: 'Fatigué(e)' },
+  { emoji: '😡', label: 'En colère' },
+  { emoji: '🥰', label: 'Aimant(e)' },
+  { emoji: '😕', label: 'Confus(e)' },
+  { emoji: '💪', label: 'Motivé(e)' },
+  { emoji: '😶', label: 'Vide' },
+  { emoji: '🤩', label: 'Enthousiaste' },
+];
+
+const SEC_EMOTIONS = [
+  'Joie', 'Sérénité', 'Incertitude', 'Impatience',
+  'Nostalgie', 'Espoir', 'Culpabilité', 'Fierté',
+];
+
+const STEP_TEXTS = [
+  `Étape 1 — État émotionnel. Prends un moment pour observer tes émotions du moment. Quelles émotions sont présentes ? À quelle intensité les ressens-tu ?`,
+  `Étape 2 — Ressenti corporel. Scan ton corps de haut en bas. Quel est ton niveau d'énergie ? Où ressens-tu des tensions ? Comment évalues-tu ta fatigue ?`,
+  `Étape 3 — État mental. Comment est ton esprit en ce moment ? Es-tu disponible, concentré, ou au contraire surchargé ?`,
+  `Étape 4 — Synthèse. Voici ta photographie intérieure. Cette image de départ sera conservée pour mesurer ton évolution après le scénario.`,
+];
+
+const INTENSITY_DESCS = [
+  '', 'Très légère', 'Légère', 'Modérée légère', 'Modérée',
+  'Modérée', 'Assez forte', 'Forte', 'Très forte', 'Intense', 'Très intense',
+];
+
+const RADAR_DIMS = [
+  { label: 'Émotionnel', key: 'emotionnel' },
+  { label: 'Énergie',    key: 'energie' },
+  { label: 'Légèreté',  key: 'legerete' },
+  { label: 'Clarté',   key: 'clarte' },
+  { label: 'Dispo.',    key: 'disponibilite' },
+  { label: 'Sérénité',  key: 'serenite' },
+];
+
+// ══════════════════════════════════════════════════════
+//  ÉTAT GLOBAL
+// ══════════════════════════════════════════════════════
+
+let currentStep  = 0;
+const TOTAL_STEPS = 4;
+let scenarioId   = '';
+let scenarioTitle = '';
+
+const state = {
+  emotions: [],
+  emotionsSecondaires: [],
+  intensite: 5,
+  corps: { energie: 5, tensions: 3, fatigue: 3, legerete: 6 },
+  zonesTension: [],
+  mental: { clarte: 6, concentration: 5, charge: 4, disponibilite: 7 },
+  penseeOccupante: '',
+};
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+
+function init() {
+  // Récupérer les paramètres URL
+  const params = new URLSearchParams(window.location.search);
+  scenarioId    = params.get('scenario') || 's1';
+  scenarioTitle = params.get('title')    || 'Scénario de pratique';
+
+  // Afficher le titre du scénario
+  document.getElementById('scenarioTitle').textContent = decodeURIComponent(scenarioTitle);
+
+  // Générer les émojis
+  buildEmotionGrid();
+  buildSecEmotions();
+
+  // Stepper dots
+  buildStepper();
+  updateNav();
+
+  // Adaptation âge
+  if (typeof applyAgeClass === 'function') applyAgeClass();
+  if (typeof adaptTextsForAge === 'function') {
+    // Surcharges enfant
+    const profile = JSON.parse(localStorage.getItem('bee_user_profile') || '{}');
+    if (profile.age_group === 'enfant') {
+      document.querySelector('[data-age-key="intro_emotion_title"]').textContent = 'Comment tu te sens en ce moment ?';
+      document.querySelector('[data-age-key="intro_emotion_sub"]').textContent = 'Clique sur les émotions que tu ressens (jusqu\'à 3).';
+      document.querySelector('[data-age-key="intro_body_title"]').textContent = 'Comment est ton corps ?';
+      document.querySelector('[data-age-key="intro_body_sub"]').textContent = 'Bouge les curseurs pour montrer comment tu te sens dans ton corps.';
+      document.querySelector('[data-age-key="intro_mental_title"]').textContent = 'Comment est ta tête ?';
+      document.querySelector('[data-age-key="intro_mental_sub"]').textContent = 'Est-ce que tu es bien concentré(e) ou un peu dans les nuages ?';
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  BUILD DOM
+// ══════════════════════════════════════════════════════
+
+function buildEmotionGrid() {
+  const grid = document.getElementById('emotionGrid');
+  EMOTIONS.forEach(e => {
+    const btn = document.createElement('button');
+    btn.className = 'emotion-btn';
+    btn.innerHTML = `<span class="emotion-emoji">${e.emoji}</span><span class="emotion-label">${e.label}</span>`;
+    btn.onclick = () => toggleEmotion(btn, e.emoji, e.label);
+    grid.appendChild(btn);
+  });
+}
+
+function buildSecEmotions() {
+  const container = document.getElementById('secEmotionZones');
+  SEC_EMOTIONS.forEach(label => {
+    const btn = document.createElement('button');
+    btn.className = 'zone-btn';
+    btn.textContent = label;
+    btn.onclick = () => toggleSecEmotion(btn, label);
+    container.appendChild(btn);
+  });
+}
+
+function buildStepper() {
+  const dots = document.getElementById('stepperDots');
+  dots.innerHTML = '';
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'intro-step-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => { if (i < currentStep) showStep(i); };
+    dots.appendChild(dot);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  INTERACTIONS
+// ══════════════════════════════════════════════════════
+
+function toggleEmotion(btn, emoji, label) {
+  if (btn.classList.contains('sel')) {
+    btn.classList.remove('sel');
+    state.emotions = state.emotions.filter(e => e.emoji !== emoji);
+  } else {
+    if (state.emotions.length >= 3) {
+      // Désélectionner le premier
+      const first = document.querySelector('.emotion-btn.sel');
+      if (first) { first.classList.remove('sel'); state.emotions.shift(); }
+    }
+    btn.classList.add('sel');
+    state.emotions.push({ emoji, label });
+  }
+}
+
+function toggleSecEmotion(btn, label) {
+  if (btn.classList.contains('sel')) {
+    btn.classList.remove('sel');
+    state.emotionsSecondaires = state.emotionsSecondaires.filter(e => e !== label);
+  } else {
+    if (state.emotionsSecondaires.length >= 2) {
+      const first = document.querySelector('#secEmotionZones .zone-btn.sel');
+      if (first) { first.classList.remove('sel'); state.emotionsSecondaires.shift(); }
+    }
+    btn.classList.add('sel');
+    state.emotionsSecondaires.push(label);
+  }
+}
+
+function toggleZone(btn) {
+  const zone = btn.dataset.zone;
+  if (zone === 'Nulle part') {
+    document.querySelectorAll('#bodyZones .zone-btn').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+    state.zonesTension = [];
+    return;
+  }
+  document.querySelectorAll('#bodyZones .zone-btn[data-zone="Nulle part"]').forEach(b => b.classList.remove('sel'));
+
+  if (btn.classList.contains('sel')) {
+    btn.classList.remove('sel');
+    state.zonesTension = state.zonesTension.filter(z => z !== zone);
+  } else {
+    btn.classList.add('sel');
+    state.zonesTension.push(zone);
+  }
+}
+
+function togglePenseeField() {
+  const show = document.getElementById('penseeCheck').checked;
+  document.getElementById('penseeField').style.display = show ? 'block' : 'none';
+}
+
+function updateSliderVal(sliderId, valId) {
+  const v = document.getElementById(sliderId).value;
+  document.getElementById(valId).textContent = v;
+  // Mettre à jour le dégradé du slider
+  const pct = (v / document.getElementById(sliderId).max) * 100;
+  document.getElementById(sliderId).style.background =
+    `linear-gradient(to right, #D97706 0%, #D97706 ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
+}
+
+function updateIntensityDesc(val) {
+  document.getElementById('intensityDesc').textContent = INTENSITY_DESCS[val] || '';
+}
+
+// ══════════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════════
+
+function navigate(dir) {
+  const newStep = currentStep + dir;
+  if (newStep < 0 || newStep >= TOTAL_STEPS) return;
+
+  // Collecter données avant de passer
+  collectCurrentStep();
+
+  if (newStep === TOTAL_STEPS - 1) {
+    buildSynthesis();
+  }
+  showStep(newStep);
+}
+
+function showStep(index) {
+  document.querySelectorAll('.intro-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`step-${index}`).classList.add('active');
+  currentStep = index;
+
+  // Stepper dots
+  document.querySelectorAll('.intro-step-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === index);
+    d.classList.toggle('done', i < index);
+  });
+
+  // Label
+  document.getElementById('stepLabel').textContent = `${index + 1} / ${TOTAL_STEPS}`;
+
+  // Boutons
+  updateNav();
+
+  // TTS auto si préférences activées
+  const prefs = JSON.parse(localStorage.getItem('bee_audio_prefs') || '{}');
+  if (prefs.autoplay) {
+    setTimeout(() => TTS.speak(STEP_TEXTS[index]), 300);
+  }
+
+  // Scroll top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateNav() {
+  const isLast   = currentStep === TOTAL_STEPS - 1;
+  const isFirst  = currentStep === 0;
+
+  document.getElementById('prevBtn').disabled = isFirst;
+  document.getElementById('nextBtn').textContent = isLast
+    ? 'Je suis prêt(e) — commencer 🚀'
+    : 'Continuer →';
+  document.getElementById('nextBtn').onclick = isLast
+    ? saveAndLaunch
+    : () => navigate(1);
+  document.getElementById('skipBtn').style.display = isLast ? 'none' : 'block';
+}
+
+function collectCurrentStep() {
+  switch (currentStep) {
+    case 0:
+      state.intensite = parseInt(document.getElementById('intensiteSlider').value);
+      break;
+    case 1:
+      state.corps = {
+        energie: parseInt(document.getElementById('energieSlider').value),
+        tensions: parseInt(document.getElementById('tensionsSlider').value),
+        fatigue: parseInt(document.getElementById('fatigueSlider').value),
+        legerete: parseInt(document.getElementById('legereteSlider').value),
+      };
+      break;
+    case 2:
+      state.mental = {
+        clarte: parseInt(document.getElementById('clarteSlider').value),
+        concentration: parseInt(document.getElementById('concentrationSlider').value),
+        charge: parseInt(document.getElementById('chargeSlider').value),
+        disponibilite: parseInt(document.getElementById('disponibiliteSlider').value),
+      };
+      state.penseeOccupante = document.getElementById('penseeCheck').checked
+        ? document.getElementById('penseeText').value : '';
+      break;
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  SYNTHÈSE RADAR
+// ══════════════════════════════════════════════════════
+
+function computeScores() {
+  const emotionnel  = (state.intensite / 10) * 100;
+  const energie     = state.corps.energie  * 10;
+  const legerete    = state.corps.legerete * 10;
+  const clarte      = state.mental.clarte  * 10;
+  const disponibilite = state.mental.disponibilite * 10;
+  const serenite    = Math.max(0, 100 - state.corps.tensions * 10);
+
+  return { emotionnel, energie, legerete, clarte, disponibilite, serenite };
+}
+
+function buildSynthesis() {
+  const scores = computeScores();
+  const R = 90;
+  const n = RADAR_DIMS.length;
+  const angles = Array.from({ length: n }, (_, i) => -Math.PI / 2 + (2 * Math.PI * i) / n);
+
+  // Grille
+  const gridEl = document.getElementById('synthGrid');
+  gridEl.innerHTML = '';
+  [0.25, 0.5, 0.75, 1].forEach(frac => {
+    const pts = angles.map(a =>
+      `${Math.round(R * frac * Math.cos(a))},${Math.round(R * frac * Math.sin(a))}`
+    ).join(' ');
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    poly.setAttribute('points', pts);
+    poly.setAttribute('style', 'fill:none;stroke:rgba(255,255,255,0.08);stroke-width:1;');
+    gridEl.appendChild(poly);
+  });
+
+  // Axes
+  const axesEl = document.getElementById('synthAxes');
+  axesEl.innerHTML = '';
+  angles.forEach(a => {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', 0); line.setAttribute('y1', 0);
+    line.setAttribute('x2', Math.round(R * Math.cos(a)));
+    line.setAttribute('y2', Math.round(R * Math.sin(a)));
+    line.setAttribute('style', 'stroke:rgba(255,255,255,0.1);stroke-width:1;');
+    axesEl.appendChild(line);
+  });
+
+  // Polygone
+  const pts = angles.map((a, i) => {
+    const key = RADAR_DIMS[i].key;
+    const val = (scores[key] || 50) / 100;
+    return `${Math.round(R * val * Math.cos(a))},${Math.round(R * val * Math.sin(a))}`;
+  }).join(' ');
+  document.getElementById('synthPolygon').setAttribute('points', pts);
+
+  // Labels
+  const labelsEl = document.getElementById('synthLabels');
+  labelsEl.innerHTML = '';
+  const LR = R + 18;
+  angles.forEach((a, i) => {
+    const lx = Math.round(LR * Math.cos(a));
+    const ly = Math.round(LR * Math.sin(a));
+    const t  = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', lx); t.setAttribute('y', ly);
+    t.setAttribute('style', `font-family:'Nunito',sans-serif;font-size:9px;fill:rgba(253,250,246,0.6);text-anchor:middle;dominant-baseline:middle;`);
+    t.textContent = RADAR_DIMS[i].label;
+    labelsEl.appendChild(t);
+  });
+
+  // Texte synthèse
+  const mainEmotion = state.emotions[0];
+  const energyLevel = scores.energie >= 70 ? 'élevé' : scores.energie >= 40 ? 'moyen' : 'bas';
+  const disponLevel = scores.disponibilite >= 70 ? 'pleinement disponible' : scores.disponibilite >= 40 ? 'assez disponible' : 'peu disponible';
+
+  document.getElementById('synthesisText').textContent =
+    `Tu arrives à ce scénario ${mainEmotion ? `avec une émotion de ${mainEmotion.label.toLowerCase()}` : 'prêt(e)'}, ` +
+    `un niveau d'énergie ${energyLevel} et tu te sens ${disponLevel}. ` +
+    (state.zonesTension.length && !state.zonesTension.includes('Nulle part')
+      ? `Des tensions ont été notées dans : ${state.zonesTension.join(', ')}. ` : '') +
+    `Cette photographie sera comparée à ton état à la fin de l'exercice.`;
+}
+
+// ══════════════════════════════════════════════════════
+//  SAUVEGARDE & LANCEMENT
+// ══════════════════════════════════════════════════════
+
+async function saveAndLaunch() {
+  collectCurrentStep();
+
+  const scores = computeScores();
+  const introPayload = {
+    emotions: state.emotions,
+    emotionsSecondaires: state.emotionsSecondaires,
+    intensite: state.intensite,
+    corps: state.corps,
+    zonesTension: state.zonesTension,
+    mental: state.mental,
+    penseeOccupante: state.penseeOccupante,
+    scores,
+    scenario_id: scenarioId,
+    timestamp: new Date().toISOString(),
+  };
+
+  // Sauvegarder localement
+  localStorage.setItem(`bee_intro_${scenarioId}`, JSON.stringify(introPayload));
+
+  // Sauvegarder en BDD si utilisateur connecté
+  const email = localStorage.getItem('bee_user_email');
+  if (email && typeof saveIntroSession === 'function') {
+    const userId = 'demo_user';
+    await saveIntroSession(userId, scenarioId, introPayload).catch(() => {});
+  }
+
+  // Rediriger vers le scénario
+  window.location.href = `scenario-detail.html?id=${scenarioId}`;
+}
+
+function skipIntro() {
+  // Passer l'introspection et aller directement au scénario
+  window.location.href = `scenario-detail.html?id=${scenarioId}`;
+}
+
+// ══════════════════════════════════════════════════════
+//  TTS
+// ══════════════════════════════════════════════════════
+
+let ttsActive = false;
+
+function toggleTTS() {
+  const btn   = document.getElementById('ttsBtn');
+  const label = document.getElementById('ttsBtnLabel');
+  const text  = STEP_TEXTS[currentStep] || '';
+
+  if (!window.speechSynthesis) {
+    alert('La synthèse vocale n\'est pas disponible dans votre navigateur.');
+    return;
+  }
+
+  if (ttsActive) {
+    window.speechSynthesis.cancel();
+    ttsActive = false;
+    btn.classList.remove('speaking');
+    label.textContent = 'Écouter';
+  } else {
+    if (typeof TTS !== 'undefined') {
+      TTS.speak(text);
+    } else {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'fr-FR';
+      utter.rate = 0.95;
+      utter.onend = () => { ttsActive = false; btn.classList.remove('speaking'); label.textContent = 'Écouter'; };
+      window.speechSynthesis.speak(utter);
+    }
+    ttsActive = true;
+    btn.classList.add('speaking');
+    label.textContent = 'Pause';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  START
+// ══════════════════════════════════════════════════════
+
+init();
+</script>
+</body>
+</html>

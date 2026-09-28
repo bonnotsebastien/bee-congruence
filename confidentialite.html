@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Politique de confidentialité &amp; RGPD — BEE Congruence</title>
+<meta name="description" content="Politique de confidentialité de BEE Congruence : comment nous collectons, utilisons et protégeons vos données personnelles, conformément au RGPD.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.beecongruence.com/confidentialite">
+<link rel="icon" href="logo.jpg" type="image/jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+  .legal-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 80px 28px 100px;
+  }
+
+  .legal-hero {
+    text-align: center;
+    padding: 60px 20px 50px;
+    background: var(--cream-dark);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .legal-hero .hero-tag { margin-bottom: 16px; }
+  .legal-hero h1 { font-size: clamp(28px, 5vw, 44px); margin-bottom: 12px; }
+  .legal-hero p { color: var(--brown-mid); font-size: 15px; }
+
+  .legal-toc {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin: 40px 0 48px;
+  }
+
+  .legal-toc-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--brown-light);
+    margin-bottom: 14px;
+  }
+
+  .legal-toc ol {
+    list-style: none;
+    counter-reset: toc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .legal-toc ol li {
+    counter-increment: toc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .legal-toc ol li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 22px;
+  }
+
+  .legal-toc a {
+    font-size: 14px;
+    color: var(--brown-mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .legal-toc a:hover { color: var(--amber); }
+
+  .legal-section {
+    margin-bottom: 52px;
+    scroll-margin-top: 90px;
+  }
+
+  .legal-section-number {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .legal-section h2 {
+    font-size: clamp(18px, 3vw, 24px);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .legal-section p {
+    color: var(--charcoal);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+
+  .legal-section p:last-child { margin-bottom: 0; }
+  .legal-section strong { color: var(--ink); font-weight: 600; }
+
+  .legal-section ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0;
+    padding-left: 4px;
+  }
+
+  .legal-section ul li {
+    font-size: 15px;
+    color: var(--charcoal);
+    line-height: 1.7;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .legal-section ul li::before {
+    content: '🐝';
+    position: absolute;
+    left: 0;
+    font-size: 12px;
+    top: 3px;
+  }
+
+  .legal-info-block {
+    background: var(--gold-pale);
+    border: 1px solid rgba(184,147,90,0.25);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 16px 0;
+  }
+
+  .legal-info-block p { margin-bottom: 6px; font-size: 14px; }
+  .legal-info-block p:last-child { margin-bottom: 0; }
+
+  .legal-divider {
+    width: 40px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+    margin: 0 0 20px;
+  }
+
+  .rgpd-rights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .rgpd-right-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    transition: box-shadow 0.2s;
+  }
+
+  .rgpd-right-card:hover {
+    box-shadow: var(--shadow);
+  }
+
+  .rgpd-right-icon { font-size: 22px; margin-bottom: 8px; }
+
+  .rgpd-right-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .rgpd-right-desc {
+    font-size: 13px;
+    color: var(--brown-mid);
+    line-height: 1.5;
+  }
+
+  .cookie-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 16px 0;
+  }
+
+  .cookie-table th {
+    background: var(--cream-dark);
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .cookie-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--divider);
+    color: var(--charcoal);
+    line-height: 1.5;
+    vertical-align: top;
+  }
+
+  .cookie-table tr:last-child td { border-bottom: none; }
+  .cookie-table tr:hover td { background: var(--cream); }
+
+  .legal-update {
+    text-align: center;
+    font-size: 13px;
+    color: var(--brown-light);
+    padding-top: 32px;
+    border-top: 1px solid var(--divider);
+    margin-top: 60px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <a href="index.html" class="logo">
+    <img src="logo.jpg" alt="BEE Congruence">
+    <div class="logo-fallback">
+      <span class="logo-bee">BEE</span>
+      <span class="logo-cong">Congruence</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="nav-link">Accueil</a></li>
+    <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+    <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="connexion.html" class="btn-outline">Se connecter</a>
+    <a href="inscription.html" class="btn-primary">Rejoins la ruche</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="legal-hero">
+  <div class="hero-tag">🔒 Vos données, notre responsabilité</div>
+  <h1><em>Confidentialité &amp; RGPD</em></h1>
+  <p>Politique de confidentialité — Dernière mise à jour : août 2026</p>
+</div>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="legal-page">
+
+  <div class="legal-toc">
+    <div class="legal-toc-title">Table des matières</div>
+    <ol>
+      <li><a href="#responsable">Responsable du traitement</a></li>
+      <li><a href="#donnees">Données collectées</a></li>
+      <li><a href="#finalites">Finalités du traitement</a></li>
+      <li><a href="#conservation">Durée de conservation</a></li>
+      <li><a href="#droits">Vos droits RGPD</a></li>
+      <li><a href="#cookies">Cookies</a></li>
+      <li><a href="#hebergement">Hébergement &amp; sous-traitants</a></li>
+      <li><a href="#contact-rgpd">Nous contacter</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. Responsable -->
+  <div class="legal-section" id="responsable">
+    <span class="legal-section-number">Article 01</span>
+    <div class="legal-divider"></div>
+    <h2>Responsable du traitement</h2>
+    <p>Conformément au Règlement Général sur la Protection des Données (RGPD — UE 2016/679), BEE Congruence est responsable du traitement de vos données personnelles.</p>
+    <div class="legal-info-block">
+      <p><strong>Responsable :</strong> Sébastien BONNOT — BEE Congruence</p>
+      <p><strong>Email DPO :</strong> <a href="mailto:rgpd@beecongruence.com" style="color:var(--amber);font-weight:600;">rgpd@beecongruence.com</a></p>
+    </div>
+  </div>
+
+  <!-- 2. Données collectées -->
+  <div class="legal-section" id="donnees">
+    <span class="legal-section-number">Article 02</span>
+    <div class="legal-divider"></div>
+    <h2>Données collectées</h2>
+    <p>Dans le cadre de l'utilisation de nos services, nous collectons uniquement les données strictement nécessaires :</p>
+    <ul>
+      <li><strong>Compte utilisateur :</strong> adresse email, prénom (facultatif)</li>
+      <li><strong>Questionnaire de diagnostic :</strong> réponses aux questions relationnelles et émotionnelles (anonymisées par défaut)</li>
+      <li><strong>Progression :</strong> statut des scénarios pratiqués, scores par axe relationnel</li>
+      <li><strong>Données de navigation :</strong> pages visitées, durée de session (via cookies analytiques si acceptés)</li>
+    </ul>
+    <p>Nous ne collectons <strong>jamais</strong> de données sensibles au sens de l'article 9 du RGPD (origines ethniques, santé, orientations sexuelles, etc.).</p>
+  </div>
+
+  <!-- 3. Finalités -->
+  <div class="legal-section" id="finalites">
+    <span class="legal-section-number">Article 03</span>
+    <div class="legal-divider"></div>
+    <h2>Finalités du traitement</h2>
+    <p>Vos données sont utilisées exclusivement pour :</p>
+    <ul>
+      <li>Créer et gérer votre compte utilisateur</li>
+      <li>Générer votre profil relationnel personnalisé</li>
+      <li>Vous proposer des scénarios d'entraînement adaptés</li>
+      <li>Améliorer nos contenus et l'expérience utilisateur (données agrégées)</li>
+      <li>Vous envoyer des communications liées à votre compte (si consentement)</li>
+    </ul>
+    <p>Vos données ne sont <strong>jamais revendues ni partagées</strong> avec des tiers à des fins commerciales.</p>
+  </div>
+
+  <!-- 4. Conservation -->
+  <div class="legal-section" id="conservation">
+    <span class="legal-section-number">Article 04</span>
+    <div class="legal-divider"></div>
+    <h2>Durée de conservation</h2>
+    <p>Vos données sont conservées selon les durées suivantes :</p>
+    <ul>
+      <li><strong>Données de compte :</strong> durée d'activité du compte + 2 ans après la dernière connexion</li>
+      <li><strong>Résultats de diagnostic :</strong> durée d'activité du compte</li>
+      <li><strong>Données de navigation :</strong> 13 mois maximum</li>
+      <li><strong>Données de liste d'attente :</strong> 1 an ou jusqu'à désinscription</li>
+    </ul>
+    <p>À l'issue de ces délais, vos données sont supprimées automatiquement de nos bases de données.</p>
+  </div>
+
+  <!-- 5. Vos droits -->
+  <div class="legal-section" id="droits">
+    <span class="legal-section-number">Article 05</span>
+    <div class="legal-divider"></div>
+    <h2>Vos droits RGPD</h2>
+    <p>Conformément au RGPD, vous disposez des droits suivants sur vos données personnelles :</p>
+
+    <div class="rgpd-rights-grid">
+      <div class="rgpd-right-card">
+        <div class="rgpd-right-icon">👁️</div>
+        <div class="rgpd-right-title">Droit d'accès</div>
+        <div class="rgpd-right-desc">Obtenir une copie de toutes vos données que nous détenons.</div>
+      </div>
+      <div class="rgpd-right-card">
+        <div class="rgpd-right-icon">✏️</div>
+        <div class="rgpd-right-title">Droit de rectification</div>
+        <div class="rgpd-right-desc">Corriger des données inexactes ou incomplètes.</div>
+      </div>
+      <div class="rgpd-right-card">
+        <div class="rgpd-right-icon">🗑️</div>
+        <div class="rgpd-right-title">Droit à l'effacement</div>
+        <div class="rgpd-right-desc">Demander la suppression de vos données ("droit à l'oubli").</div>
+      </div>
+      <div class="rgpd-right-card">
+        <div class="rgpd-right-icon">⏸️</div>
+        <div class="rgpd-right-title">Droit à la limitation</div>
+        <div class="rgpd-right-desc">Limiter le traitement de vos données dans certains cas.</div>
+      </div>
+      <div class="rgpd-right-card">
+        <div class="rgpd-right-icon">📦</div>
+        <div class="rgpd-right-title">Droit à la portabilité</div>
+        <div class="rgpd-right-desc">Recevoir vos données dans un format structuré et lisible.</div>
+      </div>
+      <div class="rgpd-right-card">
+        <div class="rgpd-right-icon">🚫</div>
+        <div class="rgpd-right-title">Droit d'opposition</div>
+        <div class="rgpd-right-desc">Vous opposer au traitement de vos données à tout moment.</div>
+      </div>
+    </div>
+
+    <p>Pour exercer ces droits, contactez-nous à : <a href="mailto:rgpd@beecongruence.com" style="color:var(--amber);font-weight:600;">rgpd@beecongruence.com</a>. Nous nous engageons à répondre dans un délai d'<strong>un mois maximum</strong>.</p>
+    <p>Vous avez également le droit de déposer une réclamation auprès de la <strong>CNIL</strong> (<a href="https://www.cnil.fr" target="_blank" rel="noopener" style="color:var(--amber);">www.cnil.fr</a>) si vous estimez que vos droits ne sont pas respectés.</p>
+  </div>
+
+  <!-- 6. Cookies -->
+  <div class="legal-section" id="cookies">
+    <span class="legal-section-number">Article 06</span>
+    <div class="legal-divider"></div>
+    <h2>Cookies</h2>
+    <p>Nous utilisons des cookies pour assurer le bon fonctionnement du site et améliorer votre expérience. Voici les types de cookies utilisés :</p>
+
+    <table class="cookie-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Nom</th>
+          <th>Finalité</th>
+          <th>Durée</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Essentiel</strong></td>
+          <td>Session auth</td>
+          <td>Maintenir votre connexion sécurisée</td>
+          <td>Session</td>
+        </tr>
+        <tr>
+          <td><strong>Fonctionnel</strong></td>
+          <td>rgpd_done</td>
+          <td>Mémoriser votre choix sur les cookies</td>
+          <td>Session</td>
+        </tr>
+        <tr>
+          <td><strong>Analytique</strong></td>
+          <td>_analytics</td>
+          <td>Comprendre l'usage du site (données anonymisées)</td>
+          <td>13 mois</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Vous pouvez accepter ou refuser les cookies non essentiels via la bannière qui s'affiche lors de votre première visite, ou en nous contactant à <a href="mailto:rgpd@beecongruence.com" style="color:var(--amber);font-weight:600;">rgpd@beecongruence.com</a>.</p>
+  </div>
+
+  <!-- 7. Hébergement -->
+  <div class="legal-section" id="hebergement">
+    <span class="legal-section-number">Article 07</span>
+    <div class="legal-divider"></div>
+    <h2>Hébergement &amp; sous-traitants</h2>
+    <p>Vos données sont hébergées par des prestataires de confiance, liés contractuellement à BEE Congruence et conformes au RGPD :</p>
+    <div class="legal-info-block">
+      <p><strong>Vercel Inc.</strong> — Hébergement du site web (USA, Privacy Shield)</p>
+      <p><strong>Supabase Inc.</strong> — Base de données sécurisée (données chiffrées en transit et au repos)</p>
+    </div>
+    <p>Des Accords de Traitement des Données (DPA) sont en place avec chacun de ces prestataires.</p>
+  </div>
+
+  <!-- 8. Contact RGPD -->
+  <div class="legal-section" id="contact-rgpd">
+    <span class="legal-section-number">Article 08</span>
+    <div class="legal-divider"></div>
+    <h2>Nous contacter</h2>
+    <p>Pour toute question relative à vos données personnelles ou à cette politique de confidentialité :</p>
+    <div class="legal-info-block">
+      <p><strong>Email RGPD :</strong> <a href="mailto:rgpd@beecongruence.com" style="color:var(--amber);font-weight:600;">rgpd@beecongruence.com</a></p>
+      <p><strong>Délai de réponse :</strong> 30 jours maximum</p>
+    </div>
+    <p>Vous pouvez également supprimer votre compte directement depuis votre espace personnel, ce qui entraîne la suppression immédiate de vos données de notre système.</p>
+  </div>
+
+  <div class="legal-update">
+    🐝 Politique mise à jour en août 2026 — BEE Congruence · <a href="mentions-legales.html" style="color:var(--amber);">Mentions légales</a>
+  </div>
+
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="logo.jpg" alt="BEE Congruence" style="height:76px;">
+      <p class="footer-tagline">Équilibre &amp; Harmonie Relationnelle</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html" style="font-weight:700; color:var(--amber);">Confidentialité (RGPD)</a>
+      <a href="contact.html">Contact</a>
+      <a href="https://instagram.com/bee.congruence" target="_blank">Instagram</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ═══ RGPD BANNER ═══ -->
+<div id="rgpdBanner" class="rgpd-banner">
+  <div class="rgpd-text">
+    <div class="rgpd-title">🍪 Cookies &amp; confidentialité</div>
+    <div class="rgpd-desc">BEE Congruence utilise des cookies pour améliorer votre expérience. Conformément au <strong>RGPD</strong>, vous pouvez accepter ou refuser. <a href="confidentialite.html">Politique de confidentialité</a></div>
+  </div>
+  <div class="rgpd-actions">
+    <button class="rgpd-refuse" onclick="dismissRgpd()">Refuser</button>
+    <button class="rgpd-accept" onclick="acceptRgpd()">Accepter</button>
+  </div>
+</div>
+
+<script src="nav.js"></script>
+<script>
+function dismissRgpd() {
+  const b = document.getElementById('rgpdBanner');
+  b.style.opacity = '0';
+  setTimeout(() => b.style.display = 'none', 300);
+}
+if (sessionStorage.getItem('rgpd_done')) {
+  const b = document.getElementById('rgpdBanner');
+  if (b) b.style.display = 'none';
+}
+function acceptRgpd() {
+  sessionStorage.setItem('rgpd_done', '1');
+  dismissRgpd();
+}
+</script>
+</body>
+</html>

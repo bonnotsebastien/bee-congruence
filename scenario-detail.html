@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scénario complet — BEE Congruence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+
+/* ── Layout ── */
+.sd-wrapper {
+  max-width: 820px; margin: 0 auto; padding: 40px 32px 80px;
+}
+
+/* ── Back link ── */
+.sd-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Nunito', sans-serif; font-size: 13px; color: var(--brown-light);
+  text-decoration: none; margin-bottom: 32px;
+  transition: color 0.2s;
+}
+.sd-back:hover { color: var(--orange); }
+
+/* ── Header ── */
+.sd-header {
+  margin-bottom: 40px;
+}
+.sd-meta {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+  align-items: center;
+}
+.sd-tag {
+  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 4px 12px; border-radius: 20px;
+}
+.sd-tag-theme { background: rgba(195,101,27,0.12); color: var(--orange); }
+.sd-tag-level { background: var(--cream-dark); color: var(--brown-mid); }
+.sd-tag-free  { background: rgba(90,138,58,0.15); color: var(--green); }
+.sd-tag-paid  { background: rgba(232,160,32,0.15); color: var(--amber); }
+.sd-tag-duration { background: rgba(30,95,173,0.1); color: var(--blue); }
+
+.sd-title {
+  font-family: 'Playfair Display', serif; font-size: clamp(22px, 4vw, 34px);
+  color: var(--brown-dark); font-style: italic; margin-bottom: 12px;
+  line-height: 1.25;
+}
+.sd-desc {
+  font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--brown-mid);
+  line-height: 1.7; max-width: 640px;
+}
+
+/* ── Compétences chips ── */
+.sd-skills {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0;
+}
+.sd-skill-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 600;
+  padding: 5px 12px; border-radius: 20px;
+  background: var(--cream-dark); color: var(--brown-dark);
+  border: 1px solid var(--border);
+}
+
+/* ── Stepper ── */
+.sd-stepper {
+  display: flex; gap: 0; margin-bottom: 36px;
+  border-bottom: 2px solid var(--border); overflow-x: auto;
+  scrollbar-width: none;
+}
+.sd-stepper::-webkit-scrollbar { display: none; }
+.sd-step-btn {
+  flex: 0 0 auto; padding: 12px 18px;
+  font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--brown-light); background: none; border: none;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.sd-step-btn:hover { color: var(--orange); }
+.sd-step-btn.active {
+  color: var(--orange); border-bottom-color: var(--orange);
+}
+.sd-step-btn.done {
+  color: var(--green);
+}
+.sd-step-btn.done::after { content: ' ✓'; }
+
+/* ── Section content ── */
+.sd-section { display: none; }
+.sd-section.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.sd-section-title {
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  color: var(--brown-dark); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sd-section-icon { font-size: 26px; }
+
+.sd-text {
+  font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--brown-mid);
+  line-height: 1.8; white-space: pre-line;
+}
+
+/* ── Objectifs list ── */
+.sd-objectives {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.sd-objectives li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--brown-dark);
+  background: var(--cream-dark); border-radius: 12px; padding: 14px 16px;
+  line-height: 1.6;
+}
+.sd-obj-num {
+  width: 28px; height: 28px; flex-shrink: 0;
+  background: var(--orange); color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; margin-top: 1px;
+}
+
+/* ── Mise en situation ── */
+.sd-situation {
+  background: linear-gradient(135deg, rgba(195,101,27,0.06), rgba(61,31,0,0.04));
+  border: 1px solid rgba(195,101,27,0.2); border-left: 4px solid var(--orange);
+  border-radius: 0 16px 16px 0; padding: 24px 24px 24px 20px;
+  font-family: 'Lora', serif; font-size: 15px; color: var(--brown-dark);
+  line-height: 1.8; white-space: pre-line;
+}
+.sd-dialogue {
+  background: var(--cream-dark); border-radius: 12px; padding: 16px 20px;
+  margin-top: 16px; font-family: 'Playfair Display', serif; font-size: 17px;
+  font-style: italic; color: var(--brown-dark); line-height: 1.6;
+  border-left: 3px solid var(--amber);
+}
+
+/* ── Étapes du déroulé ── */
+.sd-steps-list {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.sd-step-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px var(--shadow);
+  transition: border-color 0.2s;
+}
+.sd-step-item:hover { border-color: var(--amber); }
+.sd-step-num {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: var(--amber); color: white; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700;
+}
+.sd-step-content { flex: 1; }
+.sd-step-etitle {
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
+  color: var(--brown-dark); margin-bottom: 8px;
+}
+.sd-step-text {
+  font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--brown-mid);
+  line-height: 1.7;
+}
+
+/* ── Feedback ── */
+.sd-feedback-box {
+  background: var(--cream-dark); border-radius: 16px; padding: 24px;
+  margin-bottom: 16px;
+}
+.sd-feedback-box .sd-section-title { font-size: 16px; margin-bottom: 12px; }
+
+.sd-reaction-auto {
+  background: rgba(143,0,0,0.06); border: 1px solid rgba(143,0,0,0.15);
+  border-radius: 12px; padding: 16px 18px; margin-bottom: 12px;
+  font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--brown-dark);
+  line-height: 1.7;
+}
+.sd-reaction-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.12em; color: #8B2020; margin-bottom: 6px;
+}
+.sd-reponse-saine {
+  background: rgba(90,138,58,0.1); border: 1px solid rgba(90,138,58,0.2);
+  border-radius: 12px; padding: 16px 18px; margin-bottom: 12px;
+  font-family: 'Lora', serif; font-size: 15px; color: var(--brown-dark);
+  line-height: 1.7; font-style: italic;
+}
+.sd-reponse-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--green); margin-bottom: 6px;
+  font-family: 'Nunito', sans-serif; font-style: normal;
+}
+
+.sd-feedback-text {
+  font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--brown-mid);
+  line-height: 1.8; white-space: pre-line;
+}
+
+/* ── Conseils expert ── */
+.sd-expert-box {
+  background: linear-gradient(135deg, rgba(61,31,0,0.04), rgba(195,101,27,0.05));
+  border: 1.5px solid rgba(195,101,27,0.2); border-radius: 16px;
+  padding: 24px;
+}
+.sd-expert-text {
+  font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--brown-dark);
+  line-height: 1.85; white-space: pre-line;
+}
+
+/* ── Navigation du stepper ── */
+.sd-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--border);
+}
+.sd-nav-btn {
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
+  padding: 12px 24px; border-radius: 50px; border: 2px solid var(--border);
+  background: white; color: var(--brown-dark); cursor: pointer;
+  transition: all 0.2s;
+}
+.sd-nav-btn:hover { border-color: var(--orange); color: var(--orange); }
+.sd-nav-btn.primary { background: var(--orange); color: white; border-color: var(--orange); }
+.sd-nav-btn.primary:hover { background: var(--orange-dark); }
+.sd-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.sd-nav-btn:disabled:hover { border-color: var(--border); color: var(--brown-dark); }
+
+.sd-progress-text {
+  font-family: 'Nunito', sans-serif; font-size: 13px; color: var(--brown-light);
+}
+
+/* ── CTA Pratiqué ── */
+.sd-done-zone {
+  display: none; text-align: center; padding: 32px 20px;
+  background: rgba(90,138,58,0.08); border-radius: 20px;
+  border: 1.5px solid rgba(90,138,58,0.2); margin-top: 24px;
+}
+.sd-done-zone.visible { display: block; }
+.sd-done-title {
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  color: var(--brown-dark); margin-bottom: 12px;
+}
+.sd-done-desc {
+  font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--brown-mid);
+  margin-bottom: 24px; line-height: 1.7; max-width: 400px; margin-left: auto; margin-right: auto;
+}
+.sd-done-btn {
+  display: inline-block; padding: 14px 32px; background: var(--green);
+  color: white; border: none; border-radius: 50px;
+  font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 15px;
+  cursor: pointer; text-decoration: none; transition: background 0.2s;
+}
+.sd-done-btn:hover { background: #447028; }
+
+/* ── Locked overlay ── */
+.sd-locked-banner {
+  display: none; text-align: center; padding: 40px 24px;
+  background: linear-gradient(135deg, rgba(61,31,0,0.04), rgba(195,101,27,0.06));
+  border: 2px dashed var(--border); border-radius: 20px; margin-top: 16px;
+}
+.sd-locked-banner.show { display: block; }
+.sd-locked-title {
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  color: var(--brown-dark); margin: 16px 0 12px;
+}
+.sd-locked-desc {
+  font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--brown-mid);
+  margin-bottom: 24px; line-height: 1.7; max-width: 400px; margin: 0 auto 24px;
+}
+
+@media (max-width: 600px) {
+  .sd-wrapper { padding: 24px 16px 60px; }
+  .sd-stepper { gap: 0; }
+  .sd-step-btn { padding: 10px 12px; font-size: 10px; }
+}
+
+/* ── Phase Bar ── */
+.sd-phase-bar {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 28px; background: var(--cream-dark);
+  border-radius: 50px; padding: 6px 8px; overflow: hidden;
+}
+.sd-phase-item {
+  flex: 1; text-align: center; padding: 8px 12px; border-radius: 40px;
+  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--brown-light); transition: all 0.3s; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.sd-phase-item.active {
+  background: var(--orange); color: white; box-shadow: 0 2px 8px rgba(195,101,27,0.4);
+}
+.sd-phase-item.done { background: rgba(90,138,58,0.15); color: var(--green); }
+@media (max-width: 600px) { .sd-phase-item { font-size: 9px; padding: 6px 6px; } }
+
+/* ── TTS Float ── */
+.sd-tts-float {
+  position: fixed; bottom: 24px; right: 20px; z-index: 500;
+  background: var(--brown-dark); border-radius: 50px;
+  padding: 10px 18px; display: flex; align-items: center; gap: 10px;
+  font-family: 'Nunito', sans-serif; font-size: 13px; color: #FDFAF6;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25); cursor: pointer;
+  transition: all 0.2s; border: 1.5px solid rgba(255,255,255,0.1);
+}
+.sd-tts-float:hover { background: var(--orange); }
+.sd-tts-float.speaking { background: var(--orange); border-color: var(--amber); }
+.sd-tts-float button {
+  background: none; border: none; color: inherit; cursor: pointer;
+  font-size: 14px; padding: 0 2px; font-family: inherit;
+}
+
+/* ── Step Reflection Modal ── */
+.sr-overlay {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(26,22,18,0.85); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; padding: 16px;
+}
+.sr-overlay.open { display: flex; }
+.sr-modal {
+  background: #FAF7F2; border-radius: 24px; padding: 32px 28px;
+  max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalIn 0.35s cubic-bezier(.16,1,.3,1);
+}
+@keyframes modalIn { from { opacity:0; transform:translateY(30px) scale(0.97); } to { opacity:1; transform:none; } }
+.sr-modal h3 {
+  font-family: 'Playfair Display', serif; font-size: 20px;
+  color: var(--brown-dark); font-style: italic; margin-bottom: 6px;
+}
+.sr-modal .sr-subtitle {
+  font-family: 'Nunito', sans-serif; font-size: 13px; color: var(--brown-light);
+  margin-bottom: 24px; line-height: 1.5;
+}
+.sr-question { margin-bottom: 18px; }
+.sr-question label {
+  display: block; font-family: 'Nunito', sans-serif; font-size: 13px;
+  font-weight: 700; color: var(--brown-dark); margin-bottom: 8px;
+}
+.sr-question textarea {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 10px 14px; font-family: 'Nunito', sans-serif; font-size: 14px;
+  color: var(--brown-dark); background: white; resize: none; height: 70px;
+  box-sizing: border-box; transition: border-color 0.2s;
+}
+.sr-question textarea:focus { outline: none; border-color: var(--orange); }
+.sr-body-btns, .sr-relation-btns {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.sr-body-btn, .sr-relation-btn {
+  padding: 8px 16px; border: 1.5px solid var(--border); border-radius: 20px;
+  font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 600;
+  color: var(--brown-mid); background: white; cursor: pointer; transition: all 0.15s;
+}
+.sr-body-btn.sel, .sr-relation-btn.sel { border-color: var(--orange); background: rgba(195,101,27,0.08); color: var(--orange); }
+.sr-modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; align-items: center; }
+.sr-skip { font-family: 'Nunito', sans-serif; font-size: 12px; color: var(--brown-light); cursor: pointer; background: none; border: none; }
+.sr-skip:hover { color: var(--brown-mid); }
+.sr-continue {
+  padding: 12px 28px; background: var(--orange); color: white; border: none;
+  border-radius: 50px; font-family: 'Nunito', sans-serif; font-weight: 700;
+  font-size: 14px; cursor: pointer; transition: background 0.2s;
+}
+.sr-continue:hover { background: var(--orange-dark, #b45309); }
+
+/* ── Before/After Comparison ── */
+.sd-evolution {
+  margin-top: 32px; border-top: 1px solid var(--border); padding-top: 28px;
+}
+.sd-evolution-title {
+  font-family: 'Playfair Display', serif; font-size: 20px;
+  color: var(--brown-dark); font-style: italic; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sd-evo-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+.sd-evo-table th {
+  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--brown-light);
+  padding: 8px 12px; text-align: left;
+}
+.sd-evo-table td {
+  padding: 10px 12px; border-top: 1px solid var(--border);
+  font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--brown-dark);
+}
+.sd-evo-bar { display: flex; align-items: center; gap: 8px; }
+.sd-evo-bar-inner { height: 8px; border-radius: 4px; transition: width 0.6s ease; min-width: 4px; }
+.sd-learnings {
+  background: rgba(90,138,58,0.07); border: 1px solid rgba(90,138,58,0.2);
+  border-radius: 16px; padding: 20px 24px;
+}
+.sd-learnings-title {
+  font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--green);
+  margin-bottom: 12px;
+}
+.sd-learning-item {
+  font-family: 'Lora', serif; font-size: 14px; color: var(--brown-dark);
+  line-height: 1.6; padding: 6px 0; border-bottom: 1px solid rgba(90,138,58,0.15);
+  font-style: italic;
+}
+.sd-learning-item:last-child { border-bottom: none; }
+
+/* ── Age adaptation ── */
+body.age-enfant .sd-title,
+body.age-enfant .sd-section-title { font-size: clamp(20px, 4vw, 28px); }
+body.age-enfant .sd-text,
+body.age-enfant .sd-feedback-text,
+body.age-enfant .sd-expert-text { font-size: 16px; line-height: 1.9; }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <a href="index.html" class="logo">
+    <img src="logo.jpg" alt="BEE Congruence">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="nav-link">Accueil</a></li>
+    <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+    <li><a href="offres.html" class="nav-link">Offres & Tarifs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="dashboard.html" class="btn-outline">Mon profil</a>
+  </div>
+</nav>
+
+<!-- ═══ TTS FLOAT ═══ -->
+<div class="sd-tts-float" id="sdTtsFloat" style="display:none;" onclick="toggleTTS()">
+  <span id="sdTtsIcon">🔊</span>
+  <span id="sdTtsLabel">Écouter</span>
+  <button onclick="event.stopPropagation();stopTTS();" title="Arrêter">⏹</button>
+</div>
+
+<div class="sd-wrapper" id="sdWrapper">
+
+  <!-- Loading -->
+  <div id="sdLoading" style="text-align:center;padding:80px 20px;font-family:'Nunito',sans-serif;color:var(--brown-light);">
+    <div style="font-size:36px;animation:spin 1.2s linear infinite;display:block;margin-bottom:14px;">🐝</div>
+    Chargement du scénario…
+  </div>
+
+  <!-- Contenu -->
+  <div id="sdContent" style="display:none;">
+
+    <!-- Retour -->
+    <a href="dashboard.html" class="sd-back">← Retour à mon profil</a>
+
+    <!-- Header -->
+    <div class="sd-header">
+      <div class="sd-meta" id="sdMeta"></div>
+      <h1 class="sd-title" id="sdTitle"></h1>
+      <p class="sd-desc" id="sdDesc"></p>
+      <div class="sd-skills" id="sdSkills"></div>
+    </div>
+
+    <!-- Locked overlay -->
+    <div class="sd-locked-banner" id="sdLockedBanner">
+      <div style="font-size:48px;">🔒</div>
+      <div class="sd-locked-title">Ce scénario est payant</div>
+      <p class="sd-locked-desc">Débloquez ce scénario en achat unitaire ou accédez à tous les scénarios avec un abonnement.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" id="sdLockedCtas"></div>
+    </div>
+
+    <!-- Phase bar -->
+    <div class="sd-phase-bar" id="sdPhaseBar" style="display:none;">
+      <div class="sd-phase-item" data-phase="0">1 · Participer</div>
+      <div class="sd-phase-item" data-phase="1">2 · Le sportif</div>
+      <div class="sd-phase-item" data-phase="2">3 · L'émotionnel</div>
+      <div class="sd-phase-item" data-phase="3">4 · Le relationnel</div>
+    </div>
+
+    <!-- Stepper -->
+    <div class="sd-stepper" id="sdStepper" style="display:none;"></div>
+
+    <!-- Sections -->
+    <div id="sdSections" style="display:none;"></div>
+
+    <!-- Navigation -->
+    <div class="sd-nav" id="sdNav" style="display:none;">
+      <button class="sd-nav-btn" id="sdBtnPrev" onclick="navigate(-1)">← Précédent</button>
+      <span class="sd-progress-text" id="sdNavProgress"></span>
+      <button class="sd-nav-btn primary" id="sdBtnNext" onclick="navigate(1)">Suivant →</button>
+    </div>
+
+    <!-- Zone "marquer comme pratiqué" -->
+    <div class="sd-done-zone" id="sdDoneZone">
+      <div style="font-size:48px;">🌟</div>
+      <div class="sd-done-title">Vous avez terminé ce scénario !</div>
+      <p class="sd-done-desc">Marquez-le comme pratiqué pour débloquer le suivant et faire évoluer votre toile d'araignée.</p>
+      <button class="sd-done-btn" id="sdDoneBtn" onclick="markDoneAndContinue()">
+        ✓ Marquer comme pratiqué
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ STEP REFLECTION MODAL ═══ -->
+<div class="sr-overlay" id="srOverlay">
+  <div class="sr-modal">
+    <h3>Que génère cette situation chez ton sportif relationnel &amp; émotionnel ?</h3>
+    <p class="sr-subtitle">Prends un instant d'introspection active pour observer tes réactions avant de continuer…</p>
+
+    <div class="sr-question">
+      <label>❤️ Sportif émotionnel — Qu'as-tu ressenti ?</label>
+      <textarea id="srRessenti" placeholder="Décris tes émotions (peur, colère, soulagement, joie, hésitation…)"></textarea>
+    </div>
+    <div class="sr-question">
+      <label>💭 Sportif mental — Quelles pensées ont traversé ton esprit ?</label>
+      <textarea id="srPense" placeholder="Ce que tu t'es dit intérieurement, tes jugements ou interrogations…"></textarea>
+    </div>
+    <div class="sr-question">
+      <label>🧘 Ressenti corporel — Comment ton corps a-t-il réagi ?</label>
+      <div class="sr-body-btns">
+        <button class="sr-body-btn" data-val="aucune" onclick="selectBodyBtn(this)">Aucune tension (Détendu)</button>
+        <button class="sr-body-btn" data-val="légère" onclick="selectBodyBtn(this)">Légère tension (Vigilance)</button>
+        <button class="sr-body-btn" data-val="forte" onclick="selectBodyBtn(this)">Forte tension (Contraction)</button>
+      </div>
+    </div>
+    <div class="sr-question">
+      <label>⚡ Impulsion d'action — Qu'as-tu eu envie de faire ou dire ?</label>
+      <textarea id="srEnvie" placeholder="Une réaction immédiate, fuir, attaquer, t'expliquer, poser une limite…"></textarea>
+    </div>
+    <div class="sr-question">
+      <label>🤝 Sportif relationnel — Quel mouvement observes-tu vers les autres ?</label>
+      <div class="sr-relation-btns">
+        <button class="sr-relation-btn" data-val="connexion" onclick="selectRelBtn(this)">🔗 Connexion / Rapprochement</button>
+        <button class="sr-relation-btn" data-val="distance" onclick="selectRelBtn(this)">↔️ Distance / Protection</button>
+        <button class="sr-relation-btn" data-val="neutre" onclick="selectRelBtn(this)">⚪ Neutre / Observation</button>
+      </div>
+    </div>
+    <div class="sr-question">
+      <label>✨ Apprentissage — Qu'as-tu appris sur toi-même ?</label>
+      <textarea id="srAppris" placeholder="Une prise de conscience sur tes schémas ou réflexes habituels…"></textarea>
+    </div>
+
+    <div class="sr-modal-actions">
+      <button class="sr-skip" onclick="closeReflectionModal(true)">Passer</button>
+      <button class="sr-continue" onclick="saveReflectionAndContinue()">Continuer →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="logo.jpg" alt="BEE Congruence" style="height:76px;">
+      <p class="footer-tagline">Équilibre &amp; Harmonie Relationnelle</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité (RGPD)</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="supabase.js"></script>
+<script>
+
+// ── Configuration des sections ──────────────────────────────────────
+const SECTIONS_CONFIG = [
+  { id: 'intro',       label: '1. Introduction',         icon: '📖' },
+  { id: 'objectifs',   label: '2. Objectifs',            icon: '🎯' },
+  { id: 'competences', label: '3. Compétences',          icon: '🧠' },
+  { id: 'situation',   label: '4. Mise en situation',    icon: '🎭' },
+  { id: 'deroulé',    label: '5. Déroulé',              icon: '🗺️' },
+  { id: 'feedback',    label: '6. Feedback',             icon: '🔍' },
+  { id: 'expert',      label: '7. Conseils d\'expert',  icon: '💡' },
+];
+
+// Phase mapping : section index → phase index (0–3)
+const SECTION_PHASE_MAP = [0, 0, 1, 1, 2, 3, 3];
+
+let currentSection = 0;
+let pendingNextSection = null;
+let currentScenario = null;
+let currentUser = null;
+let userAccess = null;
+let scenarioRow = null;
+let stepReflections = [];
+let ttsActive = false;
+let ttsUtter = null;
+
+// ── Init ────────────────────────────────────────────────────────────
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const scenarioId = params.get('id');
+
+  if (!scenarioId) { window.location.href = 'dashboard.html'; return; }
+
+  currentScenario = SCENARIOS_LIBRARY.find(s => s.id === scenarioId);
+  if (!currentScenario) { window.location.href = 'dashboard.html'; return; }
+
+  currentUser = await getUser();
+  if (currentUser) {
+    userAccess = await getUserAccess(currentUser.id);
+    const scenarios = await getUserScenarios(currentUser.id);
+    scenarioRow = scenarios.find(s => s.scenario_id === scenarioId || s.id === scenarioId);
+  }
+
+  // Age adaptation
+  applyAgeAdaptation();
+
+  document.getElementById('sdLoading').style.display = 'none';
+  document.getElementById('sdContent').style.display = 'block';
+
+  const index = currentScenario.index !== undefined ? currentScenario.index : 0;
+  const access = userAccess
+    ? checkScenarioAccess(scenarioId, userAccess, index)
+    : (index === 0 ? { allowed: true } : { allowed: false, reason: 'locked' });
+
+  renderHeader(currentScenario, access);
+
+  if (!access.allowed) { renderLocked(currentScenario); return; }
+
+  // Load existing reflections
+  const stored = localStorage.getItem(`bee_step_reflections_${scenarioId}`);
+  if (stored) stepReflections = JSON.parse(stored);
+
+  // Check if introspection completed
+  const hasIntro = localStorage.getItem(`bee_intro_${scenarioId}`);
+  if (!hasIntro) {
+    const existingBanner = document.getElementById('sdIntroReminder');
+    if (!existingBanner) {
+      const banner = document.createElement('div');
+      banner.id = 'sdIntroReminder';
+      banner.style.cssText = `
+        background: linear-gradient(135deg, rgba(217,119,6,0.12), rgba(146,64,14,0.06));
+        border: 1.5px solid rgba(217,119,6,0.3); border-radius: 16px;
+        padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center;
+        justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      `;
+      banner.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:26px;">🧘</span>
+          <div>
+            <div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--brown-dark);">
+              Introspection préalable recommandée
+            </div>
+            <div style="font-family:'Nunito',sans-serif;font-size:12px;color:var(--brown-light);margin-top:2px;">
+              Prends 2 minutes pour scanner ton état émotionnel, corporel et mental afin de mesurer ton évolution.
+            </div>
+          </div>
+        </div>
+        <a href="introspection.html?scenario=${scenarioId}" style="
+          padding: 9px 20px; background: var(--orange); color: white; border-radius: 50px;
+          font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px; text-decoration: none;
+          white-space: nowrap; box-shadow: 0 2px 10px rgba(217,119,6,0.25);
+        ">Faire mon introspection →</a>
+      `;
+      const content = document.getElementById('sdContent');
+      content.insertBefore(banner, document.getElementById('sdPhaseBar'));
+    }
+  }
+
+  renderStepper();
+  renderSections(currentScenario);
+
+  document.getElementById('sdPhaseBar').style.display  = 'flex';
+  document.getElementById('sdStepper').style.display   = 'flex';
+  document.getElementById('sdSections').style.display  = 'block';
+  document.getElementById('sdNav').style.display       = 'flex';
+  document.getElementById('sdTtsFloat').style.display  = 'flex';
+
+  showSection(0);
+}
+
+// ── Age Adaptation ──────────────────────────────────────────────────
+function applyAgeAdaptation() {
+  try {
+    const profile = JSON.parse(localStorage.getItem('bee_user_profile') || '{}');
+    if (profile.age_group === 'enfant') {
+      document.body.classList.add('age-enfant');
+    }
+  } catch(e) {}
+}
+
+// ── Render Header ───────────────────────────────────────────────────
+function renderHeader(s, access) {
+  const diffLabels = ['', '🟢 Niveau 1', '🟡 Niveau 2', '🔴 Niveau 3'];
+  const themeFormatted = (s.theme || '').replace(/_/g, ' ');
+
+  document.getElementById('sdMeta').innerHTML = `
+    <span class="sd-tag sd-tag-theme">${themeFormatted}</span>
+    <span class="sd-tag sd-tag-level">${diffLabels[s.difficulte] || ''}</span>
+    <span class="sd-tag ${s.gratuit ? 'sd-tag-free' : 'sd-tag-paid'}">${s.gratuit ? '🆓 Gratuit' : '⚡ Premium'}</span>
+    <span class="sd-tag sd-tag-duration">⏱ ${s.duree_estimee || '10–15 min'}</span>
+  `;
+  document.getElementById('sdTitle').textContent = s.titre;
+  document.getElementById('sdDesc').textContent = s.description;
+
+  const skillsContainer = document.getElementById('sdSkills');
+  if (s.competences && SKILLS_REFERENCE) {
+    s.competences.forEach(cid => {
+      const skill = SKILLS_REFERENCE.find(sk => sk.id === cid);
+      if (skill) {
+        const chip = document.createElement('span');
+        chip.className = 'sd-skill-chip';
+        chip.innerHTML = `${skill.icon} ${skill.label}`;
+        chip.style.borderColor = skill.color;
+        skillsContainer.appendChild(chip);
+      }
+    });
+  }
+}
+
+// ── Render Locked ───────────────────────────────────────────────────
+function renderLocked(s) {
+  const banner = document.getElementById('sdLockedBanner');
+  banner.classList.add('show');
+
+  const ctas = document.getElementById('sdLockedCtas');
+  const unitPrice = s.prix_unitaire ? `${s.prix_unitaire.toFixed(2).replace('.', ',')}€` : '4,90€';
+  const encodedTitle = encodeURIComponent(s.titre);
+
+  ctas.innerHTML = `
+    <a href="paiement.html?scenario=${s.id}&title=${encodedTitle}&pm=apple"
+       style="padding:13px 24px;background:var(--orange);color:white;border-radius:50px;
+              font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;text-decoration:none;">
+      Acheter ce scénario — ${unitPrice}
+    </a>
+    <a href="paiement.html?pm=cb"
+       style="padding:13px 24px;background:transparent;color:var(--orange);border:2px solid var(--orange);
+              border-radius:50px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;text-decoration:none;">
+      Voir les abonnements
+    </a>
+  `;
+}
+
+// ── Render Stepper ──────────────────────────────────────────────────
+function renderStepper() {
+  const stepper = document.getElementById('sdStepper');
+  SECTIONS_CONFIG.forEach((sec, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'sd-step-btn';
+    btn.textContent = sec.label;
+    btn.dataset.index = i;
+    btn.onclick = () => showSection(i);
+    stepper.appendChild(btn);
+  });
+}
+
+// ── Render Sections ─────────────────────────────────────────────────
+function renderSections(s) {
+  const container = document.getElementById('sdSections');
+
+  container.appendChild(buildSection('intro', '📖 Introduction', `
+    <p class="sd-text">${s.introduction || ''}</p>
+  `));
+
+  const objItems = (s.objectifs || []).map((o, i) => `
+    <li><div class="sd-obj-num">${i + 1}</div><span>${o}</span></li>
+  `).join('');
+  container.appendChild(buildSection('objectifs', '🎯 Objectifs', `
+    <ul class="sd-objectives">${objItems}</ul>
+  `));
+
+  const skillCards = (s.competences || []).map(cid => {
+    const skill = (SKILLS_REFERENCE || []).find(sk => sk.id === cid);
+    if (!skill) return '';
+    const weight = (SKILLS_MAPPING[s.id] || {})[cid] || 1;
+    const stars = '★'.repeat(weight) + '☆'.repeat(3 - weight);
+    return `
+      <div style="display:flex;align-items:center;gap:14px;background:var(--cream-dark);
+                  border-radius:14px;padding:16px 20px;">
+        <span style="font-size:28px;">${skill.icon}</span>
+        <div style="flex:1;">
+          <div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;
+                      color:var(--brown-dark);margin-bottom:4px;">${skill.label}</div>
+          <div style="font-size:16px;color:${skill.color};">${stars}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  container.appendChild(buildSection('competences', '🧠 Compétences travaillées', `
+    <p class="sd-text" style="margin-bottom:20px;">Ce scénario entraîne les compétences suivantes. Plus l'intensité est élevée, plus la compétence est mobilisée.</p>
+    <div style="display:flex;flex-direction:column;gap:12px;">${skillCards}</div>
+  `));
+
+  const situLines = (s.mise_en_situation || '').split('\n\n');
+  const situHtml = situLines.map(line => {
+    if (line.startsWith('«') || line.startsWith('"') || line.includes('—')) {
+      return `<div class="sd-dialogue">${line}</div>`;
+    }
+    return `<p class="sd-text" style="margin-bottom:12px;">${line}</p>`;
+  }).join('');
+  container.appendChild(buildSection('situation', '🎭 Mise en situation', `
+    <div class="sd-situation">${situHtml}</div>
+  `));
+
+  const derouléHtml = (s.deroulé || []).map(etape => `
+    <div class="sd-step-item">
+      <div class="sd-step-num">${etape.etape}</div>
+      <div class="sd-step-content">
+        <div class="sd-step-etitle">${etape.titre}</div>
+        <div class="sd-step-text">${etape.contenu}</div>
+      </div>
+    </div>
+  `).join('');
+  container.appendChild(buildSection('deroulé', '🗺️ Déroulé complet', `
+    <p class="sd-text" style="margin-bottom:20px;">Suivez ces étapes pour traverser le scénario de façon consciente.</p>
+    <div class="sd-steps-list">${derouléHtml}</div>
+  `));
+
+  container.appendChild(buildSection('feedback', '🔍 Feedback attendu', `
+    <div class="sd-feedback-box">
+      <div class="sd-reaction-label">❌ Réaction automatique fréquente</div>
+      <div class="sd-reaction-auto">${s.reaction_auto || ''}</div>
+      <div class="sd-reponse-label">✓ Réponse relationnelle saine</div>
+      <div class="sd-reponse-saine">${s.reponse_saine || ''}</div>
+    </div>
+    <p class="sd-feedback-text">${s.feedback_attendu || ''}</p>
+  `));
+
+  // Section 7 — Expert + before/after comparison
+  const expertSec = buildSection('expert', '💡 Conseils d\'expert', `
+    <div class="sd-expert-box">
+      <p class="sd-expert-text">${s.conseils_expert || ''}</p>
+    </div>
+    <div class="sd-evolution" id="sdEvolution" style="display:none;"></div>
+  `);
+  container.appendChild(expertSec);
+}
+
+function buildSection(id, title, content) {
+  const div = document.createElement('div');
+  div.className = 'sd-section';
+  div.id = `sd-sec-${id}`;
+  div.innerHTML = `<h2 class="sd-section-title">${title}</h2>${content}`;
+  return div;
+}
+
+// ── Phase Bar ───────────────────────────────────────────────────────
+function updatePhaseBar(sectionIndex) {
+  const activePhase = SECTION_PHASE_MAP[sectionIndex] || 0;
+  document.querySelectorAll('.sd-phase-item').forEach(el => {
+    const p = parseInt(el.dataset.phase);
+    el.classList.remove('active', 'done');
+    if (p === activePhase) el.classList.add('active');
+    else if (p < activePhase) el.classList.add('done');
+  });
+}
+
+// ── Navigation ──────────────────────────────────────────────────────
+function showSection(index, skipModal) {
+  document.querySelectorAll('.sd-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sd-step-btn').forEach(b => b.classList.remove('active'));
+
+  const sections = document.querySelectorAll('.sd-section');
+  if (sections[index]) sections[index].classList.add('active');
+  const btns = document.querySelectorAll('.sd-step-btn');
+  if (btns[index]) btns[index].classList.add('active');
+
+  currentSection = index;
+  updatePhaseBar(index);
+
+  const total = SECTIONS_CONFIG.length;
+  document.getElementById('sdNavProgress').textContent = `${index + 1} / ${total}`;
+  document.getElementById('sdBtnPrev').disabled = index === 0;
+
+  const isLast = index === total - 1;
+  const nextBtn = document.getElementById('sdBtnNext');
+  nextBtn.textContent = isLast ? 'Terminer ✓' : 'Suivant →';
+  nextBtn.onclick = isLast ? showDoneZone : () => navigate(1);
+
+  // Stop any ongoing TTS
+  stopTTS();
+
+  // Show before/after if last section
+  if (isLast) buildEvolutionBlock();
+
+  window.scrollTo({ top: document.getElementById('sdStepper').offsetTop - 80, behavior: 'smooth' });
+}
+
+function navigate(direction) {
+  const newIndex = currentSection + direction;
+  if (newIndex < 0 || newIndex >= SECTIONS_CONFIG.length) return;
+
+  if (direction === 1) {
+    // Show reflection modal before going to next section
+    pendingNextSection = newIndex;
+    openReflectionModal();
+  } else {
+    showSection(newIndex);
+  }
+}
+
+function showDoneZone() {
+  document.getElementById('sdDoneZone').classList.add('visible');
+  document.getElementById('sdNav').style.display = 'none';
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+// ── Step Reflection Modal ───────────────────────────────────────────
+let srBodyVal = null;
+let srRelVal = null;
+
+function openReflectionModal() {
+  // Reset form
+  ['srRessenti','srPense','srEnvie','srAppris'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.querySelectorAll('.sr-body-btn, .sr-relation-btn').forEach(b => b.classList.remove('sel'));
+  srBodyVal = null;
+  srRelVal = null;
+  document.getElementById('srOverlay').classList.add('open');
+}
+
+function closeReflectionModal(skip) {
+  document.getElementById('srOverlay').classList.remove('open');
+  if (pendingNextSection !== null) {
+    showSection(pendingNextSection);
+    pendingNextSection = null;
+  }
+}
+
+function saveReflectionAndContinue() {
+  const scenarioId = new URLSearchParams(window.location.search).get('id');
+  const reflection = {
+    step: currentSection,
+    stepLabel: SECTIONS_CONFIG[currentSection]?.label || '',
+    timestamp: new Date().toISOString(),
+    ressenti: document.getElementById('srRessenti')?.value || '',
+    pense: document.getElementById('srPense')?.value || '',
+    corps: srBodyVal || '',
+    envie: document.getElementById('srEnvie')?.value || '',
+    relation: srRelVal || '',
+    appris: document.getElementById('srAppris')?.value || '',
+  };
+
+  stepReflections.push(reflection);
+  if (scenarioId) {
+    localStorage.setItem(`bee_step_reflections_${scenarioId}`, JSON.stringify(stepReflections));
+  }
+
+  closeReflectionModal(false);
+}
+
+function selectBodyBtn(btn) {
+  document.querySelectorAll('.sr-body-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  srBodyVal = btn.dataset.val;
+}
+
+function selectRelBtn(btn) {
+  document.querySelectorAll('.sr-relation-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  srRelVal = btn.dataset.val;
+}
+
+// ── Before/After Evolution Block ─────────────────────────────────────
+function buildEvolutionBlock() {
+  const scenarioId = new URLSearchParams(window.location.search).get('id');
+  const evoContainer = document.getElementById('sdEvolution');
+  if (!evoContainer || evoContainer.children.length > 0) return;
+
+  const intro = JSON.parse(localStorage.getItem(`bee_intro_${scenarioId}`) || 'null');
+
+  // Compute scores directly from user responses
+  const reflCount = stepReflections.length;
+  const hasAppris = stepReflections.filter(r => r.appris && r.appris.trim().length > 3);
+  const connexionCount = stepReflections.filter(r => r.relation === 'connexion').length;
+  const noTensionCount = stepReflections.filter(r => r.corps === 'aucune').length;
+  const engagementScore = Math.min(100, Math.round((reflCount / Math.max(1, SECTIONS_CONFIG.length - 1)) * 100));
+  const relationnelScore = reflCount > 0 ? Math.min(100, Math.round((connexionCount / reflCount) * 100)) : 60;
+
+  const introScores = (intro && intro.scores) ? intro.scores : null;
+
+  const now = {
+    mental:     Math.min(100, introScores ? Math.round(introScores.mental + (hasAppris.length * 6) + 5) : 75),
+    emotionnel: Math.min(100, introScores ? Math.round(introScores.emotionnel + (reflCount * 4) + 6) : 70),
+    energie:    Math.min(100, introScores ? Math.round(introScores.energie + (reflCount * 3) + 4) : 70),
+    clarte:     Math.min(100, introScores ? Math.round(introScores.clarte + (hasAppris.length * 7) + 5) : 80),
+    relationnel: Math.max(25, relationnelScore),
+    engagement:  Math.max(25, engagementScore),
+  };
+
+  const dims = [
+    { label: '🧠 Clarté mentale',      before: introScores ? introScores.mental : null,     after: now.mental },
+    { label: '💛 Sportif émotionnel',  before: introScores ? introScores.emotionnel : null, after: now.emotionnel },
+    { label: '⚡ Niveau d\'énergie',    before: introScores ? introScores.energie : null,    after: now.energie },
+    { label: '🤝 Sportif relationnel', before: introScores ? 40 : null,                     after: now.relationnel },
+    { label: '💪 Engagement actif',    before: introScores ? 30 : null,                     after: now.engagement },
+  ];
+
+  function bar(val, color) {
+    return `<div class="sd-evo-bar">
+      <div class="sd-evo-bar-inner" style="width:${val}%;background:${color};"></div>
+      <span style="font-size:12px;color:var(--brown-light);min-width:30px;">${val}%</span>
+    </div>`;
+  }
+
+  const rows = dims.map(d => `
+    <tr>
+      <td style="font-weight:600;">${d.label}</td>
+      <td>${d.before !== null ? bar(d.before, 'var(--border)') : '<span style="color:var(--brown-light);font-size:12px;">Évalué en fin</span>'}</td>
+      <td>${bar(d.after, 'var(--orange)')}</td>
+    </tr>
+  `).join('');
+
+  const learnings = hasAppris.map(r => `
+    <div class="sd-learning-item">« ${r.appris.trim()} »</div>
+  `).join('');
+
+  evoContainer.style.display = 'block';
+  evoContainer.innerHTML = `
+    <div class="sd-evolution-title">🌱 Bilan &amp; Évolution du sportif relationnel</div>
+    <p style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--brown-mid);margin-bottom:18px;">
+      Mesure issue de tes réponses, de ton introspection et de tes observations à chaque étape :
+    </p>
+    <table class="sd-evo-table">
+      <thead><tr>
+        <th>Dimension</th>
+        <th>Avant le scénario</th>
+        <th>Après l'entraînement</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    ${learnings ? `
+    <div class="sd-learnings">
+      <div class="sd-learnings-title">✨ Apprentissages clés</div>
+      ${learnings}
+    </div>` : ''}
+  `;
+}
+
+// ── TTS ─────────────────────────────────────────────────────────────
+function getSectionText() {
+  const active = document.querySelector('.sd-section.active');
+  if (!active) return '';
+  return active.innerText || active.textContent || '';
+}
+
+function toggleTTS() {
+  if (ttsActive) { stopTTS(); return; }
+
+  if (!window.speechSynthesis) return;
+  stopTTS();
+
+  const text = getSectionText();
+  if (!text.trim()) return;
+
+  ttsUtter = new SpeechSynthesisUtterance(text);
+  ttsUtter.lang = 'fr-FR';
+
+  try {
+    const profile = JSON.parse(localStorage.getItem('bee_user_profile') || '{}');
+    ttsUtter.rate = profile.age_group === 'enfant' ? 0.8 : 0.95;
+  } catch(e) { ttsUtter.rate = 0.95; }
+
+  ttsUtter.onend = ttsUtter.onerror = () => {
+    ttsActive = false;
+    document.getElementById('sdTtsFloat')?.classList.remove('speaking');
+    const lbl = document.getElementById('sdTtsLabel');
+    if (lbl) lbl.textContent = 'Écouter';
+    const ico = document.getElementById('sdTtsIcon');
+    if (ico) ico.textContent = '🔊';
+  };
+
+  window.speechSynthesis.speak(ttsUtter);
+  ttsActive = true;
+  document.getElementById('sdTtsFloat')?.classList.add('speaking');
+  const lbl = document.getElementById('sdTtsLabel');
+  if (lbl) lbl.textContent = 'Pause';
+  const ico = document.getElementById('sdTtsIcon');
+  if (ico) ico.textContent = '🔉';
+}
+
+function stopTTS() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  ttsActive = false;
+  document.getElementById('sdTtsFloat')?.classList.remove('speaking');
+  const lbl = document.getElementById('sdTtsLabel');
+  if (lbl) lbl.textContent = 'Écouter';
+  const ico = document.getElementById('sdTtsIcon');
+  if (ico) ico.textContent = '🔊';
+}
+
+// ── Marquer comme pratiqué ─────────────────────────────────────────
+async function markDoneAndContinue() {
+  const btn = document.getElementById('sdDoneBtn');
+  btn.textContent = '⏳ Enregistrement…';
+  btn.disabled = true;
+
+  if (currentUser && scenarioRow) {
+    await updateScenarioStatus(scenarioRow.id, 'termine');
+
+    const userId = currentUser.id;
+    const scenarios = await getUserScenarios(userId);
+    const idx = scenarios.findIndex(s => s.id === scenarioRow.id);
+    if (idx !== -1 && idx + 1 < scenarios.length) {
+      const next = scenarios[idx + 1];
+      const nextAccess = userAccess
+        ? checkScenarioAccess(next.scenario_id, userAccess, next.ordre)
+        : { allowed: false };
+      if (next.statut === 'verrouille' && nextAccess.allowed) {
+        await updateScenarioStatus(next.id, 'disponible');
+      }
+    }
+
+    const completed = scenarios
+      .filter(s => s.statut === 'termine' || s.id === scenarioRow.id)
+      .map(s => s.scenario_id || s.id);
+    const skillScores = computeSkillScores(completed);
+    await saveSkillSnapshot(userId, skillScores, currentScenario.id);
+  }
+
+  btn.textContent = '✓ Pratiqué !';
+  setTimeout(() => { window.location.href = 'dashboard.html?unlocked=1'; }, 1000);
+}
+
+// ── Start ───────────────────────────────────────────────────────────
+init();
+
+
+</script>
+</body>
+</html>

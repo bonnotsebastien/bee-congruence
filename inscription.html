@@ -3,16 +3,288 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rejoins la ruche — BEE Congruence</title>
+<title>Inscription — BEE Congruence</title>
+<meta name="description" content="Rejoignez la ruche BEE Congruence, créez votre compte gratuit et découvrez vos scénarios d'entraînement relationnel.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.beecongruence.com/inscription.html">
+<link rel="icon" href="logo.jpg" type="image/jpeg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<style>
+  /* ── Layout principal ── */
+  .auth-page-wrapper {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    background: var(--warm-white, #FDFAF6);
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 520px;
+    background: white;
+    border: 1.5px solid var(--border, rgba(26,22,18,0.1));
+    border-radius: 24px;
+    padding: 40px 36px;
+    box-shadow: 0 12px 40px var(--shadow, rgba(61,31,0,0.06));
+  }
+  .auth-header { text-align: center; margin-bottom: 28px; }
+  .auth-bee { font-size: 40px; margin-bottom: 12px; }
+  .auth-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--brown-dark, #1A1612);
+    margin-bottom: 8px;
+  }
+  .auth-sub { font-size: 14px; color: var(--brown-mid, #5C5349); line-height: 1.6; }
+
+  /* ── Champs de formulaire ── */
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brown-mid, #5C5349);
+    margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border, rgba(26,22,18,0.15));
+    background: var(--warm-white, #FDFAF6);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--brown-dark, #1A1612);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+  .form-input:focus {
+    border-color: var(--orange, #E8A020);
+    box-shadow: 0 0 0 3px rgba(232,160,32,0.15);
+  }
+
+  /* ── Boutons ── */
+  .auth-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--orange, #E8A020);
+    color: var(--brown-dark, #1A1612);
+    border: none;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .auth-btn:hover { background: var(--amber, #F7C04A); }
+  .auth-btn-secondary {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--brown-dark, #1A1612);
+    border: 1.5px solid var(--border, rgba(26,22,18,0.2));
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .auth-btn-secondary:hover { border-color: var(--orange, #E8A020); color: var(--orange, #E8A020); }
+
+  /* ── Footer liens ── */
+  .auth-footer-links {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border, rgba(26,22,18,0.1));
+    font-size: 13px;
+    color: var(--brown-mid, #5C5349);
+  }
+  .auth-footer-links a { color: var(--orange, #E8A020); font-weight: 700; text-decoration: none; }
+  .auth-footer-links a:hover { text-decoration: underline; }
+
+  /* ── Message d'erreur ── */
+  .auth-msg {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .auth-msg.error {
+    background: rgba(217,83,79,0.1);
+    color: #d9534f;
+    border: 1px solid rgba(217,83,79,0.2);
+  }
+
+  /* ── Séparateur ── */
+  .age-group-divider {
+    height: 1px;
+    background: rgba(26,22,18,0.07);
+    margin: 24px 0;
+  }
+
+  /* ── Label tranche d'âge ── */
+  .age-group-label {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brown-mid, #5C5349);
+    margin-bottom: 12px;
+  }
+  .age-group-label .required-star {
+    color: var(--orange, #E8A020);
+    margin-left: 3px;
+  }
+
+  /* ── Grille 2x2 de cartes ── */
+  .age-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  /* ── Carte individuelle ── */
+  .age-card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 14px;
+    border: 2px solid rgba(26,22,18,0.1);
+    background: var(--warm-white, #FDFAF6);
+    padding: 14px 10px 12px;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s, transform 0.12s, box-shadow 0.2s;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .age-card:hover {
+    border-color: rgba(232,160,32,0.5);
+    background: rgba(232,160,32,0.04);
+  }
+  .age-card.selected {
+    border-color: var(--orange, #E8A020);
+    background: rgba(232,160,32,0.08);
+    box-shadow: 0 0 0 3px rgba(232,160,32,0.18);
+  }
+
+  /* Radio input masqué (accessibilité préservée) */
+  .age-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  .age-card-emoji { font-size: 34px; line-height: 1; display: block; margin-bottom: 6px; }
+  .age-card-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--brown-dark, #1A1612);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .age-card-range {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    color: var(--brown-mid, #5C5349);
+    display: block;
+  }
+
+  /* Indicateur rond en coin haut-droit */
+  .age-card::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(26,22,18,0.15);
+    background: white;
+    transition: all 0.2s;
+  }
+  .age-card.selected::after {
+    background: var(--orange, #E8A020);
+    border-color: var(--orange, #E8A020);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 9'%3E%3Cpath d='M1 4l3.5 3.5L11 1' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 10px;
+  }
+
+  /* ── Champ âge précis (optionnel) ── */
+  .age-precise-wrap { margin-top: 12px; }
+  .age-precise-label {
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    color: var(--brown-mid, #5C5349);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .age-precise-input {
+    width: 100%;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(26,22,18,0.12);
+    background: var(--warm-white, #FDFAF6);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--brown-dark, #1A1612);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    -moz-appearance: textfield;
+  }
+  .age-precise-input::-webkit-inner-spin-button,
+  .age-precise-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .age-precise-input:focus {
+    border-color: var(--orange, #E8A020);
+    box-shadow: 0 0 0 3px rgba(232,160,32,0.12);
+  }
+
+  /* ── Responsive mobile ── */
+  @media (max-width: 420px) {
+    .auth-card { padding: 28px 18px; }
+    .age-cards-grid { gap: 8px; }
+    .age-card-emoji { font-size: 28px; }
+    .age-card-title { font-size: 12px; }
+    .age-card { padding: 12px 8px 10px; }
+  }
+</style>
 </head>
 <body>
 
+<!-- ═══ NAVBAR ═══ -->
 <nav class="navbar">
   <a href="index.html" class="logo">
-    <img src="logo.png" alt="BEE Congruence" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+    <img src="logo.jpg" alt="BEE Congruence">
     <div class="logo-fallback">
       <span class="logo-bee">BEE</span>
       <span class="logo-cong">Congruence</span>
@@ -25,57 +297,122 @@
   </ul>
   <div class="nav-actions">
     <a href="connexion.html" class="btn-outline">Se connecter</a>
-    <a href="inscription.html" class="btn-primary">Rejoins la ruche</a>
+    <a href="inscription.html" class="btn-primary active">Rejoins la ruche</a>
   </div>
 </nav>
 
-<div class="auth-page">
-  <h1 class="auth-title">Rejoins la ruche</h1>
-  <p class="auth-sub">Commence ton parcours vers des relations plus saines</p>
-
+<!-- ═══ INSCRIPTION CONTENT ═══ -->
+<div class="auth-page-wrapper">
   <div class="auth-card">
-    <div class="form-group">
-      <label class="form-label" for="email">Email</label>
-      <div class="input-wrapper">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-        <input class="input-icon" type="email" id="email" placeholder="marie@exemple.fr" autocomplete="email">
-      </div>
+    <div class="auth-header">
+      <div class="auth-bee">&#x1F41D;</div>
+      <h1 class="auth-title">Rejoindre la ruche</h1>
+      <p class="auth-sub">Créez votre compte gratuit pour sauvegarder votre profil et vos progrès.</p>
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="password">Mot de passe</label>
-      <div class="input-wrapper">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <input class="input-icon" type="password" id="password" placeholder="••••••••"
-               autocomplete="new-password" oninput="checkStrength(this.value)">
-        <button class="input-eye" type="button" onclick="togglePassword('password', this)">
-          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </button>
+    <!-- Message d'erreur -->
+    <div id="authErrorMsg" class="auth-msg error"></div>
+
+    <form id="signupForm" onsubmit="handleSignupSubmit(event)">
+
+      <!-- ── Email ── -->
+      <div class="form-group">
+        <label for="email" class="form-label">Adresse Email</label>
+        <input type="email" id="email" required placeholder="votre@email.com" class="form-input">
       </div>
-      <div class="password-strength">
-        <div class="strength-bar">
-          <div class="strength-fill" id="strengthFill" style="width:0%"></div>
+
+      <!-- ── Mot de passe ── -->
+      <div class="form-group">
+        <label for="password" class="form-label">Créer un mot de passe</label>
+        <input type="password" id="password" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" class="form-input">
+      </div>
+
+      <div class="age-group-divider"></div>
+
+      <!-- ── Tranche d'âge (obligatoire) ── -->
+      <div class="form-group" id="ageGroupSection">
+        <span class="age-group-label">
+          Quelle est votre tranche d'âge ?<span class="required-star" aria-hidden="true">*</span>
+        </span>
+
+        <div class="age-cards-grid" role="radiogroup" aria-label="Tranche d'âge">
+
+          <!-- Enfant 6–11 ans -->
+          <label class="age-card" id="card-enfant" for="age-enfant" title="Enfant (6-11 ans)">
+            <input type="radio" id="age-enfant" name="age_group" value="enfant">
+            <span class="age-card-emoji">&#x1F423;</span>
+            <span class="age-card-title">Enfant</span>
+            <span class="age-card-range">6 – 11 ans</span>
+          </label>
+
+          <!-- Adolescent 12–17 ans -->
+          <label class="age-card" id="card-ado" for="age-ado" title="Adolescent (12-17 ans)">
+            <input type="radio" id="age-ado" name="age_group" value="ado">
+            <span class="age-card-emoji">&#x1F331;</span>
+            <span class="age-card-title">Adolescent</span>
+            <span class="age-card-range">12 – 17 ans</span>
+          </label>
+
+          <!-- Adulte 18–59 ans -->
+          <label class="age-card" id="card-adulte" for="age-adulte" title="Adulte (18-59 ans)">
+            <input type="radio" id="age-adulte" name="age_group" value="adulte">
+            <span class="age-card-emoji">&#x1F33F;</span>
+            <span class="age-card-title">Adulte</span>
+            <span class="age-card-range">18 – 59 ans</span>
+          </label>
+
+          <!-- Senior 60+ -->
+          <label class="age-card" id="card-senior" for="age-senior" title="Senior (60 ans et +)">
+            <input type="radio" id="age-senior" name="age_group" value="senior">
+            <span class="age-card-emoji">&#x1F333;</span>
+            <span class="age-card-title">Senior</span>
+            <span class="age-card-range">60 ans et +</span>
+          </label>
+
+        </div><!-- /.age-cards-grid -->
+
+        <!-- ── Âge précis (optionnel) ── -->
+        <div class="age-precise-wrap">
+          <label class="age-precise-label" for="agePrecise">
+            Mon âge précis <em>(optionnel)</em>
+          </label>
+          <input
+            type="number"
+            id="agePrecise"
+            class="age-precise-input"
+            placeholder="ex : 34"
+            min="6"
+            max="120"
+            autocomplete="off"
+          >
         </div>
-        <span class="strength-label" id="strengthLabel">Force du mot de passe</span>
-      </div>
+
+      </div><!-- /#ageGroupSection -->
+
+      <div class="age-group-divider"></div>
+
+      <button type="submit" class="auth-btn">
+        Créer mon compte gratuit &#x2192;
+      </button>
+    </form>
+
+    <div style="margin-top:16px;">
+      <a href="questionnaire.html" class="auth-btn-secondary">
+        &#x1F9ED; Commencer par le diagnostic gratuit &#x2192;
+      </a>
     </div>
 
-    <button class="btn-primary btn-full" style="padding:14px; font-size:16px; margin-bottom:20px;" onclick="handleSignup()">
-      Créer mon compte
-    </button>
-
-    <p class="auth-footer">Déjà un compte ? <a href="connexion.html">Se connecter</a></p>
+    <div class="auth-footer-links">
+      Déjà un compte ? <a href="connexion.html">Se connecter</a>
+    </div>
   </div>
-
-  <p class="auth-legal">
-    En créant un compte, tu acceptes nos conditions d'utilisation et notre politique de confidentialité (RGPD).
-  </p>
 </div>
 
+<!-- ═══ FOOTER ═══ -->
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-logo">
-      <span class="logo-bee">BEE</span> <span class="logo-cong">Congruence</span>
+      <img src="logo.jpg" alt="BEE Congruence" style="height:76px;">
       <p class="footer-tagline">Équilibre &amp; Harmonie Relationnelle</p>
     </div>
     <nav class="footer-nav">
@@ -87,40 +424,126 @@
 </footer>
 
 <script src="nav.js"></script>
+<script src="supabase.js"></script>
 <script>
-function togglePassword(id, btn) {
-  const input = document.getElementById(id);
-  input.type = input.type === 'password' ? 'text' : 'password';
-}
+// ────────────────────────────────────────────────────────
+//  Gestion visuelle des cartes d'âge
+// ────────────────────────────────────────────────────────
+(function () {
+  var cards = document.querySelectorAll('.age-card');
 
-function checkStrength(val) {
-  const fill  = document.getElementById('strengthFill');
-  const label = document.getElementById('strengthLabel');
-  let score = 0;
-  if (val.length >= 8)  score++;
-  if (/[A-Z]/.test(val)) score++;
-  if (/[0-9]/.test(val)) score++;
-  if (/[^a-zA-Z0-9]/.test(val)) score++;
+  cards.forEach(function (card) {
+    // Clic sur la carte entière
+    card.addEventListener('click', function () {
+      selectCard(this);
+    });
+    // Accessibilité clavier (Espace / Entrée)
+    card.addEventListener('keydown', function (e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        selectCard(this);
+      }
+    });
+  });
 
-  const levels = [
-    { pct: '0%',   color: '#ddd',     text: 'Force du mot de passe' },
-    { pct: '25%',  color: '#e05050',  text: 'Force : Très faible' },
-    { pct: '50%',  color: '#e08020',  text: 'Force : Faible' },
-    { pct: '75%',  color: '#E8A020',  text: 'Force : Moyenne' },
-    { pct: '100%', color: '#5A8A3A',  text: 'Force : Forte ✓' },
-  ];
-  const l = levels[score];
-  fill.style.width = l.pct;
-  fill.style.background = l.color;
-  label.textContent = l.text;
-}
+  function selectCard(card) {
+    // Désélectionner toutes les cartes
+    cards.forEach(function (c) { c.classList.remove('selected'); });
+    // Activer la carte cliquée
+    card.classList.add('selected');
+    var radio = card.querySelector('input[type="radio"]');
+    if (radio) {
+      radio.checked = true;
+      // Micro-animation rebond
+      card.style.transform = 'scale(0.95)';
+      setTimeout(function () { card.style.transform = ''; }, 120);
+    }
+  }
+})();
 
-function handleSignup() {
-  const email = document.getElementById('email').value;
-  const pass  = document.getElementById('password').value;
-  if (!email || !pass) { alert('Merci de remplir tous les champs.'); return; }
-  if (pass.length < 6) { alert('Le mot de passe doit faire au moins 6 caractères.'); return; }
-  alert('Compte créé ! Fonctionnalité à connecter au backend.');
+// ────────────────────────────────────────────────────────
+//  Soumission du formulaire d'inscription
+// ────────────────────────────────────────────────────────
+async function handleSignupSubmit(event) {
+  event.preventDefault();
+
+  var errorEl = document.getElementById('authErrorMsg');
+  errorEl.style.display = 'none';
+
+  var email    = document.getElementById('email').value.trim();
+  var password = document.getElementById('password').value || 'demo123456';
+
+  // Validation email
+  if (!email || !email.includes('@')) {
+    showError('Veuillez saisir une adresse email valide.');
+    return;
+  }
+
+  // Validation tranche d'âge (obligatoire)
+  var selectedRadio = document.querySelector('input[name="age_group"]:checked');
+  if (!selectedRadio) {
+    showError("Veuillez sélectionner votre tranche d'âge pour continuer.");
+    // Scroll doux vers la section
+    document.getElementById('ageGroupSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Flash rouge sur les cartes pour attirer l'attention
+    var allCards = document.querySelectorAll('.age-card');
+    allCards.forEach(function (c) { c.style.borderColor = 'rgba(217,83,79,0.45)'; });
+    setTimeout(function () {
+      allCards.forEach(function (c) { c.style.borderColor = ''; });
+    }, 2000);
+    return;
+  }
+
+  var ageGroup = selectedRadio.value;
+
+  // Âge précis (optionnel)
+  var agePreciseVal = document.getElementById('agePrecise').value.trim();
+  var agePrecise    = agePreciseVal ? parseInt(agePreciseVal, 10) : null;
+
+  try {
+    var userId = 'demo_user_' + Date.now();
+
+    // Tentative d'inscription Supabase
+    if (typeof signUp === 'function') {
+      var user = await signUp(email, password).catch(function () { return null; });
+      if (user && user.id) { userId = user.id; }
+    }
+
+    // Sauvegarder l'email de session
+    localStorage.setItem('bee_user_email', email);
+
+    // Construire le payload profil
+    var profilePayload = { age_group: ageGroup };
+    if (agePrecise !== null && !isNaN(agePrecise)) {
+      profilePayload.age = agePrecise;
+    }
+
+    // Persister le profil (localStorage + Supabase si dispo)
+    if (typeof saveUserProfile === 'function') {
+      await saveUserProfile(userId, profilePayload);
+    } else {
+      // Fallback si saveUserProfile n'est pas encore disponible
+      var fallback = Object.assign({ email: email, created_at: new Date().toISOString() }, profilePayload);
+      localStorage.setItem('bee_user_profile', JSON.stringify(fallback));
+    }
+
+    // Redirection vers le tableau de bord
+    window.location.href = 'dashboard.html';
+
+  } catch (err) {
+    console.error('Signup error:', err);
+    // En cas d'erreur imprévue : sauvegarde locale + redirection
+    localStorage.setItem('bee_user_email', email);
+    var emergency = { email: email, age_group: ageGroup, created_at: new Date().toISOString() };
+    if (agePrecise !== null && !isNaN(agePrecise)) { emergency.age = agePrecise; }
+    localStorage.setItem('bee_user_profile', JSON.stringify(emergency));
+    window.location.href = 'dashboard.html';
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.style.display = 'block';
+  }
 }
 </script>
 </body>

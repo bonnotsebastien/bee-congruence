@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentions légales — BEE Congruence</title>
+<meta name="description" content="Mentions légales de BEE Congruence : éditeur, hébergeur, propriété intellectuelle et responsabilités.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.beecongruence.com/mentions-legales">
+<link rel="icon" href="logo.jpg" type="image/jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+  .legal-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 80px 28px 100px;
+  }
+
+  .legal-hero {
+    text-align: center;
+    padding: 60px 20px 50px;
+    background: var(--cream-dark);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .legal-hero .hero-tag {
+    margin-bottom: 16px;
+  }
+
+  .legal-hero h1 {
+    font-size: clamp(28px, 5vw, 44px);
+    margin-bottom: 12px;
+  }
+
+  .legal-hero p {
+    color: var(--brown-mid);
+    font-size: 15px;
+  }
+
+  .legal-toc {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin: 40px 0 48px;
+  }
+
+  .legal-toc-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--brown-light);
+    margin-bottom: 14px;
+  }
+
+  .legal-toc ol {
+    list-style: none;
+    counter-reset: toc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .legal-toc ol li {
+    counter-increment: toc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .legal-toc ol li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 22px;
+  }
+
+  .legal-toc a {
+    font-size: 14px;
+    color: var(--brown-mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .legal-toc a:hover {
+    color: var(--amber);
+  }
+
+  .legal-section {
+    margin-bottom: 52px;
+    scroll-margin-top: 90px;
+  }
+
+  .legal-section-number {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .legal-section h2 {
+    font-size: clamp(18px, 3vw, 24px);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .legal-section p {
+    color: var(--charcoal);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+
+  .legal-section p:last-child {
+    margin-bottom: 0;
+  }
+
+  .legal-section strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .legal-section ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0;
+    padding-left: 4px;
+  }
+
+  .legal-section ul li {
+    font-size: 15px;
+    color: var(--charcoal);
+    line-height: 1.7;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .legal-section ul li::before {
+    content: '🐝';
+    position: absolute;
+    left: 0;
+    font-size: 12px;
+    top: 3px;
+  }
+
+  .legal-info-block {
+    background: var(--gold-pale);
+    border: 1px solid rgba(184,147,90,0.25);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 16px 0;
+  }
+
+  .legal-info-block p {
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .legal-info-block p:last-child {
+    margin-bottom: 0;
+  }
+
+  .legal-divider {
+    width: 40px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+    margin: 0 0 20px;
+  }
+
+  .legal-update {
+    text-align: center;
+    font-size: 13px;
+    color: var(--brown-light);
+    padding-top: 32px;
+    border-top: 1px solid var(--divider);
+    margin-top: 60px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <a href="index.html" class="logo">
+    <img src="logo.jpg" alt="BEE Congruence">
+    <div class="logo-fallback">
+      <span class="logo-bee">BEE</span>
+      <span class="logo-cong">Congruence</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="nav-link">Accueil</a></li>
+    <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+    <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="connexion.html" class="btn-outline">Se connecter</a>
+    <a href="inscription.html" class="btn-primary">Rejoins la ruche</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="legal-hero">
+  <div class="hero-tag">⚖️ Transparence &amp; Légalité</div>
+  <h1><em>Mentions légales</em></h1>
+  <p>Dernière mise à jour : août 2026</p>
+</div>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="legal-page">
+
+  <!-- Table des matières -->
+  <div class="legal-toc">
+    <div class="legal-toc-title">Table des matières</div>
+    <ol>
+      <li><a href="#editeur">Éditeur du site</a></li>
+      <li><a href="#hebergeur">Hébergeur</a></li>
+      <li><a href="#propriete">Propriété intellectuelle</a></li>
+      <li><a href="#responsabilite">Responsabilité</a></li>
+      <li><a href="#liens">Liens hypertextes</a></li>
+      <li><a href="#droit">Droit applicable</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. Éditeur -->
+  <div class="legal-section" id="editeur">
+    <span class="legal-section-number">Article 01</span>
+    <div class="legal-divider"></div>
+    <h2>Éditeur du site</h2>
+    <p>Le site <strong>www.beecongruence.com</strong> est édité par :</p>
+    <div class="legal-info-block">
+      <p><strong>Raison sociale :</strong> BEE Congruence</p>
+      <p><strong>Responsable de la publication :</strong> Sébastien BONNOT</p>
+      <p><strong>Adresse :</strong> France</p>
+      <p><strong>Email :</strong> <a href="mailto:contact@beecongruence.com" style="color: var(--amber); font-weight:600;">contact@beecongruence.com</a></p>
+    </div>
+    <p>En tant que personne physique ou structure, l'éditeur est responsable du contenu publié sur ce site dans les limites fixées par la loi française.</p>
+  </div>
+
+  <!-- 2. Hébergeur -->
+  <div class="legal-section" id="hebergeur">
+    <span class="legal-section-number">Article 02</span>
+    <div class="legal-divider"></div>
+    <h2>Hébergeur</h2>
+    <p>Le site est hébergé par :</p>
+    <div class="legal-info-block">
+      <p><strong>Société :</strong> Vercel Inc.</p>
+      <p><strong>Adresse :</strong> 340 Pine Street, Suite 701, San Francisco, CA 94104, États-Unis</p>
+      <p><strong>Site web :</strong> <a href="https://vercel.com" target="_blank" rel="noopener" style="color: var(--amber); font-weight:600;">vercel.com</a></p>
+    </div>
+    <p>Les données sont stockées via <strong>Supabase</strong> (base de données cloud sécurisée), conforme aux standards RGPD.</p>
+  </div>
+
+  <!-- 3. Propriété intellectuelle -->
+  <div class="legal-section" id="propriete">
+    <span class="legal-section-number">Article 03</span>
+    <div class="legal-divider"></div>
+    <h2>Propriété intellectuelle</h2>
+    <p>L'ensemble du contenu de ce site — textes, images, logotypes, icônes, scénarios relationnels, questionnaires, méthodes pédagogiques et architecture — est la propriété exclusive de <strong>BEE Congruence</strong> ou de ses partenaires.</p>
+    <p>Toute reproduction, représentation, modification, publication ou adaptation de tout ou partie du contenu du site, quel que soit le moyen ou le procédé utilisé, est <strong>interdite sans autorisation préalable écrite</strong> de BEE Congruence.</p>
+    <p>Sont notamment protégés :</p>
+    <ul>
+      <li>Le nom, le logo et l'identité visuelle BEE Congruence</li>
+      <li>Les scénarios interactifs et exercices émotionnels</li>
+      <li>Le questionnaire de diagnostic relationnel</li>
+      <li>Les textes, méthodes et contenus pédagogiques</li>
+    </ul>
+    <p>Toute utilisation non autorisée constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la Propriété Intellectuelle.</p>
+  </div>
+
+  <!-- 4. Responsabilité -->
+  <div class="legal-section" id="responsabilite">
+    <span class="legal-section-number">Article 04</span>
+    <div class="legal-divider"></div>
+    <h2>Responsabilité</h2>
+    <p>BEE Congruence s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur ce site. Cependant, BEE Congruence décline toute responsabilité pour :</p>
+    <ul>
+      <li>Les inexactitudes, omissions ou erreurs dans les informations publiées</li>
+      <li>Les dommages directs ou indirects résultant de l'accès ou de l'utilisation du site</li>
+      <li>L'indisponibilité temporaire du site liée à des opérations de maintenance</li>
+      <li>L'interprétation personnelle des contenus pédagogiques proposés</li>
+    </ul>
+    <p>Le contenu de BEE Congruence est fourni à titre <strong>éducatif et informatif</strong>. Il ne constitue pas une consultation psychologique, thérapeutique ou médicale et ne peut se substituer à un accompagnement professionnel de santé mentale.</p>
+  </div>
+
+  <!-- 5. Liens hypertextes -->
+  <div class="legal-section" id="liens">
+    <span class="legal-section-number">Article 05</span>
+    <div class="legal-divider"></div>
+    <h2>Liens hypertextes</h2>
+    <p>Le site peut contenir des liens vers des sites tiers. BEE Congruence n'exerce aucun contrôle sur ces sites et ne peut être tenu responsable de leur contenu, de leur disponibilité ni de leurs pratiques en matière de protection des données.</p>
+    <p>La création de liens hypertextes vers le site www.beecongruence.com est autorisée sans accord préalable, sous réserve que le lien ne soit pas de nature à porter atteinte à l'image de BEE Congruence.</p>
+  </div>
+
+  <!-- 6. Droit applicable -->
+  <div class="legal-section" id="droit">
+    <span class="legal-section-number">Article 06</span>
+    <div class="legal-divider"></div>
+    <h2>Droit applicable</h2>
+    <p>Le présent site et ses mentions légales sont soumis au droit français. En cas de litige, et après tentative de résolution amiable, les tribunaux français seront compétents.</p>
+    <p>Pour toute question relative aux présentes mentions légales, vous pouvez contacter BEE Congruence à l'adresse : <a href="mailto:contact@beecongruence.com" style="color: var(--amber); font-weight:600;">contact@beecongruence.com</a></p>
+  </div>
+
+  <div class="legal-update">
+    🐝 Document mis à jour en août 2026 — BEE Congruence
+  </div>
+
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="logo.jpg" alt="BEE Congruence" style="height:76px;">
+      <p class="footer-tagline">Équilibre &amp; Harmonie Relationnelle</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="mentions-legales.html" style="font-weight:700; color:var(--amber);">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité (RGPD)</a>
+      <a href="contact.html">Contact</a>
+      <a href="https://instagram.com/bee.congruence" target="_blank">Instagram</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ═══ RGPD BANNER ═══ -->
+<div id="rgpdBanner" class="rgpd-banner">
+  <div class="rgpd-text">
+    <div class="rgpd-title">🍪 Cookies &amp; confidentialité</div>
+    <div class="rgpd-desc">BEE Congruence utilise des cookies pour améliorer votre expérience. Conformément au <strong>RGPD</strong>, vous pouvez accepter ou refuser. <a href="confidentialite.html">Politique de confidentialité</a></div>
+  </div>
+  <div class="rgpd-actions">
+    <button class="rgpd-refuse" onclick="dismissRgpd()">Refuser</button>
+    <button class="rgpd-accept" onclick="acceptRgpd()">Accepter</button>
+  </div>
+</div>
+
+<script src="nav.js"></script>
+<script>
+function dismissRgpd() {
+  const b = document.getElementById('rgpdBanner');
+  b.style.opacity = '0';
+  setTimeout(() => b.style.display = 'none', 300);
+}
+if (sessionStorage.getItem('rgpd_done')) {
+  const b = document.getElementById('rgpdBanner');
+  if (b) b.style.display = 'none';
+}
+function acceptRgpd() {
+  sessionStorage.setItem('rgpd_done', '1');
+  dismissRgpd();
+}
+</script>
+</body>
+</html>

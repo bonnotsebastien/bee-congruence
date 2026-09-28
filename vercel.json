@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "name": "bee-congruence",
+  "alias": [
+    "www.beecongruence.com",
+    "beecongruence.com"
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/connexion", "destination": "/connexion.html" },
+    { "source": "/inscription", "destination": "/inscription.html" },
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/approche", "destination": "/approche.html" },
+    { "source": "/offres", "destination": "/offres.html" },
+    { "source": "/questionnaire", "destination": "/questionnaire.html" },
+    { "source": "/mentions-legales", "destination": "/mentions-legales.html" },
+    { "source": "/confidentialite", "destination": "/confidentialite.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/paiement", "destination": "/paiement.html" },
+    { "source": "/articles", "destination": "/articles.html" },
+    { "source": "/introspection", "destination": "/introspection.html" },
+    { "source": "/scenario/:id", "destination": "/scenario-detail.html" }
+  ]
+}

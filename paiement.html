@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paiement — BEE Congruence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  /* ── Page layout ── */
+  .pay-wrapper {
+    max-width: 900px; margin: 0 auto; padding: 48px 32px 80px;
+  }
+  .pay-hero {
+    text-align: center; margin-bottom: 48px;
+  }
+  .pay-hero-tag {
+    display: inline-block; font-family: 'Nunito', sans-serif; font-size: 11px;
+    font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--orange); background: rgba(195,101,27,0.1);
+    padding: 5px 14px; border-radius: 20px; margin-bottom: 16px;
+  }
+  .pay-hero h1 {
+    font-family: 'Playfair Display', serif; font-size: clamp(26px, 4vw, 38px);
+    color: var(--brown-dark); margin-bottom: 12px;
+  }
+  .pay-hero p {
+    font-family: 'Nunito', sans-serif; font-size: 15px;
+    color: var(--brown-mid); max-width: 500px; margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── Scénario context banner (si achat unitaire) ── */
+  .scenario-context {
+    display: none; background: rgba(195,101,27,0.08); border: 1px solid rgba(195,101,27,0.2);
+    border-radius: 14px; padding: 18px 22px; margin-bottom: 32px;
+    font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--brown-dark);
+    line-height: 1.6;
+  }
+  .scenario-context.visible { display: flex; gap: 14px; align-items: center; }
+  .scenario-context-icon { font-size: 28px; flex-shrink: 0; }
+  .scenario-context-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--orange); margin-bottom: 4px;
+  }
+  .scenario-context-title {
+    font-family: 'Playfair Display', serif; font-size: 16px;
+    font-style: italic; color: var(--brown-dark);
+  }
+
+  /* ── Mode de paiement ── */
+  .payment-method-section {
+    margin-bottom: 40px;
+  }
+  .section-label {
+    font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--brown-light);
+    margin-bottom: 14px;
+  }
+  .payment-methods {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  }
+  .pm-option { position: relative; }
+  .pm-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+  .pm-label {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 18px 14px; border: 2px solid var(--border);
+    border-radius: 16px; cursor: pointer;
+    transition: all 0.2s; background: var(--white);
+    font-family: 'Nunito', sans-serif;
+  }
+  .pm-label:hover { border-color: var(--orange); background: rgba(195,101,27,0.04); }
+  .pm-option input:checked + .pm-label {
+    border-color: var(--orange); background: rgba(195,101,27,0.08);
+  }
+  .pm-icon { font-size: 28px; }
+  .pm-name { font-size: 13px; font-weight: 700; color: var(--brown-dark); }
+  .pm-badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .pm-badge-annual  { background: rgba(90,138,58,0.15);  color: var(--green); }
+  .pm-badge-monthly { background: rgba(232,160,32,0.15); color: var(--orange); }
+  .pm-badge-unit    { background: rgba(30,95,173,0.12);  color: var(--blue); }
+
+  /* ── Recommended badge ── */
+  .pm-recommend {
+    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    background: var(--orange); color: white; font-family: 'Nunito', sans-serif;
+    font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 10px;
+    white-space: nowrap; z-index: 1;
+  }
+
+  /* ── Séparateur ── */
+  .pay-divider { height: 1px; background: var(--border); margin: 8px 0 32px; }
+
+  /* ── Offres dynamiques ── */
+  .offers-section { margin-bottom: 40px; }
+  .offers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+
+  .offer-card {
+    border: 2px solid var(--border); border-radius: 20px;
+    padding: 24px 20px; background: var(--white);
+    position: relative; cursor: pointer;
+    transition: all 0.2s; box-shadow: 0 4px 16px var(--shadow);
+    font-family: 'Nunito', sans-serif;
+  }
+  .offer-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+  .offer-card.selected { border-color: var(--orange); background: rgba(195,101,27,0.05); }
+  .offer-card.highlighted { border-color: var(--amber); }
+  .offer-card.unit-card { border-style: dashed; }
+
+  .offer-badge-top {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--amber); color: white; font-size: 11px;
+    font-weight: 700; padding: 3px 14px; border-radius: 12px;
+    white-space: nowrap;
+  }
+  .offer-badge-top.green { background: var(--green); }
+  .offer-badge-top.blue  { background: var(--blue); }
+
+  .offer-name {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--brown-light); margin-bottom: 8px;
+  }
+  .offer-price {
+    font-family: 'Playfair Display', serif; font-size: 32px;
+    color: var(--orange); font-weight: 700;
+  }
+  .offer-price span { font-size: 15px; color: var(--brown-mid); font-family: 'Nunito', sans-serif; }
+  .offer-saving {
+    font-size: 12px; color: var(--green); font-weight: 600; margin: 4px 0 14px;
+  }
+  .offer-features { list-style: none; padding: 0; margin: 14px 0 20px; }
+  .offer-features li {
+    font-size: 13px; color: var(--brown-mid); padding: 5px 0;
+    display: flex; gap: 8px; align-items: flex-start;
+    border-bottom: 1px solid rgba(0,0,0,0.04); line-height: 1.5;
+  }
+  .offer-features li:last-child { border-bottom: none; }
+  .offer-features li .chk { color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+  .offer-cta {
+    width: 100%; padding: 13px; border: none; border-radius: 50px;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px;
+    cursor: pointer; transition: all 0.2s;
+    background: var(--orange); color: white;
+  }
+  .offer-cta:hover { background: var(--orange-dark); }
+  .offer-cta.secondary {
+    background: transparent; color: var(--orange);
+    border: 2px solid var(--orange);
+  }
+  .offer-cta.secondary:hover { background: rgba(195,101,27,0.08); }
+
+  /* ── Reassurance ── */
+  .reassurance-strip {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    padding: 20px; background: var(--cream-dark); border-radius: 14px;
+    margin-bottom: 32px;
+  }
+  .reassurance-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Nunito', sans-serif; font-size: 13px; color: var(--brown-mid);
+  }
+  .reassurance-item .ri-icon { font-size: 16px; }
+
+  /* ── Context info ── */
+  .context-info {
+    font-family: 'Nunito', sans-serif; font-size: 13px; color: var(--brown-light);
+    text-align: center; margin-top: 14px; line-height: 1.6;
+  }
+  .context-info a { color: var(--orange); text-decoration: none; }
+  .context-info a:hover { text-decoration: underline; }
+
+  /* ── Loading overlay ── */
+  #payLoading {
+    display: none; position: fixed; inset: 0;
+    background: rgba(252,247,240,0.9); z-index: 999;
+    flex-direction: column; align-items: center; justify-content: center;
+    font-family: 'Nunito', sans-serif; font-size: 16px; color: var(--brown-dark);
+    gap: 16px;
+  }
+  #payLoading.show { display: flex; }
+  .pay-spinner { font-size: 40px; animation: spin 1.2s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .payment-methods { grid-template-columns: 1fr; }
+    .offers-grid { grid-template-columns: 1fr; }
+    .pay-wrapper { padding: 32px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <a href="index.html" class="logo">
+    <img src="logo.jpg" alt="BEE Congruence">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="nav-link">Accueil</a></li>
+    <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+    <li><a href="offres.html" class="nav-link active">Offres & Tarifs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="dashboard.html" class="btn-outline">Mon profil</a>
+  </div>
+</nav>
+
+<!-- ═══ CONTENU ═══ -->
+<div class="pay-wrapper">
+
+  <!-- Hero -->
+  <div class="pay-hero">
+    <div class="pay-hero-tag">🐝 Débloquer mes scénarios</div>
+    <h1>Choisissez votre accès</h1>
+    <p>Débloquez tous les scénarios d'entraînement et évoluez à votre rythme, sans engagement.</p>
+  </div>
+
+  <!-- Contexte scénario unitaire -->
+  <div class="scenario-context" id="scenarioContext">
+    <div class="scenario-context-icon">⚡</div>
+    <div>
+      <div class="scenario-context-label">Scénario souhaité</div>
+      <div class="scenario-context-title" id="scenarioContextTitle"></div>
+    </div>
+  </div>
+
+  <!-- Étape 1 : Mode de paiement -->
+  <div class="payment-method-section">
+    <div class="section-label">Étape 1 — Comment souhaitez-vous payer ?</div>
+    <div class="payment-methods">
+
+      <div class="pm-option">
+        <div class="pm-recommend">⭐ Économisez le plus</div>
+        <input type="radio" name="pm" id="pm-cb" value="cb" checked>
+        <label class="pm-label" for="pm-cb">
+          <span class="pm-icon">💳</span>
+          <span class="pm-name">Carte bancaire</span>
+          <span class="pm-badge pm-badge-annual">Abonnement annuel mis en avant</span>
+        </label>
+      </div>
+
+      <div class="pm-option">
+        <input type="radio" name="pm" id="pm-paypal" value="paypal">
+        <label class="pm-label" for="pm-paypal">
+          <span class="pm-icon">🅿️</span>
+          <span class="pm-name">PayPal</span>
+          <span class="pm-badge pm-badge-monthly">Abonnement mensuel mis en avant</span>
+        </label>
+      </div>
+
+      <div class="pm-option">
+        <input type="radio" name="pm" id="pm-apple" value="apple">
+        <label class="pm-label" for="pm-apple">
+          <span class="pm-icon">📱</span>
+          <span class="pm-name">Apple / Google Pay</span>
+          <span class="pm-badge pm-badge-unit">Achat unitaire mis en avant</span>
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="pay-divider"></div>
+
+  <!-- Étape 2 : Offres dynamiques -->
+  <div class="offers-section">
+    <div class="section-label" id="offersLabel">Étape 2 — Choisissez votre formule</div>
+    <div class="offers-grid" id="offersGrid">
+      <!-- Généré dynamiquement -->
+    </div>
+    <div class="context-info">
+      Pas encore sûr(e) ? <a href="offres.html">Comparer toutes les offres</a> ou
+      <a href="dashboard.html">retourner à mon profil</a>.
+    </div>
+  </div>
+
+  <!-- Bande de réassurance -->
+  <div class="reassurance-strip">
+    <div class="reassurance-item"><span class="ri-icon">🔒</span> Paiement 100% sécurisé</div>
+    <div class="reassurance-item"><span class="ri-icon">🔄</span> Résiliable à tout moment</div>
+    <div class="reassurance-item"><span class="ri-icon">🛡️</span> Données RGPD conformes</div>
+    <div class="reassurance-item"><span class="ri-icon">💌</span> Support réactif sous 24h</div>
+  </div>
+
+</div>
+
+<!-- Loading overlay -->
+<div id="payLoading">
+  <span class="pay-spinner">🐝</span>
+  Redirection vers le paiement sécurisé…
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="logo.jpg" alt="BEE Congruence" style="height:76px;">
+      <p class="footer-tagline">Équilibre &amp; Harmonie Relationnelle</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité (RGPD)</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="supabase.js"></script>
+<script>
+
+// ════════════════════════════════════════════════════════
+//  Configuration Stripe (remplacer par vos clés)
+// ════════════════════════════════════════════════════════
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_VOTRE_CLE_STRIPE';
+
+// Price IDs Stripe (à créer dans votre dashboard Stripe)
+const STRIPE_PRICES = {
+  monthly: 'price_MONTHLY_ID',  // 9€/mois
+  yearly:  'price_YEARLY_ID',   // 79€/an
+};
+
+// ════════════════════════════════════════════════════════
+//  Définition des offres par mode de paiement
+// ════════════════════════════════════════════════════════
+
+/**
+ * Chaque mode de paiement oriente vers une offre principale.
+ * L'offre "highlighted" sera visuellement mise en avant.
+ * L'ordre dans le tableau détermine l'ordre d'affichage.
+ */
+const OFFERS_BY_PAYMENT = {
+  cb: [
+    {
+      id: 'yearly',
+      name: 'Annuel',
+      badge: '♛ Meilleur rapport qualité/prix',
+      badgeClass: 'green',
+      price: '79€',
+      priceSuffix: '/ an',
+      saving: 'Soit 6,58€/mois — Économisez 29€ vs mensuel',
+      highlighted: true,
+      features: [
+        'Tous les scénarios débloqués',
+        'Toile d\'araignée des compétences',
+        'Graphique d\'évolution complet',
+        'Accès aux nouveautés en avant-première',
+        'Rapport de progression mensuel',
+      ],
+      cta: 'Choisir l\'annuel →',
+      ctaClass: '',
+    },
+    {
+      id: 'monthly',
+      name: 'Mensuel',
+      badge: null,
+      price: '9€',
+      priceSuffix: '/ mois',
+      saving: '',
+      highlighted: false,
+      features: [
+        'Tous les scénarios débloqués',
+        'Toile d\'araignée des compétences',
+        'Graphique d\'évolution complet',
+        'Sans engagement',
+      ],
+      cta: 'Choisir le mensuel',
+      ctaClass: 'secondary',
+    },
+  ],
+  paypal: [
+    {
+      id: 'monthly',
+      name: 'Mensuel',
+      badge: '⭐ Recommandé via PayPal',
+      badgeClass: '',
+      price: '9€',
+      priceSuffix: '/ mois',
+      saving: 'Sans engagement · Résiliable à tout moment',
+      highlighted: true,
+      features: [
+        'Tous les scénarios débloqués',
+        'Toile d\'araignée des compétences',
+        'Graphique d\'évolution complet',
+        'Paiement sécurisé PayPal',
+      ],
+      cta: 'Choisir le mensuel →',
+      ctaClass: '',
+    },
+    {
+      id: 'yearly',
+      name: 'Annuel',
+      badge: null,
+      price: '79€',
+      priceSuffix: '/ an',
+      saving: 'Économisez 29€/an',
+      highlighted: false,
+      features: [
+        'Tous les scénarios débloqués',
+        'Accès annuel complet',
+        'Nouveautés en avant-première',
+      ],
+      cta: 'Choisir l\'annuel',
+      ctaClass: 'secondary',
+    },
+  ],
+  apple: [
+    {
+      id: 'unit',
+      name: 'Scénario à l\'unité',
+      badge: '📱 Idéal pour commencer',
+      badgeClass: 'blue',
+      price: '4,90€',
+      priceSuffix: '/ scénario',
+      saving: 'Achetez uniquement ce dont vous avez besoin',
+      highlighted: true,
+      features: [
+        'Accès permanent au scénario choisi',
+        'Déroulé complet en 7 sections',
+        'Conseils d\'expert',
+        'Paiement rapide Apple/Google Pay',
+      ],
+      cta: 'Acheter ce scénario →',
+      ctaClass: '',
+    },
+    {
+      id: 'monthly',
+      name: 'Mensuel',
+      badge: null,
+      price: '9€',
+      priceSuffix: '/ mois',
+      saving: 'Tous les scénarios · sans engagement',
+      highlighted: false,
+      features: [
+        'Tous les scénarios débloqués',
+        'Meilleur rapport qualité/prix si +2 scénarios',
+      ],
+      cta: 'Passer à l\'illimité',
+      ctaClass: 'secondary',
+    },
+  ],
+};
+
+// ════════════════════════════════════════════════════════
+//  Rendu des offres
+// ════════════════════════════════════════════════════════
+
+function renderOffers(paymentMode) {
+  const offers = OFFERS_BY_PAYMENT[paymentMode] || OFFERS_BY_PAYMENT.cb;
+  const grid = document.getElementById('offersGrid');
+  grid.innerHTML = '';
+
+  offers.forEach(offer => {
+    const card = document.createElement('div');
+    card.className = `offer-card ${offer.highlighted ? 'highlighted' : ''} ${offer.id === 'unit' ? 'unit-card' : ''}`;
+
+    card.innerHTML = `
+      ${offer.badge ? `<div class="offer-badge-top ${offer.badgeClass || ''}">${offer.badge}</div>` : ''}
+      <div class="offer-name">${offer.name}</div>
+      <div class="offer-price">${offer.price}<span> ${offer.priceSuffix}</span></div>
+      ${offer.saving ? `<div class="offer-saving">${offer.saving}</div>` : ''}
+      <ul class="offer-features">
+        ${offer.features.map(f => `<li><span class="chk">✓</span> ${f}</li>`).join('')}
+      </ul>
+      <button class="offer-cta ${offer.ctaClass}" onclick="handlePurchase('${offer.id}', '${paymentMode}')">
+        ${offer.cta}
+      </button>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  Gestion des achats
+// ════════════════════════════════════════════════════════
+
+async function handlePurchase(offerId, paymentMode) {
+  const loading = document.getElementById('payLoading');
+  loading.classList.add('show');
+
+  try {
+    const user = await getUser();
+    if (!user) {
+      window.location.href = 'connexion.html?redirect=paiement.html';
+      return;
+    }
+
+    // Mode démo — simulation sans Stripe
+    if (!STRIPE_PUBLISHABLE_KEY.includes('VOTRE_CLE')) {
+      await simulateStripeRedirect(offerId, user, paymentMode);
+    } else {
+      // === Production : intégration Stripe ===
+      // Stripe Checkout nécessite un backend (Supabase Edge Function ou serveur)
+      // pour créer une Session de paiement côté serveur.
+      //
+      // Exemple avec Supabase Edge Function :
+      //
+      // const response = await fetch('/functions/v1/create-checkout', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ offerId, paymentMode, userId: user.id }),
+      // });
+      // const { url } = await response.json();
+      // window.location.href = url;
+      //
+      // Pour PayPal : utiliser le SDK PayPal JS (paypal.Buttons())
+      // Pour Apple/Google Pay : utiliser Stripe Payment Request Button
+
+      // Fallback démo
+      await simulateStripeRedirect(offerId, user, paymentMode);
+    }
+  } catch (e) {
+    loading.classList.remove('show');
+    alert('Une erreur est survenue. Veuillez réessayer.');
+    console.error(e);
+  }
+}
+
+/**
+ * Simulation d'achat (mode démo sans Stripe configuré).
+ * En production, remplacer par la vraie intégration Stripe.
+ */
+async function simulateStripeRedirect(offerId, user, paymentMode) {
+  const scenarioId = new URLSearchParams(window.location.search).get('scenario');
+
+  if (offerId === 'unit' && scenarioId) {
+    await saveUnitPurchase(user.id, scenarioId);
+    showToast('🎉 Scénario débloqué avec succès !', 'success');
+  } else if (offerId === 'monthly' || offerId === 'yearly') {
+    await saveSubscription(user.id, offerId, 'demo_session_' + Date.now());
+    showToast('🎉 Abonnement activé ! Accès complet débloqué.', 'success');
+  }
+
+  setTimeout(() => {
+    window.location.href = 'dashboard.html?unlocked=1';
+  }, 1500);
+}
+
+// ════════════════════════════════════════════════════════
+//  Toast notifications
+// ════════════════════════════════════════════════════════
+
+function showToast(msg, type = 'info') {
+  const t = document.createElement('div');
+  t.style.cssText = `
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:${type === 'success' ? '#3d6b27' : '#3D1F00'};
+    color:white; padding:14px 28px; border-radius:50px;
+    font-family:'Nunito',sans-serif; font-size:14px; font-weight:600;
+    box-shadow:0 8px 32px rgba(0,0,0,0.2); z-index:9999;
+    animation: slideUp 0.3s ease; max-width:90vw; text-align:center;
+  `;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.4s'; }, 2500);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ════════════════════════════════════════════════════════
+//  Init
+// ════════════════════════════════════════════════════════
+
+function init() {
+  // Lire les paramètres URL
+  const params = new URLSearchParams(window.location.search);
+  const scenarioId = params.get('scenario');
+  const scenarioTitle = params.get('title');
+  const defaultPm = params.get('pm') || 'cb';
+
+  // Afficher le contexte si achat unitaire depuis dashboard
+  if (scenarioId && scenarioTitle) {
+    const ctx = document.getElementById('scenarioContext');
+    ctx.classList.add('visible');
+    document.getElementById('scenarioContextTitle').textContent = decodeURIComponent(scenarioTitle);
+  }
+
+  // Pré-sélectionner le mode de paiement si indiqué en URL
+  const pmRadio = document.querySelector(`input[value="${defaultPm}"]`);
+  if (pmRadio) pmRadio.checked = true;
+
+  // Rendre les offres initiales
+  renderOffers(defaultPm);
+
+  // Écouter les changements de mode
+  document.querySelectorAll('input[name="pm"]').forEach(radio => {
+    radio.addEventListener('change', e => {
+      renderOffers(e.target.value);
+    });
+  });
+}
+
+init();
+
+</script>
+</body>
+</html>

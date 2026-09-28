@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+Disallow: /questionnaire.html
+Disallow: /connexion.html
+Disallow: /inscription.html
+
+Sitemap: https://www.beecongruence.com/sitemap.xml

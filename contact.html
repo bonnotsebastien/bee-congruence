@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contactez-nous — BEE Congruence</title>
+<meta name="description" content="Contactez l'équipe BEE Congruence pour toute question sur nos offres, votre compte, ou un accompagnement personnalisé.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.beecongruence.com/contact">
+<link rel="icon" href="logo.jpg" type="image/jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+  .contact-hero {
+    text-align: center;
+    padding: 70px 20px 60px;
+    background: var(--cream-dark);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .contact-hero .hero-tag { margin-bottom: 16px; }
+  .contact-hero h1 { font-size: clamp(30px, 5vw, 48px); margin-bottom: 14px; }
+  .contact-hero p { color: var(--brown-mid); font-size: 16px; max-width: 500px; margin: 0 auto; line-height: 1.7; }
+
+  .contact-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 70px 28px 100px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 52px;
+    align-items: start;
+  }
+
+  @media (max-width: 720px) {
+    .contact-wrapper { grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  /* ── Left: Info ── */
+  .contact-info-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .contact-info h2 {
+    font-size: clamp(20px, 3vw, 28px);
+    margin-bottom: 16px;
+  }
+
+  .contact-info-desc {
+    font-size: 15px;
+    color: var(--brown-mid);
+    line-height: 1.8;
+    margin-bottom: 36px;
+  }
+
+  .contact-channels {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
+  .contact-channel {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-decoration: none;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .contact-channel:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  .contact-channel-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .contact-channel-label {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brown-light);
+    margin-bottom: 3px;
+  }
+
+  .contact-channel-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .contact-channel-sub {
+    font-size: 12px;
+    color: var(--brown-light);
+    margin-top: 2px;
+  }
+
+  .contact-faq-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--brown-light);
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .contact-faq-item {
+    border-bottom: 1px solid var(--divider);
+    padding: 14px 0;
+  }
+
+  .contact-faq-item:first-child { padding-top: 0; }
+
+  .contact-faq-q {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .contact-faq-a {
+    font-size: 13px;
+    color: var(--brown-mid);
+    line-height: 1.6;
+  }
+
+  /* ── Right: Form ── */
+  .contact-form-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 40px 36px;
+    box-shadow: var(--shadow);
+  }
+
+  .contact-form-header {
+    margin-bottom: 28px;
+  }
+
+  .contact-form-header h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .contact-form-header p {
+    font-size: 14px;
+    color: var(--brown-mid);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  @media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-label {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brown-mid);
+    margin-bottom: 7px;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--warm-white);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(232,160,32,0.14);
+  }
+
+  .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235C5349' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 130px;
+    line-height: 1.6;
+  }
+
+  .contact-submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--ink);
+    color: var(--warm-white);
+    border: none;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .contact-submit-btn:hover {
+    background: var(--amber);
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+
+  .contact-submit-btn:active { transform: translateY(0); }
+
+  .contact-submit-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .form-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--brown-light);
+    margin-top: 14px;
+  }
+
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 32px 20px;
+  }
+
+  .form-success-icon { font-size: 48px; margin-bottom: 16px; }
+
+  .form-success h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .form-success p {
+    font-size: 14px;
+    color: var(--brown-mid);
+    line-height: 1.7;
+  }
+
+  .form-msg {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    display: none;
+  }
+
+  .form-msg.error {
+    background: rgba(217,83,79,0.1);
+    color: #d9534f;
+    border: 1px solid rgba(217,83,79,0.2);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <a href="index.html" class="logo">
+    <img src="logo.jpg" alt="BEE Congruence">
+    <div class="logo-fallback">
+      <span class="logo-bee">BEE</span>
+      <span class="logo-cong">Congruence</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="nav-link">Accueil</a></li>
+    <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+    <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="connexion.html" class="btn-outline">Se connecter</a>
+    <a href="inscription.html" class="btn-primary">Rejoins la ruche</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="contact-hero">
+  <div class="hero-tag">🐝 La ruche vous écoute</div>
+  <h1><em>Parlons ensemble</em></h1>
+  <p>Une question, un projet, un problème technique ? Nous répondons sous 48 h, toujours avec bienveillance.</p>
+</div>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="contact-wrapper">
+
+  <!-- Colonne gauche -->
+  <div class="contact-info">
+    <span class="contact-info-title">Comment nous joindre</span>
+    <h2>Nous sommes là pour vous</h2>
+    <p class="contact-info-desc">Que vous souhaitiez en savoir plus sur nos offres, signaler un problème ou simplement partager un retour, notre équipe est disponible et ravie d'échanger avec vous.</p>
+
+    <div class="contact-channels">
+      <a href="mailto:contact@beecongruence.com" class="contact-channel">
+        <div class="contact-channel-icon">📧</div>
+        <div>
+          <div class="contact-channel-label">Email général</div>
+          <div class="contact-channel-value">contact@beecongruence.com</div>
+          <div class="contact-channel-sub">Réponse sous 48 h ouvrées</div>
+        </div>
+      </a>
+      <a href="mailto:rgpd@beecongruence.com" class="contact-channel">
+        <div class="contact-channel-icon">🔒</div>
+        <div>
+          <div class="contact-channel-label">Données &amp; RGPD</div>
+          <div class="contact-channel-value">rgpd@beecongruence.com</div>
+          <div class="contact-channel-sub">Exercice de vos droits, suppression de données</div>
+        </div>
+      </a>
+      <a href="https://instagram.com/bee.congruence" target="_blank" rel="noopener" class="contact-channel">
+        <div class="contact-channel-icon">📸</div>
+        <div>
+          <div class="contact-channel-label">Instagram</div>
+          <div class="contact-channel-value">@bee.congruence</div>
+          <div class="contact-channel-sub">Questions rapides, actualités, communauté</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- FAQ rapide -->
+    <span class="contact-faq-title">Questions fréquentes</span>
+
+    <div class="contact-faq-item">
+      <div class="contact-faq-q">Le diagnostic est-il vraiment gratuit ?</div>
+      <div class="contact-faq-a">Oui, entièrement. Pas de carte bancaire requise, pas d'engagement.</div>
+    </div>
+    <div class="contact-faq-item">
+      <div class="contact-faq-q">Mes données sont-elles confidentielles ?</div>
+      <div class="contact-faq-a">Absolument. Vos résultats sont privés et ne sont jamais revendus. <a href="confidentialite.html" style="color:var(--amber);">Voir notre politique RGPD →</a></div>
+    </div>
+    <div class="contact-faq-item">
+      <div class="contact-faq-q">Puis-je annuler mon abonnement à tout moment ?</div>
+      <div class="contact-faq-a">Oui, sans préavis ni frais cachés, depuis votre espace personnel ou par email.</div>
+    </div>
+    <div class="contact-faq-item">
+      <div class="contact-faq-q">Y a-t-il un accompagnement humain disponible ?</div>
+      <div class="contact-faq-a">BEE Congruence propose des scénarios interactifs. Pour un suivi humain approfondi, contactez-nous — nous pouvons vous orienter.</div>
+    </div>
+  </div>
+
+  <!-- Colonne droite : Formulaire -->
+  <div class="contact-form-card">
+
+    <div class="contact-form-header">
+      <h3>Envoyer un message</h3>
+      <p>Remplissez ce formulaire et nous vous répondons rapidement 🐝</p>
+    </div>
+
+    <div id="formMsg" class="form-msg error"></div>
+
+    <form id="contactForm" onsubmit="handleContactSubmit(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="contactPrenom" class="form-label">Prénom</label>
+          <input type="text" id="contactPrenom" class="form-input" placeholder="Sophie" required>
+        </div>
+        <div class="form-group">
+          <label for="contactNom" class="form-label">Nom</label>
+          <input type="text" id="contactNom" class="form-input" placeholder="Martin">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="contactEmail" class="form-label">Adresse email *</label>
+        <input type="email" id="contactEmail" class="form-input" placeholder="votre@email.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="contactSujet" class="form-label">Sujet *</label>
+        <select id="contactSujet" class="form-select" required>
+          <option value="" disabled selected>Choisissez un sujet…</option>
+          <option value="question-offre">Question sur une offre</option>
+          <option value="probleme-technique">Problème technique</option>
+          <option value="donnees-rgpd">Données personnelles / RGPD</option>
+          <option value="partenariat">Partenariat / collaboration</option>
+          <option value="presse">Presse / médias</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="contactMessage" class="form-label">Message *</label>
+        <textarea id="contactMessage" class="form-textarea" placeholder="Décrivez votre question ou situation…" required></textarea>
+      </div>
+
+      <div class="form-group" style="display:flex; align-items:flex-start; gap:10px; margin-bottom:0;">
+        <input type="checkbox" id="contactConsent" style="margin-top:3px; accent-color:var(--amber); cursor:pointer;" required>
+        <label for="contactConsent" style="font-size:13px; color:var(--brown-mid); line-height:1.5; cursor:pointer;">
+          J'accepte que mes données soient utilisées pour traiter ma demande, conformément à la <a href="confidentialite.html" style="color:var(--amber);">politique de confidentialité</a>. *
+        </label>
+      </div>
+
+      <button type="submit" class="contact-submit-btn" id="contactSubmitBtn" style="margin-top:22px;">
+        Envoyer le message ✉️
+      </button>
+      <p class="form-note">🔒 Vos données sont protégées. Aucun spam.</p>
+    </form>
+
+    <!-- Message de succès -->
+    <div id="formSuccess" class="form-success">
+      <div class="form-success-icon">🎉</div>
+      <h4>Message envoyé !</h4>
+      <p>Merci pour votre message. Notre équipe vous répondra dans les <strong>48 heures ouvrées</strong>.<br><br>En attendant, découvrez notre <a href="approche.html" style="color:var(--amber);font-weight:600;">approche</a> ou faites le <a href="questionnaire.html" style="color:var(--amber);font-weight:600;">diagnostic gratuit</a>. 🐝</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="logo.jpg" alt="BEE Congruence" style="height:76px;">
+      <p class="footer-tagline">Équilibre &amp; Harmonie Relationnelle</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité (RGPD)</a>
+      <a href="contact.html" style="font-weight:700; color:var(--amber);">Contact</a>
+      <a href="https://instagram.com/bee.congruence" target="_blank">Instagram</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ═══ RGPD BANNER ═══ -->
+<div id="rgpdBanner" class="rgpd-banner">
+  <div class="rgpd-text">
+    <div class="rgpd-title">🍪 Cookies &amp; confidentialité</div>
+    <div class="rgpd-desc">BEE Congruence utilise des cookies pour améliorer votre expérience. Conformément au <strong>RGPD</strong>, vous pouvez accepter ou refuser. <a href="confidentialite.html">Politique de confidentialité</a></div>
+  </div>
+  <div class="rgpd-actions">
+    <button class="rgpd-refuse" onclick="dismissRgpd()">Refuser</button>
+    <button class="rgpd-accept" onclick="acceptRgpd()">Accepter</button>
+  </div>
+</div>
+
+<script src="nav.js"></script>
+<script>
+/* ── RGPD ── */
+function dismissRgpd() {
+  const b = document.getElementById('rgpdBanner');
+  b.style.opacity = '0';
+  setTimeout(() => b.style.display = 'none', 300);
+}
+if (sessionStorage.getItem('rgpd_done')) {
+  const b = document.getElementById('rgpdBanner');
+  if (b) b.style.display = 'none';
+}
+function acceptRgpd() {
+  sessionStorage.setItem('rgpd_done', '1');
+  dismissRgpd();
+}
+
+/* ── Formulaire de contact ── */
+function handleContactSubmit(event) {
+  event.preventDefault();
+
+  const email    = document.getElementById('contactEmail').value.trim();
+  const prenom   = document.getElementById('contactPrenom').value.trim();
+  const sujet    = document.getElementById('contactSujet').value;
+  const message  = document.getElementById('contactMessage').value.trim();
+  const consent  = document.getElementById('contactConsent').checked;
+  const msgEl    = document.getElementById('formMsg');
+  const btn      = document.getElementById('contactSubmitBtn');
+
+  msgEl.style.display = 'none';
+
+  if (!email || !email.includes('@')) {
+    msgEl.textContent = 'Merci de saisir une adresse email valide.';
+    msgEl.style.display = 'block';
+    return;
+  }
+  if (!sujet) {
+    msgEl.textContent = 'Merci de sélectionner un sujet.';
+    msgEl.style.display = 'block';
+    return;
+  }
+  if (message.length < 10) {
+    msgEl.textContent = 'Votre message est trop court (minimum 10 caractères).';
+    msgEl.style.display = 'block';
+    return;
+  }
+  if (!consent) {
+    msgEl.textContent = 'Merci d\'accepter notre politique de confidentialité.';
+    msgEl.style.display = 'block';
+    return;
+  }
+
+  // Simulation d'envoi (à remplacer par un vrai appel API / Supabase)
+  btn.classList.add('loading');
+  btn.textContent = 'Envoi en cours…';
+
+  setTimeout(() => {
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  }, 1200);
+}
+</script>
+</body>
+</html>
