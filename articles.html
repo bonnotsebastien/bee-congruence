@@ -530,13 +530,25 @@
 <script>
 const ARTICLES = [
   {
+    id: 'pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite',
+    url: '/articles/pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite',
+    title: 'Pourquoi je réagis plus fort que la situation ne le mérite ?',
+    excerpt: 'Une remarque banale, un message qui tarde, un ton différent… et soudain tout s’allume. Découvrez comment distinguer le fait de l’interprétation et retrouver l’espace du choix avant de réagir.',
+    category: 'Intelligence émotionnelle',
+    date: '30 septembre 2026',
+    readTime: '7 min',
+    featured: true,
+    image: '/pourquoi-je-reagis-plus-fort.jpg',
+    tags: ['Intelligence émotionnelle', 'Réflexes relationnels', 'Automatisme', 'Pause consciente', 'Congruence']
+  },
+  {
     id: 'piliers-dev-perso',
     title: 'Les 7 piliers du développement personnel : la clé d’une vie alignée',
     excerpt: 'Le développement personnel est souvent perçu comme une quête complexe, un idéal lointain vers lequel on avance à tâtons. Pourtant, son efficacité repose sur des bases simples et structurées.',
     category: 'Développement personnel',
     date: '28 septembre 2026',
     readTime: '6 min',
-    featured: true,
+    featured: false,
     tags: ['Connaissance de soi', 'Émotions', 'Objectifs', 'Discipline', 'Corps & Esprit', 'Relations', 'Action'],
     content: `
       <p>Le développement personnel est souvent perçu comme une quête complexe, un idéal lointain vers lequel on avance à tâtons. Pourtant, son efficacité repose sur des bases simples et structurées. Pour transformer sa vie de manière durable et trouver un véritable équilibre, il s’avère essentiel de s’appuyer sur des fondations solides.</p>
@@ -572,7 +584,7 @@ const ARTICLES = [
 
 const CATEGORIES = [
   { label: 'Développement personnel', count: 1 },
-  { label: 'Intelligence émotionnelle', count: 0 },
+  { label: 'Intelligence émotionnelle', count: 1 },
   { label: 'Relations saines', count: 0 },
   { label: 'Parentalité & Famille', count: 0 }
 ];
@@ -591,7 +603,8 @@ function renderList() {
   }
 
   container.innerHTML = filtered.map(a => `
-    <article class="art-card ${a.featured ? 'art-card-featured' : ''}" onclick="openArticle('${a.id}')">
+    <article class="art-card ${a.featured ? 'art-card-featured' : ''}" onclick="${a.url ? `window.location.href='${a.url}'` : `openArticle('${a.id}')`}">
+      ${a.image ? `<div style="overflow:hidden;max-height:240px;border-bottom:1px solid #EDE0CC;"><img src="${a.image}" alt="${a.title}" style="width:100%;height:auto;display:block;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'"></div>` : ''}
       ${a.featured ? '<div class="art-card-banner">✦ Article à la une</div>' : ''}
       <div class="art-card-body">
         <div class="art-card-meta">
@@ -604,7 +617,7 @@ function renderList() {
         <div class="art-card-tags">
           ${a.tags.map(t => `<span class="art-tag">${t}</span>`).join('')}
         </div>
-        <span class="art-card-link">Lire l'article complet →</span>
+        <a href="${a.url || '#'}" class="art-card-link" onclick="if(!'${a.url}'){event.preventDefault();openArticle('${a.id}');}">Lire l'article complet →</a>
       </div>
     </article>
   `).join('');
