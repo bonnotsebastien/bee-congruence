@@ -18,6 +18,7 @@
     { "source": "/confidentialite", "destination": "/confidentialite.html" },
     { "source": "/contact", "destination": "/contact.html" },
     { "source": "/paiement", "destination": "/paiement.html" },
+    { "source": "/experience", "destination": "/experience.html" },
     { "source": "/articles", "destination": "/articles.html" },
     { "source": "/introspection", "destination": "/introspection.html" },
     { "source": "/scenario/:id", "destination": "/scenario-detail.html" }

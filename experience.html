@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vivre mon expérience BEE — 7 minutes pour réagir autrement</title>
+<meta name="description" content="Une situation relationnelle concrète. Un déclic. Une nouvelle façon de répondre. Expérimentez la méthode BEE en 7 minutes chrono.">
+<link rel="canonical" href="https://www.beecongruence.com/experience.html">
+<link rel="icon" href="logo.jpg" type="image/jpeg">
+
+<meta property="og:site_name" content="BEE Congruence">
+<meta property="og:title" content="L'expérience BEE 7 Minutes — Réagir est automatique, répondre est un choix">
+<meta property="og:description" content="Découvrez vos automatismes et entraînez-vous à répondre autrement en 7 minutes.">
+<meta property="og:url" content="https://www.beecongruence.com/experience.html">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+/* ── Reset & Specific Layout for 7-Min Experience ── */
+body {
+  background: #FAF7F2;
+  color: #2D241E;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.exp-wrapper {
+  flex: 1;
+  max-width: 780px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+/* ── Top Header & Progress ── */
+.exp-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(61,39,16,0.08);
+}
+
+.exp-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brown-mid);
+  transition: color 0.2s;
+}
+.exp-home-link:hover {
+  color: var(--orange);
+}
+
+.exp-time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(217,119,6,0.1);
+  color: var(--orange-dark);
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 50px;
+  border: 1px solid rgba(217,119,6,0.2);
+}
+
+.exp-progress-container {
+  margin-bottom: 36px;
+}
+.exp-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brown-mid);
+}
+.exp-progress-track {
+  width: 100%;
+  height: 8px;
+  background: #E8DFD3;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.exp-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #E8A020, #D97706);
+  width: 20%;
+  border-radius: 4px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Screen Card ── */
+.exp-card {
+  background: white;
+  border-radius: 24px;
+  border: 1.5px solid #EDE0CC;
+  padding: 44px 36px;
+  box-shadow: 0 12px 36px rgba(61,39,16,0.04);
+  animation: fadeIn 0.4s ease;
+}
+@media (max-width: 600px) {
+  .exp-card {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.exp-tag {
+  display: inline-block;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 12px;
+}
+
+.exp-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 4vw, 34px);
+  font-style: italic;
+  font-weight: 700;
+  color: var(--brown-dark);
+  line-height: 1.25;
+  margin-bottom: 16px;
+}
+
+.exp-desc {
+  font-family: 'Lora', serif;
+  font-size: 17px;
+  color: var(--brown-mid);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+/* ── Situation Box ── */
+.exp-situation-box {
+  background: #FAF7F2;
+  border: 1.5px solid #E8DFD3;
+  border-left: 4px solid var(--orange);
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin-bottom: 30px;
+}
+.exp-situation-text {
+  font-family: 'Lora', serif;
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--ink);
+}
+.exp-situation-highlight {
+  font-weight: 700;
+  color: #B45309;
+}
+
+/* ── Option Cards ── */
+.exp-options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.exp-option-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+  background: white;
+  border: 2px solid #EDE0CC;
+  border-radius: 16px;
+  padding: 18px 20px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--ink);
+}
+.exp-option-btn:hover {
+  border-color: var(--orange);
+  background: rgba(217,119,6,0.03);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217,119,6,0.08);
+}
+.exp-option-btn.selected {
+  border-color: var(--orange);
+  background: rgba(217,119,6,0.07);
+  box-shadow: 0 4px 16px rgba(217,119,6,0.12);
+}
+
+.exp-option-ico {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.exp-option-content {
+  flex: 1;
+}
+.exp-option-label {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--brown-dark);
+  margin-bottom: 4px;
+}
+.exp-option-sub {
+  font-size: 13px;
+  color: var(--brown-light);
+  line-height: 1.5;
+}
+
+/* ── Custom input ── */
+.exp-custom-box {
+  display: none;
+  margin-top: 8px;
+}
+.exp-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #EDE0CC;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+.exp-textarea:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+/* ── Mirror Card ── */
+.exp-mirror-card {
+  background: linear-gradient(135deg, rgba(217,119,6,0.08) 0%, rgba(245,158,11,0.03) 100%);
+  border: 1.5px solid rgba(217,119,6,0.25);
+  border-radius: 20px;
+  padding: 26px 28px;
+  margin-bottom: 28px;
+}
+.exp-mirror-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.exp-mirror-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--brown-dark);
+}
+.exp-mirror-body {
+  font-family: 'Lora', serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+/* ── Pause / Espace Graphic ── */
+.exp-pause-box {
+  background: #1A1612;
+  color: #FDFAF6;
+  border-radius: 20px;
+  padding: 30px 24px;
+  text-align: center;
+  margin: 28px 0;
+  box-shadow: 0 10px 30px rgba(26,22,18,0.2);
+}
+.exp-pause-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-style: italic;
+  color: #F59E0B;
+  margin-bottom: 12px;
+}
+.exp-pause-desc {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: rgba(253,250,246,0.8);
+  max-width: 500px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+.exp-loop-horizontal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.exp-loop-node {
+  padding: 8px 14px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(253,250,246,0.7);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.exp-loop-node.active-pause {
+  background: var(--orange);
+  color: white;
+  border-color: #F59E0B;
+  box-shadow: 0 0 16px rgba(217,119,6,0.5);
+  animation: pulseGlow 2s infinite;
+}
+.exp-loop-arrow {
+  color: rgba(253,250,246,0.4);
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ── Domain tags ── */
+.exp-domains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 26px;
+}
+.exp-domain-chip {
+  padding: 12px 14px;
+  border: 1.5px solid #EDE0CC;
+  border-radius: 14px;
+  background: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--brown-dark);
+}
+.exp-domain-chip:hover {
+  border-color: var(--orange);
+  background: rgba(217,119,6,0.04);
+}
+.exp-domain-chip.selected {
+  border-color: var(--orange);
+  background: var(--orange);
+  color: white;
+}
+
+/* ── Bottom Actions ── */
+.exp-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+.exp-btn-primary {
+  padding: 15px 36px;
+  background: var(--orange);
+  color: white;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 18px rgba(217,119,6,0.3);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.exp-btn-primary:hover {
+  background: var(--orange-dark);
+  transform: translateY(-2px);
+}
+.exp-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.exp-btn-secondary {
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--brown-mid);
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  border: 1.5px solid #EDE0CC;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.exp-btn-secondary:hover {
+  border-color: var(--brown-mid);
+  color: var(--ink);
+}
+
+/* ── Step 5 Synthesis Styling ── */
+.exp-result-hero {
+  text-align: center;
+  padding: 20px 0 32px;
+  border-bottom: 1px solid #EDE0CC;
+  margin-bottom: 32px;
+}
+.exp-result-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+.exp-box-synthesis {
+  background: #FAF7F2;
+  border: 1.5px solid #EDE0CC;
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.exp-synthesis-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--orange);
+  margin-bottom: 8px;
+}
+.exp-synthesis-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 21px;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--brown-dark);
+  margin-bottom: 10px;
+}
+.exp-synthesis-text {
+  font-family: 'Lora', serif;
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.8;
+}
+
+.exp-takeaway {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: white;
+  border: 1.5px dashed var(--orange);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 28px 0;
+  text-align: center;
+  gap: 12px;
+}
+.exp-takeaway-item {
+  font-family: 'Nunito', sans-serif;
+}
+.exp-takeaway-item strong {
+  display: block;
+  font-size: 14px;
+  color: var(--brown-dark);
+  margin-top: 4px;
+}
+
+.exp-final-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 36px;
+}
+.exp-btn-full {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="exp-wrapper">
+  <!-- Top Bar -->
+  <div class="exp-top-bar">
+    <a href="index.html" class="exp-home-link">
+      <span>← Retour à l'accueil</span>
+    </a>
+    <div class="exp-time-badge">
+      <span>⏱ ≈ 7 minutes</span>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="exp-progress-container">
+    <div class="exp-progress-header">
+      <span id="expStepCounter">Étape 1 / 5</span>
+      <span id="expStepTitle">La situation réelle</span>
+    </div>
+    <div class="exp-progress-track">
+      <div class="exp-progress-fill" id="expProgressBar"></div>
+    </div>
+  </div>
+
+  <!-- Dynamic Screen Content -->
+  <div id="expContent">
+    <!-- Will be rendered by JavaScript -->
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  EXPERIENCE 7 MINUTES — State & Scenarios
+// ════════════════════════════════════════════════════════
+
+const SITUATIONS = [
+  {
+    id: 'msg-sans-reponse',
+    tab: '1. Message sans réponse',
+    badge: 'Situation 1 · Silence relationnel',
+    title: 'Vous envoyez un message important à quelqu\'un.',
+    context: 'Quatre heures passent. Le message est vu. Aucune réponse.',
+    question: 'Quelle est votre première réaction intérieure spontanée ?',
+    options: [
+      {
+        id: 'relance',
+        icon: '⚡',
+        label: 'Je relance immédiatement ou peu après.',
+        sub: 'L\'incertitude est intolérable, j\'ai besoin d\'une réponse pour me calmer.',
+        mirror: {
+          pattern: 'La réduction immédiate de l\'inconfort par l\'action précipitée.',
+          desc: 'Votre premier réflexe cherche à soulager la tension en comblant le silence. Ce réflexe part d\'une volonté louable de clarifier, mais lorsqu\'il est automatique, il peut être perçu comme de la pression par l\'autre et maintenir votre système nerveux en état d\'alerte.'
+        }
+      },
+      {
+        id: 'inquietude',
+        icon: '😟',
+        label: 'Je commence à m\'inquiéter ou à culpabiliser.',
+        sub: '« Qu\'est-ce que j\'ai fait de mal ? Est-ce qu\'il/elle m\'en veut ? »',
+        mirror: {
+          pattern: 'L\'anticipation anxieuse et l\'auto-reproche.',
+          desc: 'Votre esprit se précipite pour trouver une explication négative avant même d\'avoir le moindre élément de fait. Ce réflexe cherche à vous préparer au rejet, mais il consomme une énergie psychique précieuse sur des scénarios imaginés.'
+        }
+      },
+      {
+        id: 'fermeture',
+        icon: '🛡️',
+        label: 'Je me ferme et je prends mes distances.',
+        sub: '« C\'est toujours pareil. Puisque c\'est comme ça, je ne dirai plus rien. »',
+        mirror: {
+          pattern: 'La protection préventive par le retrait émotionnel.',
+          desc: 'Vous coupez préventivement le lien pour ne pas risquer d\'être blessé(e) ou ignoré(e). Ce réflexe vous donne une illusion de contrôle, mais il érige un mur et empêche l\'autre de comprendre ce que vous vivez.'
+        }
+      },
+      {
+        id: 'detachement',
+        icon: '🧊',
+        label: 'Je fais comme si cela ne me faisait absolument rien.',
+        sub: 'Je minimise mon besoin et je passe à autre chose en surface.',
+        mirror: {
+          pattern: 'L\'évitement affectif par la rationalisation.',
+          desc: 'Vous anesthésiez votre ressenti pour préserver votre fierté ou votre tranquillité apparente. Ce réflexe protège votre vulnérabilité, mais à force d\'étouffer vos attentes légitimes, il crée de la rancœur sous-jacente.'
+        }
+      },
+      {
+        id: 'autre',
+        icon: '✍️',
+        label: 'Autre réaction personnelle...',
+        sub: 'J\'observe une autre nuance de réaction.',
+        mirror: {
+          pattern: 'Votre réflexe singulier d\'adaptation.',
+          desc: 'Chaque personne développe des réflexes forgés par ses expériences passées. L\'important n\'est pas de juger ce réflexe, mais de prendre conscience du moment précis où il s\'active.'
+        }
+      }
+    ],
+    responses: [
+      {
+        id: 'reproche',
+        type: 'Réaction réflexe automatique',
+        text: '« Pourquoi tu ne réponds jamais quand je t\'écris ? C\'est vraiment irrespectueux. »',
+        impact: 'Attaque l\'autre, suscite immédiatement de la justification ou de la fermeture.'
+      },
+      {
+        id: 'evitement',
+        type: 'Évitement & bouderie',
+        text: '« Laisse tomber, oublie ce que j\'ai dit. »',
+        impact: 'Masque votre besoin réel, installe un non-dit toxique.'
+      },
+      {
+        id: 'curiosite',
+        type: 'Réponse choisie & ouverte',
+        text: '« J\'aimerais comprendre si tu as besoin de temps avant de répondre ou si tu es simplement pris(e). »',
+        impact: 'Écoute sincère, sans accuser ni capituler.'
+      },
+      {
+        id: 'affirmation',
+        type: 'Clarté & affirmation bienveillante',
+        text: '« C\'est un sujet important pour moi, fais-moi signe quand tu auras 5 minutes sereines pour échanger. »',
+        impact: 'Pose l\'importance pour vous tout en respectant l\'espace de l\'autre.'
+      }
+    ]
+  },
+  {
+    id: 'critique-publique',
+    tab: '2. Remarque déstabilisante',
+    badge: 'Situation 2 · Critique en public',
+    title: 'Un proche ou collègue critique votre travail ou attitude devant d\'autres.',
+    context: '« Franchement, tu as toujours tendance à compliquer les choses simplement. »',
+    question: 'Quelle est votre première réaction intérieure spontanée ?',
+    options: [
+      {
+        id: 'attaque',
+        icon: '⚔️',
+        label: 'J\'attaque ou je réplique sur un ton piquant.',
+        sub: '« Regarde-toi d\'abord avant de donner des leçons ! »',
+        mirror: {
+          pattern: 'La contre-attaque réflexe pour ne pas paraître vulnérable.',
+          desc: 'Votre système perçoit la remarque comme une atteinte directe à votre valeur. Vous répliquez immédiatement pour reprendre l\'ascendant, mais cela enclenche une escalade stérile.'
+        }
+      },
+      {
+        id: 'surjustif',
+        icon: '📜',
+        label: 'Je me surjustifie longuement pour convaincre.',
+        sub: 'J\'explique minutieusement toutes mes raisons pour me dédouaner.',
+        mirror: {
+          pattern: 'La dépendance à la validation extérieure.',
+          desc: 'Vous donnez à l\'autre le pouvoir de décider si vous êtes légitime. Plus vous vous justifiez sous l\'émotion, plus vous semblez affaibli(e).'
+        }
+      },
+      {
+        id: 'inhibition',
+        icon: '🤐',
+        label: 'J\'encaisse en souriant gêné(e), puis je rumine.',
+        sub: 'Je n\'ose rien dire sur le moment, mais la rancœur reste bloquée.',
+        mirror: {
+          pattern: 'L\'effacement de soi pour éviter le conflit.',
+          desc: 'Vous sacrifiez votre limite pour maintenir la paix extérieure. Mais cette émotion non exprimée se transforme en fatigue ou amertume.'
+        }
+      },
+      {
+        id: 'autre',
+        icon: '✍️',
+        label: 'Autre réaction personnelle...',
+        sub: 'J\'observe une autre nuance de réaction.',
+        mirror: {
+          pattern: 'Votre réflexe singulier de préservation.',
+          desc: 'Observer ce réflexe sans culpabilité permet d\'ouvrir une troisième voie entre l\'attaque et la soumission.'
+        }
+      }
+    ],
+    responses: [
+      {
+        id: 'escalade',
+        type: 'Réaction automatique réflexe',
+        text: '« Tu dis n\'importe quoi, de toute façon tu ne comprends jamais rien. »',
+        impact: 'Nourrit le conflit et braque l\'interlocuteur.'
+      },
+      {
+        id: 'cadre_calme',
+        type: 'Recadrage calme & adulte',
+        text: '« Je n\'apprécie pas qu\'on aborde ce sujet sur ce ton devant tout le monde. Parlons-en calmement en tête-à-tête. »',
+        impact: 'Pose une limite ferme et digne, sans agressivité ni fuite.'
+      },
+      {
+        id: 'question_precision',
+        type: 'Question de clarté factuelle',
+        text: '« Qu\'est-ce qui te fait dire ça concrètement ? Quel élément précis te semble inutile ? »',
+        impact: 'Ramène la conversation sur des faits tangibles et désamorce les jugements gratuits.'
+      }
+    ]
+  },
+  {
+    id: 'demande-trop',
+    tab: '3. Difficulté à dire non',
+    badge: 'Situation 3 · Frontière personnelle',
+    title: 'On vous sollicite pour un service urgent alors que vous êtes déjà débordé(e).',
+    context: '« S\'il te plaît, je suis coincé(e), il n\'y a que toi qui peux me sauver sur ce coup ! »',
+    question: 'Quelle est votre première réaction intérieure spontanée ?',
+    options: [
+      {
+        id: 'suradaptation',
+        icon: '😔',
+        label: 'Je dis oui malgré moi, puis je m\'en veux.',
+        sub: 'La peur de décevoir ou de passer pour égoïste l\'emporte sur ma fatigue.',
+        mirror: {
+          pattern: 'La suradaptation et le sacrifice de ses propres besoins.',
+          desc: 'Vous dites oui aux autres et non à vous-même. À terme, cette dynamique engendre un épuisement silencieux et un sentiment d\'être exploité(e).'
+        }
+      },
+      {
+        id: 'agacement_brut',
+        icon: '😤',
+        label: 'Je refuse avec agacement ou irritation.',
+        sub: '« Vous abusez tous ! Vous ne voyez pas que j\'ai déjà trop de travail ? »',
+        mirror: {
+          pattern: 'Le rejet agressif par saturation.',
+          desc: 'N\'arrivant pas à poser un non calme et posé, vous avez besoin de convoquer la colère pour réussir à vous défendre.'
+        }
+      },
+      {
+        id: 'esquive',
+        icon: '🏃',
+        label: 'J\'esquive ou je repousse ma réponse indéfiniment.',
+        sub: 'Je tarde à répondre en espérant que la personne trouvera une autre solution.',
+        mirror: {
+          pattern: 'L\'évitement par inconfort de la confrontation.',
+          desc: 'Vous gagnez du temps à court terme mais conservez une anxiété latente et une image fuyante.'
+        }
+      },
+      {
+        id: 'autre',
+        icon: '✍️',
+        label: 'Autre réaction personnelle...',
+        sub: 'Une autre stratégie d\'adaptation.',
+        mirror: {
+          pattern: 'Votre posture face aux limites et à l\'affirmation de soi.',
+          desc: 'Poser une limite ne signifie pas rejeter l\'autre : c\'est se respecter pour rester disponible sainement.'
+        }
+      }
+    ],
+    responses: [
+      {
+        id: 'oui_amer',
+        type: 'Réaction réflexe de soumission',
+        text: '« Bon... d\'accord, mais c\'est bien parce que c\'est toi... » (en soupirant)',
+        impact: 'Installe de la rancœur et valide le fait qu\'on peut empiéter sur votre temps.'
+      },
+      {
+        id: 'non_bienveillant',
+        type: 'Limite saine & bienveillante',
+        text: '« J\'aimerais pouvoir t\'aider, mais mon planning ne me le permet pas aujourd\'hui. Je préfère être honnête tout de suite. »',
+        impact: 'Un refus respectueux, clair et sans fausse excuse qui préserve la relation.'
+      },
+      {
+        id: 'alternative_constructive',
+        type: 'Négociation constructive',
+        text: '« Je ne peux pas faire ça dans l\'urgence. En revanche, je peux y consacrer 20 minutes demain matin si c\'est encore utile. »',
+        impact: 'Définit votre cadre tout en offrant une aide réaliste.'
+      }
+    ]
+  }
+];
+
+// ── State ──
+let currentSituationIndex = 0;
+let currentStep = 1;
+let userState = {
+  selectedOptionId: null,
+  customText: '',
+  selectedResponseId: null,
+  selectedDomain: 'Couple',
+  actionNote: ''
+};
+
+// ── Render Controller ──
+function render() {
+  const container = document.getElementById('expContent');
+  const stepCounter = document.getElementById('expStepCounter');
+  const stepTitle = document.getElementById('expStepTitle');
+  const progressBar = document.getElementById('expProgressBar');
+
+  stepCounter.textContent = `Étape ${currentStep} / 5`;
+  progressBar.style.width = `${currentStep * 20}%`;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  switch(currentStep) {
+    case 1:
+      stepTitle.textContent = 'La situation réelle';
+      renderStep1(container);
+      break;
+    case 2:
+      stepTitle.textContent = 'Le Miroir (Prise de conscience)';
+      renderStep2(container);
+      break;
+    case 3:
+      stepTitle.textContent = 'L\'espace de choix';
+      renderStep3(container);
+      break;
+    case 4:
+      stepTitle.textContent = 'Transfert dans votre vie';
+      renderStep4(container);
+      break;
+    case 5:
+      stepTitle.textContent = 'Votre synthèse BEE';
+      renderStep5(container);
+      break;
+  }
+}
+
+// ── STEP 1: Situation ──
+function renderStep1(container) {
+  const sit = SITUATIONS[currentSituationIndex];
+
+  container.innerHTML = `
+    <div class="exp-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <div class="exp-tag" style="margin-bottom:0;">🐝 1. Observation spontanée</div>
+        <div style="display:flex;gap:6px;">
+          ${SITUATIONS.map((s, idx) => `
+            <button onclick="switchSituation(${idx})" style="
+              border: 1px solid ${idx === currentSituationIndex ? 'var(--orange)' : '#EDE0CC'};
+              background: ${idx === currentSituationIndex ? 'rgba(217,119,6,0.1)' : 'white'};
+              color: ${idx === currentSituationIndex ? 'var(--orange-dark)' : 'var(--brown-mid)'};
+              font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+              padding: 4px 10px; border-radius: 20px; cursor: pointer;
+            ">
+              ${s.tab}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+
+      <h1 class="exp-title">${sit.title}</h1>
+      <p class="exp-desc">Prenez quelques secondes pour vous imaginer concrètement dans cette scène du quotidien.</p>
+
+      <div class="exp-situation-box">
+        <div class="exp-situation-text">
+          ${sit.context}
+        </div>
+      </div>
+
+      <div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;color:var(--brown-dark);margin-bottom:14px;">
+        ${sit.question}
+      </div>
+
+      <div class="exp-options">
+        ${sit.options.map(opt => `
+          <button class="exp-option-btn ${userState.selectedOptionId === opt.id ? 'selected' : ''}" onclick="selectOption('${opt.id}')">
+            <span class="exp-option-ico">${opt.icon}</span>
+            <div class="exp-option-content">
+              <div class="exp-option-label">${opt.label}</div>
+              <div class="exp-option-sub">${opt.sub}</div>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+
+      <div class="exp-custom-box" id="customInputBox" style="${userState.selectedOptionId === 'autre' ? 'display:block;' : 'display:none;'}">
+        <textarea class="exp-textarea" id="customText" placeholder="Décrivez en quelques mots ce qui se passe spontanément en vous..." oninput="userState.customText = this.value">${userState.customText}</textarea>
+      </div>
+
+      <div class="exp-actions">
+        <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--brown-light);">
+          🔒 Aucune mauvaise réponse · Rien n'est jugé
+        </span>
+        <button class="exp-btn-primary" id="btnStep1" ${!userState.selectedOptionId ? 'disabled' : ''} onclick="goToStep(2)">
+          Découvrir ce qui se joue →
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function switchSituation(idx) {
+  currentSituationIndex = idx;
+  userState.selectedOptionId = null;
+  userState.customText = '';
+  userState.selectedResponseId = null;
+  render();
+}
+
+function selectOption(id) {
+  userState.selectedOptionId = id;
+  const customBox = document.getElementById('customInputBox');
+  if (customBox) {
+    customBox.style.display = id === 'autre' ? 'block' : 'none';
+  }
+  document.querySelectorAll('.exp-option-btn').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  event.currentTarget.classList.add('selected');
+  const btn = document.getElementById('btnStep1');
+  if (btn) btn.disabled = false;
+}
+
+// ── STEP 2: Le Miroir ──
+function renderStep2(container) {
+  const sit = SITUATIONS[currentSituationIndex];
+  const chosen = sit.options.find(o => o.id === userState.selectedOptionId) || sit.options[0];
+
+  container.innerHTML = `
+    <div class="exp-card">
+      <div class="exp-tag">🪞 2. Le miroir sans jugement</div>
+      <h2 class="exp-title">Vous venez d'identifier votre réaction automatique.</h2>
+      <p class="exp-desc">Réagir est un réflexe forgé par notre histoire. Mettre de la lumière dessus change tout.</p>
+
+      <div class="exp-mirror-card">
+        <div class="exp-mirror-header">
+          <span style="font-size:26px;">${chosen.icon}</span>
+          <div class="exp-mirror-title">${chosen.mirror.pattern}</div>
+        </div>
+        <div class="exp-mirror-body">
+          ${chosen.mirror.desc}
+          ${userState.selectedOptionId === 'autre' && userState.customText ? `<br><br><em>Ce que vous avez noté : « ${userState.customText} »</em>` : ''}
+        </div>
+      </div>
+
+      <div class="exp-pause-box">
+        <div class="exp-pause-title">« Réagir est automatique. Répondre est un choix. »</div>
+        <p class="exp-pause-desc">
+          Entre le déclencheur extérieur et ce que vous faites, il existe un espace : <strong>la pause consciente</strong>.
+          C'est dans cet espace que réside votre liberté relationnelle.
+        </p>
+        <div class="exp-loop-horizontal">
+          <div class="exp-loop-node">1. Déclencheur</div>
+          <span class="exp-loop-arrow">→</span>
+          <div class="exp-loop-node">2. Réflexe automatique</div>
+          <span class="exp-loop-arrow">→</span>
+          <div class="exp-loop-node active-pause">✦ 3. PAUSE CONSCIENTE</div>
+          <span class="exp-loop-arrow">→</span>
+          <div class="exp-loop-node">4. Choix de réponse</div>
+        </div>
+      </div>
+
+      <div class="exp-actions">
+        <button class="exp-btn-secondary" onclick="goToStep(1)">← Modifier mon choix</button>
+        <button class="exp-btn-primary" onclick="goToStep(3)">
+          Explorer une autre réponse →
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+// ── STEP 3: L'autre réponse ──
+function renderStep3(container) {
+  const sit = SITUATIONS[currentSituationIndex];
+
+  container.innerHTML = `
+    <div class="exp-card">
+      <div class="exp-tag">🌿 3. Élargir le champ des réponses</div>
+      <h2 class="exp-title">Laquelle pourriez-vous essayer ?</h2>
+      <p class="exp-desc">
+        Il ne s'agit pas d'adopter une "bonne réponse" morale ou parfaite.
+        Il s'agit de découvrir que vous n'êtes pas enfermé(e) dans un seul schéma.
+      </p>
+
+      <div class="exp-options">
+        ${sit.responses.map(resp => `
+          <button class="exp-option-btn ${userState.selectedResponseId === resp.id ? 'selected' : ''}" onclick="selectResponse('${resp.id}')">
+            <span class="exp-option-ico">💬</span>
+            <div class="exp-option-content">
+              <div style="font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--orange);margin-bottom:3px;">
+                ${resp.type}
+              </div>
+              <div class="exp-option-label">${resp.text}</div>
+              <div class="exp-option-sub">Effet : ${resp.impact}</div>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+
+      <div id="step3Feedback" style="${userState.selectedResponseId ? 'display:block;' : 'display:none;'}" class="exp-mirror-card">
+        <div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--orange-dark);margin-bottom:6px;">
+          ✨ Ce que vous venez de faire :
+        </div>
+        <p style="font-family:'Lora',serif;font-size:15px;color:var(--ink);margin:0;line-height:1.7;">
+          En envisageant une autre façon de réagir, <strong>vous venez d'activer votre espace de choix</strong>. Vous cessez d'être piloté(e) par l'urgence pour réaligner vos paroles avec votre intention réelle.
+        </p>
+      </div>
+
+      <div class="exp-actions">
+        <button class="exp-btn-secondary" onclick="goToStep(2)">← Étape précédente</button>
+        <button class="exp-btn-primary" id="btnStep3" ${!userState.selectedResponseId ? 'disabled' : ''} onclick="goToStep(4)">
+          Transférer dans mon quotidien →
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function selectResponse(id) {
+  userState.selectedResponseId = id;
+  document.querySelectorAll('.exp-option-btn').forEach(b => b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  const fb = document.getElementById('step3Feedback');
+  if (fb) fb.style.display = 'block';
+  const btn = document.getElementById('btnStep3');
+  if (btn) btn.disabled = false;
+}
+
+// ── STEP 4: Transfert Réel ──
+function renderStep4(container) {
+  const domains = ['Couple', 'Famille', 'Travail', 'Amitié', 'Conflit', 'Rejet', 'Poser des limites', 'Prise de décision'];
+
+  container.innerHTML = `
+    <div class="exp-card">
+      <div class="exp-tag">🌱 4. Ancrage dans votre vie réelle</div>
+      <h2 class="exp-title">Où ce schéma se rejoue-t-il le plus ?</h2>
+      <p class="exp-desc">Pour qu'un déclic dure, il doit se relier à votre quotidien.</p>
+
+      <div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--brown-dark);margin-bottom:12px;">
+        Dans quelle sphère ressentez-vous le plus souvent ce réflexe ?
+      </div>
+
+      <div class="exp-domains-grid">
+        ${domains.map(d => `
+          <div class="exp-domain-chip ${userState.selectedDomain === d ? 'selected' : ''}" onclick="selectDomain('${d}')">
+            ${d}
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--brown-dark);margin-bottom:10px;margin-top:20px;">
+        Que pourriez-vous essayer de faire ou dire différemment la prochaine fois ?
+      </div>
+      <textarea class="exp-textarea" id="actionNoteInput" placeholder="Exemple : Respirer 3 secondes avant d'écrire, ou dire calmement ce dont j'ai besoin plutôt que me refermer..." oninput="userState.actionNote = this.value">${userState.actionNote}</textarea>
+
+      <div class="exp-actions">
+        <button class="exp-btn-secondary" onclick="goToStep(3)">← Retour</button>
+        <button class="exp-btn-primary" onclick="goToStep(5)">
+          Voir ma synthèse d'entraînement →
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function selectDomain(domain) {
+  userState.selectedDomain = domain;
+  document.querySelectorAll('.exp-domain-chip').forEach(c => c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+}
+
+// ── STEP 5: Synthèse & Résultats ──
+function renderStep5(container) {
+  const sit = SITUATIONS[currentSituationIndex];
+  const chosenOpt = sit.options.find(o => o.id === userState.selectedOptionId) || sit.options[0];
+  const chosenResp = sit.responses.find(r => r.id === userState.selectedResponseId) || sit.responses[2] || sit.responses[0];
+
+  // Save session record locally
+  try {
+    const history = JSON.parse(localStorage.getItem('bee_7min_history') || '[]');
+    history.push({
+      date: new Date().toISOString(),
+      situation: sit.title,
+      reflex: chosenOpt.label,
+      newResponse: chosenResp.text,
+      domain: userState.selectedDomain,
+      actionNote: userState.actionNote
+    });
+    localStorage.setItem('bee_7min_history', JSON.stringify(history));
+  } catch(e) {}
+
+  container.innerHTML = `
+    <div class="exp-card">
+      <div class="exp-result-hero">
+        <div class="exp-result-icon">✨</div>
+        <div class="exp-tag">7 minutes chrono · Mission accomplie</div>
+        <h2 class="exp-title">Votre synthèse d'entraînement</h2>
+        <p style="font-family:'Lora',serif;font-size:16px;color:var(--brown-mid);max-width:540px;margin:0 auto;">
+          Vous êtes parti(e) d'un réflexe automatique pour ouvrir une possibilité de réponse choisie.
+        </p>
+      </div>
+
+      <div class="exp-box-synthesis">
+        <div class="exp-synthesis-label">1. Votre réflexe relationnel observé</div>
+        <div class="exp-synthesis-title">${chosenOpt.label}</div>
+        <div class="exp-synthesis-text">
+          ${chosenOpt.mirror.desc}
+        </div>
+      </div>
+
+      <div class="exp-box-synthesis" style="border-left:4px solid var(--orange);">
+        <div class="exp-synthesis-label">2. Votre nouvelle piste de réponse (Sphère : ${userState.selectedDomain})</div>
+        <div class="exp-synthesis-title" style="color:var(--orange-dark);">
+          ${chosenResp.text}
+        </div>
+        <div class="exp-synthesis-text">
+          ${userState.actionNote ? `<strong>Votre engagement concret :</strong> « ${userState.actionNote} »` : `Une formulation qui privilégie la clarté et la maturité relationnelle, sans agressivité ni soumission.`}
+        </div>
+      </div>
+
+      <div class="exp-takeaway">
+        <div class="exp-takeaway-item">
+          <span style="font-size:22px;">👁️</span>
+          <strong>1. Conscience</strong>
+          <span style="font-size:12px;color:var(--brown-light);">Voir l'automatisme</span>
+        </div>
+        <span style="color:var(--orange);font-size:18px;">→</span>
+        <div class="exp-takeaway-item">
+          <span style="font-size:22px;">⏸️</span>
+          <strong>2. Choix</strong>
+          <span style="font-size:12px;color:var(--brown-light);">Créer la pause</span>
+        </div>
+        <span style="color:var(--orange);font-size:18px;">→</span>
+        <div class="exp-takeaway-item">
+          <span style="font-size:22px;">💪</span>
+          <strong>3. Entraînement</strong>
+          <span style="font-size:12px;color:var(--brown-light);">Répéter dans la vraie vie</span>
+        </div>
+      </div>
+
+      <div class="exp-final-actions">
+        <button class="exp-btn-primary exp-btn-full" onclick="resetExperience(true)">
+          🔄 Je m'entraîne sur une autre situation (${(currentSituationIndex + 1) % SITUATIONS.length + 1}/${SITUATIONS.length})
+        </button>
+
+        <a href="questionnaire.html" class="exp-btn-secondary exp-btn-full" style="text-align:center;">
+          🧭 Découvrir mon profil relationnel complet (Diagnostic)
+        </a>
+
+        <a href="inscription.html" class="exp-btn-secondary exp-btn-full" style="text-align:center;background:rgba(217,119,6,0.06);border-color:rgba(217,119,6,0.3);color:var(--orange-dark);">
+          🐝 Rejoindre la ruche pour débloquer tous les scénarios d'entraînement →
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+// ── Navigation ──
+function goToStep(step) {
+  currentStep = step;
+  render();
+}
+
+function resetExperience(nextSituation = false) {
+  if (nextSituation) {
+    currentSituationIndex = (currentSituationIndex + 1) % SITUATIONS.length;
+  }
+  currentStep = 1;
+  userState = {
+    selectedOptionId: null,
+    customText: '',
+    selectedResponseId: null,
+    selectedDomain: 'Couple',
+    actionNote: ''
+  };
+  render();
+}
+
+// Start on load
+render();
+</script>
+</body>
+</html>
