@@ -64,11 +64,11 @@
 <link rel="stylesheet" href="/styles.css">
 
 <style>
-/* ── Article Page Dedicated Styling ── */
+/* ── Article Page Styling ── */
 .art-page-wrapper {
-  max-width: 820px;
+  max-width: 780px;
   margin: 0 auto;
-  padding: 40px 24px 90px;
+  padding: 40px 24px 80px;
 }
 
 .art-back-nav {
@@ -80,7 +80,7 @@
   font-weight: 700;
   color: #9A7B5A;
   text-decoration: none;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   transition: all 0.2s ease;
   padding: 6px 14px;
   border-radius: 50px;
@@ -93,7 +93,7 @@
 }
 
 .art-post-header {
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 .art-post-badge {
   display: inline-flex;
@@ -108,15 +108,15 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 .art-post-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(30px, 5.2vw, 48px);
+  font-size: clamp(28px, 4.8vw, 44px);
   font-style: italic;
   color: #3D2710;
   line-height: 1.25;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 .art-post-meta {
   display: flex;
@@ -139,7 +139,7 @@
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 12px 36px rgba(61,39,16,0.08);
-  margin-bottom: 44px;
+  margin-bottom: 36px;
   border: 1px solid #EDE0CC;
   background: #FAF7F2;
 }
@@ -159,86 +159,78 @@
   border-top: 1px solid #EDE0CC;
 }
 
-/* ── Article Core Typography & Content ── */
+/* ── Article Content ── */
 .art-post-content {
   font-family: 'Lora', serif;
   font-size: 18px;
   color: #2D2218;
-  line-height: 1.95;
+  line-height: 1.9;
 }
 .art-post-content p {
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 .art-post-content h2 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(24px, 3.8vw, 32px);
+  font-size: clamp(22px, 3.4vw, 28px);
   font-style: italic;
   color: #3D2710;
-  margin: 48px 0 20px;
-  padding-left: 18px;
+  margin: 40px 0 18px;
+  padding-left: 16px;
   border-left: 3px solid #D97706;
   line-height: 1.35;
-}
-.art-post-content h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-style: italic;
-  color: #5A3A1A;
-  margin: 32px 0 14px;
 }
 
 /* Blockquotes */
 .art-post-content blockquote {
-  margin: 28px 0;
-  padding: 20px 26px;
+  margin: 24px 0;
+  padding: 18px 24px;
   background: rgba(217,119,6,0.06);
   border-left: 4px solid #D97706;
-  border-radius: 0 18px 18px 0;
+  border-radius: 0 16px 16px 0;
   font-style: italic;
   color: #4A3319;
   font-size: 19px;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 .art-post-content blockquote p {
   margin-bottom: 0;
 }
 
-/* Strong accents */
 .art-post-content strong {
   color: #B45309;
   font-weight: 600;
 }
 
-/* Highlight Quote Box (Transformation BEE) */
+/* Highlight Box */
 .bee-quote-callout {
   background: linear-gradient(135deg, rgba(217,119,6,0.1) 0%, rgba(251,191,36,0.08) 100%);
   border: 1.5px solid rgba(217,119,6,0.3);
   border-radius: 20px;
-  padding: 28px 32px;
-  margin: 36px 0;
+  padding: 24px 28px;
+  margin: 30px 0;
   text-align: center;
 }
 .bee-quote-callout p {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(20px, 3vw, 24px);
+  font-size: clamp(19px, 2.8vw, 22px);
   font-style: italic;
   color: #3D2710;
   margin: 0;
   line-height: 1.6;
 }
 
-/* Step Distinction Grid (Fait / Interprétation / Émotion / Automatisme) */
+/* 4 Steps Distinction Grid */
 .bee-distinction-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  margin: 32px 0;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 28px 0;
 }
 .bee-distinction-card {
   background: white;
   border: 1.5px solid #EDE0CC;
   border-radius: 16px;
-  padding: 20px;
+  padding: 18px;
   box-shadow: 0 4px 14px rgba(61,39,16,0.03);
   transition: all 0.25s ease;
 }
@@ -254,96 +246,47 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #D97706;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 .bee-distinction-title {
   font-family: 'Playfair Display', serif;
-  font-size: 19px;
+  font-size: 18px;
   font-style: italic;
   color: #3D2710;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 .bee-distinction-desc {
   font-family: 'Nunito', sans-serif;
-  font-size: 13.5px;
+  font-size: 13px;
   color: #6B4C2A;
-  line-height: 1.6;
-  margin-bottom: 8px;
+  line-height: 1.55;
+  margin-bottom: 6px;
 }
 .bee-distinction-quote {
   font-family: 'Lora', serif;
   font-style: italic;
-  font-size: 14.5px;
+  font-size: 13.5px;
   color: #B45309;
   background: rgba(217,119,6,0.06);
-  padding: 6px 12px;
+  padding: 5px 10px;
   border-radius: 8px;
   display: inline-block;
 }
 
-/* Comparison Box (Reaction vs Conscious response) */
-.bee-contrast-box {
-  background: #FFFFFF;
-  border: 1.5px solid #EDE0CC;
-  border-radius: 20px;
-  overflow: hidden;
-  margin: 36px 0;
-  box-shadow: 0 6px 20px rgba(61,39,16,0.04);
-}
-.bee-contrast-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-@media (max-width: 640px) {
-  .bee-contrast-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.bee-contrast-col {
-  padding: 26px;
-}
-.bee-contrast-col.col-auto {
-  background: rgba(239,68,68,0.03);
-  border-right: 1px solid #EDE0CC;
-}
-@media (max-width: 640px) {
-  .bee-contrast-col.col-auto {
-    border-right: none;
-    border-bottom: 1px solid #EDE0CC;
-  }
-}
-.bee-contrast-col.col-conscious {
-  background: rgba(217,119,6,0.04);
-}
-.bee-contrast-header {
-  font-family: 'Nunito', sans-serif;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 14px;
-}
-.bee-contrast-col.col-auto .bee-contrast-header {
-  color: #DC2626;
-}
-.bee-contrast-col.col-conscious .bee-contrast-header {
-  color: #D97706;
-}
-
-/* Exercise 60s Box */
+/* Exercise Box */
 .bee-exercise-box {
   background: linear-gradient(145deg, #FFFDF9 0%, #FAF6EE 100%);
   border: 2px solid rgba(217,119,6,0.3);
-  border-radius: 24px;
-  padding: 34px 30px;
-  margin: 40px 0;
-  box-shadow: 0 8px 30px rgba(217,119,6,0.06);
+  border-radius: 20px;
+  padding: 26px 24px;
+  margin: 32px 0;
+  box-shadow: 0 6px 24px rgba(217,119,6,0.05);
 }
 .bee-exercise-badge {
   display: inline-block;
   background: #D97706;
   color: white;
-  padding: 4px 14px;
+  padding: 4px 12px;
   border-radius: 50px;
   font-family: 'Nunito', sans-serif;
   font-size: 11px;
@@ -353,8 +296,8 @@
   margin-bottom: 12px;
 }
 .bee-exercise-step {
-  margin-bottom: 20px;
-  padding-bottom: 16px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
   border-bottom: 1px dashed rgba(217,119,6,0.2);
 }
 .bee-exercise-step:last-child {
@@ -364,28 +307,27 @@
 }
 .bee-exercise-num {
   font-family: 'Playfair Display', serif;
-  font-size: 20px;
+  font-size: 18px;
   font-style: italic;
   color: #3D2710;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
-/* Horizontal Divider */
 .art-post-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, #EDE0CC 20%, #EDE0CC 80%, transparent);
-  margin: 40px 0;
+  margin: 36px 0;
 }
 
-/* ── Final BEE Conversion CTA ── */
+/* ── Final BEE CTA ── */
 .art-bee-final-cta {
-  margin-top: 60px;
+  margin-top: 50px;
   background: linear-gradient(145deg, #2D1F0E 0%, #1A1612 100%);
-  border-radius: 28px;
-  padding: 48px 36px;
+  border-radius: 24px;
+  padding: 42px 30px;
   text-align: center;
   color: #FDFAF6;
-  box-shadow: 0 20px 50px rgba(45,31,14,0.25);
+  box-shadow: 0 16px 40px rgba(45,31,14,0.25);
   position: relative;
   overflow: hidden;
 }
@@ -395,8 +337,8 @@
   top: -50%;
   left: 50%;
   transform: translateX(-50%);
-  width: 400px;
-  height: 400px;
+  width: 380px;
+  height: 380px;
   background: radial-gradient(circle, rgba(217,119,6,0.25) 0%, transparent 70%);
   pointer-events: none;
 }
@@ -407,69 +349,69 @@
   background: rgba(245,158,11,0.15);
   border: 1px solid rgba(245,158,11,0.3);
   color: #F59E0B;
-  padding: 6px 18px;
+  padding: 6px 16px;
   border-radius: 50px;
   font-family: 'Nunito', sans-serif;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 .art-bee-final-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(26px, 4.2vw, 36px);
+  font-size: clamp(24px, 3.8vw, 32px);
   font-style: italic;
   color: #FDFAF6;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   line-height: 1.3;
 }
 .art-bee-final-desc {
   font-family: 'Nunito', sans-serif;
-  font-size: 15px;
+  font-size: 14.5px;
   color: rgba(253,250,246,0.8);
-  max-width: 580px;
-  margin: 0 auto 30px;
-  line-height: 1.75;
+  max-width: 540px;
+  margin: 0 auto 26px;
+  line-height: 1.7;
 }
 .art-bee-cta-buttons {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 .art-btn-main {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 15px 34px;
+  padding: 14px 30px;
   background: #D97706;
   color: white;
   border-radius: 50px;
   font-family: 'Nunito', sans-serif;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 13.5px;
   text-decoration: none;
-  box-shadow: 0 4px 20px rgba(217,119,6,0.4);
+  box-shadow: 0 4px 18px rgba(217,119,6,0.4);
   transition: all 0.25s ease;
 }
 .art-btn-main:hover {
   background: #B45309;
   transform: translateY(-2px);
-  box-shadow: 0 8px 26px rgba(217,119,6,0.5);
+  box-shadow: 0 8px 24px rgba(217,119,6,0.5);
 }
 .art-btn-sec {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 15px 30px;
+  padding: 14px 26px;
   background: rgba(255,255,255,0.08);
   color: #FDFAF6;
   border: 1px solid rgba(255,255,255,0.22);
   border-radius: 50px;
   font-family: 'Nunito', sans-serif;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13.5px;
   text-decoration: none;
   transition: all 0.25s ease;
 }
@@ -479,32 +421,32 @@
   transform: translateY(-2px);
 }
 
-/* ── Related Articles Section ── */
+/* Related */
 .art-related-section {
-  margin-top: 60px;
-  padding-top: 40px;
+  margin-top: 50px;
+  padding-top: 36px;
   border-top: 1px solid #EDE0CC;
 }
 .art-related-title {
   font-family: 'Playfair Display', serif;
-  font-size: 22px;
+  font-size: 20px;
   font-style: italic;
   color: #3D2710;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 .art-related-card {
   background: white;
   border: 1.5px solid #EDE0CC;
-  border-radius: 18px;
-  padding: 24px;
+  border-radius: 16px;
+  padding: 20px;
   display: block;
   text-decoration: none;
   transition: all 0.25s ease;
 }
 .art-related-card:hover {
   border-color: #D97706;
-  box-shadow: 0 8px 25px rgba(61,39,16,0.08);
-  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(61,39,16,0.07);
+  transform: translateY(-2px);
 }
 </style>
 </head>
@@ -541,7 +483,7 @@
     <h1 class="art-post-title">Pourquoi je réagis plus fort que la situation ne le mérite ?</h1>
     <div class="art-post-meta">
       <span>📅 30 septembre 2026</span>
-      <span>⏱ 7 min de lecture</span>
+      <span>⏱ 2 min de lecture</span>
       <span>✍️ Équipe BEE Congruence</span>
       <span>🏷 Réflexes, Émotions, Choix</span>
     </div>
@@ -555,582 +497,108 @@
     </div>
   </div>
 
-  <!-- Content (100% exact text, perfectly structured) -->
+  <!-- Content Condensé (1/4 de la taille, percutant et direct) -->
   <article class="art-post-content">
 
-    <p>Il y a ces moments où, après coup, on se dit :</p>
+    <p>Une remarque banale. Un message qui tarde à arriver. Un ton un peu sec. Une porte qui claque. Un silence.</p>
+
+    <p>Et soudain, tout s’emballe : le cœur accélère, la colère monte, l’envie de riposter ou de se murer devient irrépressible. Pourtant, quelques heures plus tard, lorsque la vague retombe, le constat est sans appel :</p>
 
     <blockquote>
-      <p><strong>« Mais pourquoi j’ai réagi comme ça ? »</strong></p>
+      <p><strong>« Mais pourquoi j’ai réagi aussi fort alors que ce n’était pas si grave ? »</strong></p>
     </blockquote>
-
-    <p>
-      Une remarque pourtant banale.<br>
-      Un message qui tarde à arriver.<br>
-      Un ton de voix un peu différent.<br>
-      Une porte qui se ferme.<br>
-      Un silence.
-    </p>
-
-    <p>Et soudain, quelque chose s’allume en nous.</p>
-
-    <p>
-      Le cœur accélère.<br>
-      La colère monte.<br>
-      L’envie de répondre devient presque irrépressible.<br>
-      Ou, au contraire, on se ferme complètement.
-    </p>
-
-    <p>Sur le moment, notre réaction nous semble parfaitement justifiée.</p>
-
-    <p>Puis, quelques minutes ou quelques heures plus tard, lorsque l'émotion retombe, une autre pensée apparaît :</p>
-
-    <blockquote>
-      <p><strong>« Finalement… ce n’était peut-être pas si grave. »</strong></p>
-    </blockquote>
-
-    <p>Alors pourquoi avons-nous réagi aussi fort ?</p>
-
-    <p>Parce que nous ne réagissons pas toujours uniquement à <strong>ce qui vient de se passer</strong>.</p>
-
-    <p>Nous réagissons parfois à <strong>ce que cette situation réveille en nous</strong>.</p>
-
-    <div class="art-post-divider"></div>
-
-    <h2>Le problème n’est pas toujours la situation</h2>
-
-    <p>Imagine.</p>
-
-    <p>Tu envoies un message à quelqu’un qui compte pour toi.</p>
-
-    <p>Une heure passe.</p>
-
-    <p>Puis deux.</p>
-
-    <p>Puis quatre.</p>
-
-    <p>Toujours aucune réponse.</p>
-
-    <p>Objectivement, une seule chose est certaine :</p>
-
-    <p><strong>la personne n’a pas répondu.</strong></p>
-
-    <p>Tout le reste appartient à ton interprétation.</p>
-
-    <blockquote>
-      <p>
-        « Elle m’évite. »<br>
-        « Elle m’en veut. »<br>
-        « Elle n’a plus envie de me parler. »<br>
-        « J’ai fait quelque chose de mal. »<br>
-        « Je ne compte pas vraiment pour elle. »
-      </p>
-    </blockquote>
-
-    <p>Et progressivement, ton corps réagit à cette histoire comme si elle était vraie.</p>
-
-    <p>Tu regardes ton téléphone.</p>
-
-    <p>Tu vérifies si la personne est en ligne.</p>
-
-    <p>Tu relis ton dernier message.</p>
-
-    <p>Tu imagines différentes explications.</p>
-
-    <p>Tu commences à ressentir de la colère.</p>
-
-    <p>Et peut-être qu'au bout de quelques heures, tu finis par envoyer :</p>
-
-    <blockquote>
-      <p>« Bon, visiblement tu n’as pas envie de me répondre… »</p>
-    </blockquote>
-
-    <p>Pourtant, au départ, il n’y avait qu’un silence.</p>
 
     <div class="bee-quote-callout">
-      <p>Le fait était petit.<br>L’histoire que ton cerveau a construite était immense.</p>
+      <p>« Nous ne réagissons pas uniquement à ce qui se passe.<br>Nous réagissons à ce que cette situation réveille et à l’histoire que nous nous racontons. »</p>
     </div>
 
-    <div class="art-post-divider"></div>
+    <h2>1. La distinction décisive : Fait vs Interprétation</h2>
 
-    <h2>Fait ou interprétation ?</h2>
-
-    <p>C’est probablement l'une des distinctions les plus puissantes que l'on puisse apprendre dans nos relations.</p>
+    <p>C’est l'une des clés les plus puissantes dans nos relations : notre système nerveux ne réagit pas aux faits réels, mais à la narration que notre cerveau y plaque instantanément.</p>
 
     <div class="bee-distinction-grid">
       <div class="bee-distinction-card">
-        <div class="bee-distinction-tag">01. L'observation</div>
-        <div class="bee-distinction-title">Le fait</div>
-        <div class="bee-distinction-desc">C’est ce que pourrait observer une caméra.</div>
-        <div class="bee-distinction-quote">« Il n’a pas répondu à mon message depuis quatre heures. » Point.</div>
+        <div class="bee-distinction-tag">01. Le Fait</div>
+        <div class="bee-distinction-title">Ce qu'observe la caméra</div>
+        <div class="bee-distinction-desc">Neutre et indiscutable.</div>
+        <div class="bee-distinction-quote">« Aucun message depuis 4 heures. »</div>
       </div>
 
       <div class="bee-distinction-card">
-        <div class="bee-distinction-tag">02. Le récit mental</div>
-        <div class="bee-distinction-title">L’interprétation</div>
-        <div class="bee-distinction-desc">C’est ce que ton cerveau ajoute au fait.</div>
-        <div class="bee-distinction-quote">« Il m’ignore. »</div>
+        <div class="bee-distinction-tag">02. L'Interprétation</div>
+        <div class="bee-distinction-title">L'histoire du cerveau</div>
+        <div class="bee-distinction-desc">Le scénario intérieur.</div>
+        <div class="bee-distinction-quote">« Il m’ignore, je ne compte pas. »</div>
       </div>
 
       <div class="bee-distinction-card">
-        <div class="bee-distinction-tag">03. Le signal corporel</div>
-        <div class="bee-distinction-title">L’émotion</div>
-        <div class="bee-distinction-desc">C’est ce que cette interprétation déclenche en toi.</div>
-        <div class="bee-distinction-quote">« Je me sens rejeté. »</div>
+        <div class="bee-distinction-tag">03. L'Émotion</div>
+        <div class="bee-distinction-title">L'alarme corporelle</div>
+        <div class="bee-distinction-desc">Rejet, peur, colère, injustice.</div>
+        <div class="bee-distinction-quote">« Je me sens abandonné(e). »</div>
       </div>
 
       <div class="bee-distinction-card">
-        <div class="bee-distinction-tag">04. Le réflexe de défense</div>
-        <div class="bee-distinction-title">L’automatisme</div>
-        <div class="bee-distinction-desc">C’est ce que tu fais pour tenter de gérer cette émotion.</div>
-        <div class="bee-distinction-quote">« Je relance. J’attaque. Je me ferme. Je prends de la distance. »</div>
+        <div class="bee-distinction-tag">04. L'Automatisme</div>
+        <div class="bee-distinction-title">Le réflexe de défense</div>
+        <div class="bee-distinction-desc">La tentative de soulagement.</div>
+        <div class="bee-distinction-quote">« Attaquer, relancer, se fermer. »</div>
       </div>
     </div>
 
-    <p>Et c’est là que le mécanisme devient intéressant.</p>
-
-    <div class="bee-quote-callout">
-      <p>« Nous croyons souvent réagir au comportement de l’autre alors que nous réagissons à notre propre interprétation de ce comportement. »</p>
-    </div>
+    <p><strong>Le fait était minuscule. L’histoire construite par le cerveau était immense.</strong> Et notre corps a réagi à cette histoire comme si le danger était immédiat.</p>
 
     <div class="art-post-divider"></div>
 
-    <h2>Ton corps peut se souvenir avant même que tu comprennes</h2>
+    <h2>2. Le petit espace qui change tout</h2>
 
-    <p>Certaines réactions semblent disproportionnées parce qu’elles ne naissent pas uniquement dans le présent.</p>
+    <p>Comprendre intellectuellement ne suffit pas. Le réflexe part en quelques millisecondes parce qu'il réveille souvent une mémoire plus ancienne : la peur de ne pas être choisi, d'être rejeté, critiqué ou impuissant.</p>
 
-    <p>Une situation actuelle peut réveiller une sensation déjà connue :</p>
+    <p>Mais entre <strong>ce qui se passe</strong> et <strong>ce que vous faites</strong>, il existe un intervalle précieux : <strong>l'espace de conscience</strong>.</p>
 
-    <blockquote>
-      <p>
-        ne pas être choisi,<br>
-        être abandonné,<br>
-        être critiqué,<br>
-        devoir se débrouiller seul,<br>
-        ne pas être entendu,<br>
-        devoir mériter l’amour,<br>
-        perdre le contrôle.
-      </p>
-    </blockquote>
-
-    <p>Et parfois, il suffit d'un détail.</p>
+    <p>Il ne s'agit pas de refouler ses émotions ni de devenir un robot. Il s'agit d'empêcher l'émotion d'être le seul pilote à bord :</p>
 
     <p>
-      Un ton.<br>
-      Un silence.<br>
-      Un regard.<br>
-      Une distance.<br>
-      Une phrase.
+      Vous pouvez avoir peur <strong>sans contrôler</strong>.<br>
+      Vous pouvez être blessé <strong>sans blesser en retour</strong>.<br>
+      Vous pouvez poser une limite <strong>sans rejeter l'autre</strong>.
     </p>
 
-    <p>Le présent rencontre alors quelque chose de plus ancien.</p>
-
-    <p>Et ton système émotionnel peut réagir avant même que ton raisonnement ait eu le temps de dire :</p>
-
-    <blockquote>
-      <p><strong>« Attends… est-ce vraiment ce qui est en train de se passer ? »</strong></p>
-    </blockquote>
-
-    <p>C’est pour cela que certaines situations nous touchent beaucoup plus profondément que d’autres.</p>
-
-    <p>Deux personnes peuvent vivre exactement la même scène et ressentir des choses totalement différentes.</p>
-
-    <p>L’une pense :</p>
-
-    <blockquote>
-      <p>« Il est probablement occupé. »</p>
-    </blockquote>
-
-    <p>L’autre ressent :</p>
-
-    <blockquote>
-      <p>« Il est en train de m’abandonner. »</p>
-    </blockquote>
-
-    <p><strong>La situation est la même. L’expérience intérieure ne l’est pas.</strong></p>
-
     <div class="art-post-divider"></div>
 
-    <h2>Quand l'émotion prend le volant</h2>
+    <h2>3. L’exercice BEE : 3 questions en 30 secondes</h2>
 
-    <p>Le problème n’est pas d’avoir des émotions.</p>
-
-    <p>Les émotions sont précieuses.</p>
-
-    <p>
-      La peur peut nous protéger.<br>
-      La colère peut signaler qu’une limite a été franchie.<br>
-      La tristesse peut révéler un attachement.<br>
-      La frustration peut indiquer qu’un besoin n’est pas satisfait.
-    </p>
-
-    <p>Le problème apparaît lorsque l’émotion devient <strong>le seul pilote</strong>.</p>
-
-    <p>Parce qu’à cet instant, nous cherchons souvent à faire disparaître l’inconfort le plus vite possible.</p>
-
-    <p>
-      Alors nous répondons.<br>
-      Nous accusons.<br>
-      Nous nous justifions.<br>
-      Nous nous excusons alors que nous n’avons rien fait.<br>
-      Nous cherchons à être rassurés.<br>
-      Nous contrôlons.<br>
-      Nous fuyons.<br>
-      Nous coupons le contact.
-    </p>
-
-    <p>Et parfois…</p>
-
-    <p><strong>nous créons exactement la situation que nous voulions éviter.</strong></p>
-
-    <div class="art-post-divider"></div>
-
-    <h2>« Je savais que j’allais réagir comme ça… mais je n’ai pas pu m’en empêcher. »</h2>
-
-    <p>Cette phrase est beaucoup plus fréquente qu’on ne le croit.</p>
-
-    <p>Elle traduit souvent un décalage entre deux parties de nous.</p>
-
-    <p>Une partie <strong>comprend</strong>.</p>
-
-    <p>L’autre <strong>réagit</strong>.</p>
-
-    <p>Tu peux savoir intellectuellement que ton partenaire a le droit d’avoir besoin d’espace…</p>
-
-    <p>…et ressentir malgré tout une immense panique lorsqu’il prend ses distances.</p>
-
-    <p>Tu peux savoir qu’une critique ne remet pas en cause ta valeur…</p>
-
-    <p>…et pourtant te sentir immédiatement attaqué.</p>
-
-    <p>Tu peux savoir que tu as le droit de dire non…</p>
-
-    <p>…et ressentir une énorme culpabilité au moment de poser une limite.</p>
-
-    <p><strong>Comprendre ne suffit donc pas toujours à changer.</strong></p>
-
-    <p>Il faut aussi apprendre à reconnaître ce qui se passe <strong>dans l’instant où l’automatisme apparaît</strong>.</p>
-
-    <div class="art-post-divider"></div>
-
-    <h2>Le petit espace qui change tout</h2>
-
-    <p>Il existe pourtant un moment précieux.</p>
-
-    <p>Un moment minuscule.</p>
-
-    <p>Entre <strong>ce qui se passe</strong> et <strong>ce que tu fais</strong>.</p>
-
-    <p>C’est là que commence la liberté relationnelle.</p>
-
-    <p>La situation arrive.</p>
-
-    <p>Ton émotion monte.</p>
-
-    <p>Ton automatisme veut prendre le relais.</p>
-
-    <p>Et tu peux apprendre à créer un espace.</p>
-
-    <p>Pas pour supprimer ton émotion.</p>
-
-    <p>Pas pour devenir froid.</p>
-
-    <p>Pas pour tout analyser pendant trois heures.</p>
-
-    <p>Simplement pour te demander :</p>
-
-    <blockquote>
-      <p><strong>« Qu’est-ce qui est réellement en train de se passer ? »</strong></p>
-    </blockquote>
-
-    <p>Puis :</p>
-
-    <blockquote>
-      <p><strong>« Qu’est-ce que je suis en train d’imaginer ? »</strong></p>
-    </blockquote>
-
-    <p>Et enfin :</p>
-
-    <blockquote>
-      <p><strong>« De quoi ai-je réellement besoin maintenant ? »</strong></p>
-    </blockquote>
-
-    <p>Ces trois questions peuvent parfois suffire à modifier complètement la suite de l’histoire.</p>
-
-    <div class="art-post-divider"></div>
-
-    <h2>Une situation. Deux réponses.</h2>
-
-    <p>Imagine que ton partenaire te dise :</p>
-
-    <blockquote>
-      <p><strong>« J’ai besoin d’être seul ce soir. »</strong></p>
-    </blockquote>
-
-    <div class="bee-contrast-box">
-      <div class="bee-contrast-grid">
-        <div class="bee-contrast-col col-auto">
-          <div class="bee-contrast-header">⚡ Réaction automatique</div>
-          <p style="font-size:16px;line-height:1.7;color:#7F1D1D;">
-            <strong>« Donc tu ne veux plus être avec moi. »</strong>
-          </p>
-          <p style="font-size:14.5px;line-height:1.7;color:#4B5563;">
-            Tu te sens rejeté.<br>
-            Tu attaques.<br>
-            Ou tu te fermes.<br>
-            Ou tu demandes dix fois :<br>
-            <em>« Qu’est-ce que j’ai fait ? »</em>
-          </p>
-        </div>
-
-        <div class="bee-contrast-col col-conscious">
-          <div class="bee-contrast-header">🐝 Réponse consciente</div>
-          <p style="font-size:14.5px;line-height:1.7;color:#4A3319;margin-bottom:12px;">
-            Tu ressens malgré tout une inquiétude. Mais tu t’arrêtes.
-          </p>
-          <p style="font-size:13.5px;line-height:1.6;color:#6B4C2A;margin-bottom:12px;">
-            <strong>Le fait :</strong> « Il me dit qu’il a besoin d’être seul ce soir. »<br>
-            <strong>L’interprétation :</strong> « J’ai peur qu’il s’éloigne de moi. »<br>
-            <strong>Le besoin :</strong> « J’ai besoin d’être rassuré sur notre relation. »
-          </p>
-          <div style="background:rgba(217,119,6,0.1);padding:12px 14px;border-radius:10px;border-left:3px solid #D97706;font-size:15px;color:#3D2710;">
-            <strong>« D’accord. Je respecte ton besoin d’espace. De mon côté, ça réveille une petite inquiétude. J’aimerais simplement savoir qu’on pourra en reparler demain. »</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <p>La peur est toujours là.</p>
-
-    <p>Mais elle ne conduit plus la voiture.</p>
-
-    <p><strong>Tu conduis avec elle.</strong></p>
-
-    <p>Et cette différence est immense.</p>
-
-    <div class="art-post-divider"></div>
-
-    <h2>Réagir moins fort ne signifie pas ressentir moins</h2>
-
-    <p>C’est une confusion importante.</p>
-
-    <p>L’objectif n’est pas de devenir quelqu’un qui ne ressent plus rien.</p>
-
-    <p>Ce n’est pas de se dire :</p>
-
-    <blockquote>
-      <p>« Je ne dois pas être sensible. »</p>
-    </blockquote>
-
-    <p>Ou :</p>
-
-    <blockquote>
-      <p>« Je dois apprendre à ne plus avoir peur. »</p>
-    </blockquote>
-
-    <p>La congruence ne consiste pas à supprimer ce qui se passe en soi.</p>
-
-    <p>Elle consiste à pouvoir dire :</p>
-
-    <blockquote>
-      <p><strong>« Voilà ce que je ressens. Voilà ce que cette situation réveille en moi. Et malgré cela, je peux choisir comment je vais agir. »</strong></p>
-    </blockquote>
-
-    <p>
-      Tu peux être en colère <strong>sans blesser</strong>.<br>
-      Tu peux avoir peur <strong>sans contrôler</strong>.<br>
-      Tu peux être triste <strong>sans t’effondrer dans l’autre</strong>.<br>
-      Tu peux avoir besoin d’être rassuré <strong>sans exiger</strong>.<br>
-      Tu peux poser une limite <strong>sans rejeter</strong>.
-    </p>
-
-    <p>C’est cela, progressivement, retrouver une forme de liberté dans ses relations.</p>
-
-    <div class="art-post-divider"></div>
-
-    <h2>L’exercice BEE : 60 secondes pour revenir au réel</h2>
-
-    <p>La prochaine fois que tu sens une réaction monter fortement, ne cherche pas immédiatement à la résoudre.</p>
-
-    <p>Prends simplement quelques secondes.</p>
+    <p>Dès que vous sentez une réaction disproportionnée monter, offrez-vous 30 secondes avant de parler ou d'envoyer un message :</p>
 
     <div class="bee-exercise-box">
-      <span class="bee-exercise-badge">Protocole d'alignement rapide</span>
+      <span class="bee-exercise-badge">Micro-Pause d'Alignement</span>
 
       <div class="bee-exercise-step">
-        <div class="bee-exercise-num">1. Qu’est-ce qui s’est réellement passé ?</div>
-        <p style="font-size:15.5px;color:#5A3A1A;margin:0;">Une phrase. Un geste. Un silence. Un comportement observable.</p>
+        <div class="bee-exercise-num">1. Quel est le fait brut ?</div>
+        <p style="font-size:14.5px;color:#5A3A1A;margin:0;">Ce qu'une caméra enregistrerait, sans aucun adjectif.</p>
       </div>
 
       <div class="bee-exercise-step">
-        <div class="bee-exercise-num">2. Qu’est-ce que je suis en train de raconter à mon cerveau ?</div>
-        <p style="font-size:15px;font-style:italic;color:#B45309;margin:0;">
-          « Il m’abandonne. » &bull; « Elle me manque de respect. » &bull; « On profite de moi. » &bull; « Je ne suis pas important. »
-        </p>
+        <div class="bee-exercise-num">2. Quelle histoire suis-je en train de me raconter ?</div>
+        <p style="font-size:14.5px;font-style:italic;color:#B45309;margin:0;">L'interprétation qui allume la panique ou la rancœur.</p>
       </div>
 
       <div class="bee-exercise-step">
-        <div class="bee-exercise-num">3. Qu’est-ce que je ressens ?</div>
-        <p style="font-size:15.5px;color:#5A3A1A;margin:0;">
-          Pas ce que l’autre fait. <strong>Ce que toi, tu ressens.</strong><br>
-          Peur ? Colère ? Tristesse ? Honte ? Frustration ?
-        </p>
-      </div>
-
-      <div class="bee-exercise-step">
-        <div class="bee-exercise-num">4. De quoi ai-je besoin ?</div>
-        <p style="font-size:15.5px;color:#5A3A1A;margin:0;">
-          Être rassuré ? Être respecté ? Être entendu ? Avoir de l’espace ? Poser une limite ? Comprendre ?
-        </p>
-      </div>
-
-      <div class="bee-exercise-step">
-        <div class="bee-exercise-num">5. Quelle réponse serait fidèle à ce que je veux vraiment construire ?</div>
-        <p style="font-size:15.5px;color:#5A3A1A;margin:0;">
-          C’est ici que tu récupères ton pouvoir. Pas en contrôlant l’autre : <strong>en choisissant ta propre réponse.</strong>
-        </p>
+        <div class="bee-exercise-num">3. Quelle réponse me ressemble vraiment ?</div>
+        <p style="font-size:14.5px;color:#5A3A1A;margin:0;">La réponse qui protège la relation tout en honorant mon besoin réel.</p>
       </div>
     </div>
 
-    <div class="art-post-divider"></div>
-
-    <h2>Et si le problème n'était pas ta sensibilité ?</h2>
-
-    <p>Peut-être que tu t’es déjà reproché de réagir « trop ».</p>
-
-    <p>
-      Trop sensible.<br>
-      Trop intense.<br>
-      Trop anxieux.<br>
-      Trop susceptible.<br>
-      Trop exigeant.
-    </p>
-
-    <p>Mais peut-être que la bonne question est différente.</p>
-
-    <p>Pas :</p>
-
-    <blockquote>
-      <p><strong>« Pourquoi suis-je comme ça ? »</strong></p>
-    </blockquote>
-
-    <p>Mais :</p>
-
-    <blockquote>
-      <p><strong>« Qu’est-ce qui s’active en moi dans cette situation ? »</strong></p>
-    </blockquote>
-
-    <p>Cette question ne te condamne pas.</p>
-
-    <p>Elle t’ouvre.</p>
-
-    <p>Elle transforme un défaut supposé en information.</p>
-
-    <p>Une réaction en signal.</p>
-
-    <p>Un automatisme en possibilité de choix.</p>
-
-    <p>Et parfois, derrière une réaction qui semble disproportionnée, il n’y a pas quelqu’un de « trop ».</p>
-
-    <p>Il y a simplement une partie de toi qui essaie encore de te protéger avec les moyens qu’elle connaît.</p>
-
-    <div class="art-post-divider"></div>
-
-    <h2>La congruence commence ici</h2>
-
-    <p>Être congruent ne signifie pas toujours être calme.</p>
-
-    <p>Cela ne signifie pas toujours avoir la bonne réaction.</p>
-
-    <p>Et surtout, cela ne signifie pas ne plus être touché.</p>
-
-    <p>La congruence commence peut-être beaucoup plus simplement :</p>
-
-    <div class="bee-quote-callout">
-      <p>« Voir ce qui se passe en soi avant de demander à l’autre de changer. »</p>
-    </div>
-
-    <p>
-      Voir le fait.<br>
-      Voir l’interprétation.<br>
-      Voir l’émotion.<br>
-      Voir l’automatisme.
-    </p>
-
-    <p>Puis retrouver un petit espace pour choisir.</p>
-
-    <p>Parce qu’entre :</p>
-
-    <p><strong>« Il m’a blessé. »</strong></p>
-
-    <p>et</p>
-
-    <p><strong>« Je vais le blesser en retour. »</strong></p>
-
-    <p>il existe un espace.</p>
-
-    <p>Petit.</p>
-
-    <p>Fragile.</p>
-
-    <p>Parfois très difficile à trouver.</p>
-
-    <p>Mais cet espace existe.</p>
-
-    <p><strong>Et c’est précisément là que quelque chose peut changer.</strong></p>
-
-    <div class="art-post-divider"></div>
-
-    <h2>🐝 Le défi BEE</h2>
-
-    <p>La prochaine fois que tu te surprends à penser :</p>
-
-    <blockquote>
-      <p><strong>« Je réagis trop fort… »</strong></p>
-    </blockquote>
-
-    <p>ne te juge pas.</p>
-
-    <p>Arrête-toi simplement quelques secondes et demande-toi :</p>
-
-    <p>
-      <strong>Qu’est-ce qui s’est passé ?</strong><br>
-      <strong>Qu’est-ce que j’ai imaginé ?</strong><br>
-      <strong>Qu’est-ce que je ressens ?</strong><br>
-      <strong>De quoi ai-je besoin ?</strong><br>
-      <strong>Quelle réponse me ressemble vraiment ?</strong>
-    </p>
-
-    <p>Tu n’as pas besoin de transformer toute ta manière d’être.</p>
-
-    <p><strong>Parfois, une seule seconde de conscience suffit à créer une autre réponse.</strong></p>
-
-    <p>Et cette seconde peut changer toute une interaction.</p>
-
-    <div class="art-post-divider"></div>
-
-    <h3>Et toi ?</h3>
-
-    <p>Quelle situation déclenche chez toi une réaction qui te surprend parfois par son intensité ?</p>
-
-    <p>
-      Un silence ?<br>
-      Une critique ?<br>
-      Une distance ?<br>
-      Un « non » ?<br>
-      Le sentiment de ne pas être choisi ?
-    </p>
-
-    <p><strong>C’est peut-être justement là que ton prochain entraînement commence.</strong></p>
+    <p><strong>Parfois, une seule seconde de pause suffit à transformer une réaction automatique en une réponse choisie.</strong> Et cette seconde change tout.</p>
 
   </article>
 
-  <!-- Final BEE Transformation CTA -->
+  <!-- Final BEE Conversion CTA -->
   <div class="art-bee-final-cta">
     <div class="art-bee-final-badge">🐝 L'Espace BEE &bull; 7 Minutes</div>
     <h3 class="art-bee-final-title">« Réagir est automatique. Répondre est un choix. »</h3>
     <p class="art-bee-final-desc">
-      BEE Congruence ne vous demande pas de supprimer vos émotions ou de devenir quelqu'un d'autre. Nous vous aidons à ouvrir ce petit espace d'une seconde entre ce qui se passe, ce que vous ressentez et ce que vous choisissez de répondre.
+      BEE Congruence vous entraîne à reconnaître vos réflexes défensifs et à créer cet espace d'une seconde sur des situations concrètes du quotidien.
     </p>
     <div class="art-bee-cta-buttons">
       <a href="/experience" class="art-btn-main">
