@@ -334,13 +334,145 @@
 .dash-empty p { color: var(--brown-light); font-family: 'Nunito', sans-serif; font-size: 15px; margin-bottom: 20px; }
 
 /* ══════════════════════════════════════════════
-   RESPONSIVE
+   HEADER ACTIONS & BOUTON SYNC
 ══════════════════════════════════════════════ */
-@media (max-width: 700px) {
-  .dashboard-wrapper { padding: 32px 20px 60px; }
-  .result-axis-name { min-width: 140px; font-size: 13px; }
-  .scenarios-grid { grid-template-columns: 1fr; }
-  .pay-modal { padding: 28px 20px; }
+.dash-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.btn-sync-mobile {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--amber, #E8A020);
+  color: var(--brown-dark, #1A1612);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(232, 160, 32, 0.25);
+}
+.btn-sync-mobile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(232, 160, 32, 0.35);
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE MOBILE HAUTE QUALITÉ
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .dashboard-wrapper {
+    padding: 24px 16px 60px;
+  }
+  .dash-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+  }
+  .dash-header > div:first-child {
+    width: 100%;
+  }
+  .dash-header-actions {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+  }
+  .dash-header-actions .btn-sync-mobile {
+    flex: 1;
+    justify-content: center;
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+  .dash-header-actions .dash-logout {
+    flex: 0 0 auto;
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+  .dash-greeting {
+    font-size: 22px;
+  }
+  .dash-section-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  /* Barres horizontales réorganisées pour fluidité mobile */
+  .results-axes {
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .result-axis-row {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    background: var(--warm-white);
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .result-axis-name {
+    min-width: unset;
+    flex: 1 1 70%;
+    font-size: 13px;
+  }
+  .result-axis-pct {
+    min-width: unset;
+    flex: 0 0 auto;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .result-axis-bar-track {
+    width: 100%;
+    flex: 1 1 100%;
+    height: 10px;
+  }
+
+  /* Radar Chart */
+  .radar-chart-container {
+    max-width: 100%;
+    margin: 0 auto 24px;
+  }
+  .radar-legend {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  /* Onglets d'évolution */
+  .evolution-toggle {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+  .evol-tab {
+    flex: 1;
+    font-size: 12px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+
+  /* Scénarios */
+  .scenarios-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .scenario-card {
+    padding: 20px 16px;
+  }
+
+  /* Modale */
+  .pay-modal {
+    padding: 24px 16px;
+    width: 92%;
+    border-radius: 20px;
+  }
 }
 </style>
 </head>
@@ -383,7 +515,12 @@
         <div class="dash-email" id="dash-user-email"></div>
         <div id="dash-plan-badge"></div>
       </div>
-      <button class="dash-logout" onclick="handleLogout()">Se déconnecter</button>
+      <div class="dash-header-actions">
+        <button class="btn-sync-mobile" id="btnSyncMobile" onclick="openSyncModal()" title="Transférer mon profil sur mon smartphone">
+          📱 Relier mon mobile
+        </button>
+        <button class="dash-logout" onclick="handleLogout()">Se déconnecter</button>
+      </div>
     </div>
 
     <!-- ── Résultats du diagnostic ── -->
@@ -475,8 +612,27 @@
 
     <!-- Empty state -->
     <div id="section-empty" class="dash-empty" style="display:none;">
-      <p>Aucun résultat trouvé. Avez-vous complété le questionnaire ?</p>
-      <a href="questionnaire.html" class="btn-primary btn-lg">Faire le diagnostic</a>
+      <p style="font-size:16px; font-weight:600; color:var(--brown-dark); margin-bottom:8px;">Aucun résultat trouvé sur cet appareil.</p>
+      <p style="color:var(--brown-light); font-size:14px; margin-bottom:24px;">Avez-vous complété le questionnaire ?</p>
+      
+      <div style="display:flex; flex-direction:column; gap:16px; max-width:380px; margin:0 auto 28px;">
+        <a href="questionnaire.html" class="btn-primary btn-lg">Faire le diagnostic (7 min)</a>
+      </div>
+
+      <div style="background:var(--warm-white); border:1.5px dashed var(--orange); border-radius:16px; padding:20px; max-width:440px; margin:0 auto; text-align:left; box-shadow:0 4px 16px rgba(0,0,0,0.04);">
+        <div style="display:flex; align-items:center; gap:8px; font-weight:700; color:var(--brown-dark); font-size:14px; margin-bottom:8px;">
+          <span>📱</span> Vous avez déjà fait le test sur ordinateur ?
+        </div>
+        <p style="font-size:13px; color:var(--brown-mid); line-height:1.6; margin-bottom:12px;">
+          Vos résultats sont conservés sur votre ordinateur. Pour les afficher sur ce mobile sans repasser le test :
+        </p>
+        <ol style="font-size:12px; color:var(--brown-mid); line-height:1.6; padding-left:18px; margin-bottom:14px;">
+          <li>Ouvrez votre profil sur votre <strong>ordinateur</strong></li>
+          <li>Cliquez sur <strong>« 📱 Relier mon mobile »</strong> en haut</li>
+          <li>Scannez le QR Code affiché avec ce téléphone</li>
+        </ol>
+        <button class="btn-outline btn-sm" style="width:100%; font-size:12px;" onclick="openPasteSyncModal()">Ou coller un lien de synchronisation</button>
+      </div>
     </div>
 
   </div>
@@ -488,6 +644,51 @@
     <a href="connexion.html" class="btn-primary btn-lg">Se connecter</a>
   </div>
 
+</div>
+
+<!-- ═══ MODAL SYNCHRONISATION QR CODE ═══ -->
+<div id="syncModal" class="pay-modal-overlay" style="display:none;" onclick="if(event.target===this)closeSyncModal()">
+  <div class="pay-modal" style="max-width:440px; text-align:center;">
+    <div style="font-size:36px; margin-bottom:8px;">📱 ⇄ 💻</div>
+    <div class="pay-modal-title" style="font-size:22px; margin-bottom:6px;">Relier mon smartphone</div>
+    <p style="font-size:13px; color:var(--brown-mid); line-height:1.5; margin-bottom:18px;">
+      Retrouvez instantanément tous vos résultats, scores et scénarios sur votre mobile sans repasser le test !
+    </p>
+    
+    <div style="background:white; padding:16px; border-radius:16px; display:inline-block; border:1.5px solid var(--border); margin-bottom:14px; box-shadow:0 6px 20px rgba(0,0,0,0.06);">
+      <div id="syncQrCode" style="display:flex; justify-content:center;"></div>
+    </div>
+
+    <div style="font-size:13px; font-weight:700; color:var(--brown-dark); margin-bottom:16px;">
+      📸 Visez ce QR code avec l'appareil photo de votre mobile
+    </div>
+
+    <div style="border-top:1px solid var(--border); padding-top:14px; text-align:left;">
+      <p style="font-size:12px; color:var(--brown-light); margin-bottom:8px;">Ou envoyez-vous le lien direct :</p>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="syncLinkInput" readonly style="flex:1; padding:8px 12px; font-size:12px; border:1px solid var(--border); border-radius:8px; background:var(--cream); color:var(--brown-mid);" />
+        <button class="btn-primary btn-sm" onclick="copySyncLink()">Copier</button>
+      </div>
+    </div>
+
+    <button class="pay-modal-close" style="margin-top:18px;" onclick="closeSyncModal()">Fermer</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL COLLER LE LIEN SUR MOBILE ═══ -->
+<div id="pasteSyncModal" class="pay-modal-overlay" style="display:none;" onclick="if(event.target===this)closePasteSyncModal()">
+  <div class="pay-modal" style="max-width:400px; text-align:center;">
+    <div style="font-size:32px; margin-bottom:8px;">📲</div>
+    <div class="pay-modal-title" style="font-size:20px; margin-bottom:6px;">Synchroniser ce mobile</div>
+    <p style="font-size:13px; color:var(--brown-mid); margin-bottom:14px;">
+      Collez le lien ou code généré depuis votre ordinateur :
+    </p>
+    <textarea id="pasteSyncInput" placeholder="Collez le lien https://www.beecongruence.com/dashboard.html?sync=... ici" rows="3" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); font-size:12px; font-family:monospace; margin-bottom:14px; box-sizing:border-box;"></textarea>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-primary" style="flex:1;" onclick="applyPastedSync()">Synchroniser</button>
+      <button class="btn-outline" onclick="closePasteSyncModal()">Annuler</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ MODAL DE CONVERSION ═══ -->
@@ -521,6 +722,9 @@
 </footer>
 
 <script src="supabase.js"></script>
+<script src="qrcode.min.js"></script>
+<script src="sync-helper.js"></script>
+<script src="nav.js"></script>
 <script>
 
 // ════════════════════════════════════════════════════════
@@ -553,6 +757,11 @@ let radarLayerState  = { diag: true, skills: true };
 //  Init principal
 // ════════════════════════════════════════════════════════
 async function init() {
+  // Synchronisation mobile automatique si lien ?sync=...
+  if (typeof checkAutoSync === 'function') {
+    checkAutoSync();
+  }
+
   // Notification de déverrouillage post-paiement
   const params = new URLSearchParams(window.location.search);
   if (params.get('unlocked') === '1') {

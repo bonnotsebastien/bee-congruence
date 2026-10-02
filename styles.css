@@ -1062,6 +1062,28 @@ img {
   }
 }
 
+@media (max-width: 600px) {
+  .navbar {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  .logo img {
+    height: 38px !important;
+  }
+  .nav-actions {
+    gap: 6px;
+  }
+  .nav-actions span,
+  .nav-email-badge {
+    display: none !important;
+  }
+  .nav-actions .btn-primary,
+  .nav-actions .btn-outline {
+    padding: 7px 11px;
+    font-size: 12px;
+  }
+}
+
 /* ── Toast Notifications UI ── */
 #toastContainer {
   position: fixed;

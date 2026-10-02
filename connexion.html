@@ -184,6 +184,34 @@
       Pas encore de compte ? <a href="inscription.html">Rejoins la ruche</a>
       <br><br>
       Ou bien <a href="questionnaire.html">Faites le diagnostic gratuit →</a>
+      
+      <div style="margin-top:20px; padding:16px; background:var(--warm-white, #FAF7F0); border:1.5px dashed var(--orange, #E8A020); border-radius:12px; text-align:left;">
+        <div style="font-size:13px; font-weight:700; color:var(--brown-dark, #1A1612); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+          <span>📲</span> Déjà testé sur ordinateur ?
+        </div>
+        <p style="font-size:12px; color:var(--brown-mid, #5C5349); line-height:1.5; margin-bottom:10px;">
+          Retrouvez vos résultats sur ce mobile sans repasser le test : ouvrez votre profil sur ordinateur et cliquez sur <strong>« Relier mon mobile »</strong> pour scanner le QR Code.
+        </p>
+        <button type="button" onclick="openPasteSyncModal()" style="width:100%; padding:8px 12px; font-size:12px; font-family:'Nunito',sans-serif; font-weight:700; border:1px solid var(--orange, #E8A020); background:transparent; color:var(--orange, #E8A020); border-radius:8px; cursor:pointer;">
+          Coller un lien de synchronisation
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL COLLER LE LIEN SUR MOBILE ═══ -->
+<div id="pasteSyncModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closePasteSyncModal()">
+  <div style="background:white; border-radius:20px; padding:24px 20px; max-width:400px; width:100%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+    <div style="font-size:32px; margin-bottom:8px;">📲</div>
+    <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--brown-dark, #1A1612); margin-bottom:6px;">Synchroniser ce mobile</div>
+    <p style="font-size:13px; color:var(--brown-mid, #5C5349); margin-bottom:14px; line-height:1.5;">
+      Collez le lien ou code généré depuis votre profil sur ordinateur :
+    </p>
+    <textarea id="pasteSyncInput" placeholder="Collez le lien https://www.beecongruence.com/dashboard.html?sync=... ici" rows="3" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; font-size:12px; font-family:monospace; margin-bottom:14px; box-sizing:border-box;"></textarea>
+    <div style="display:flex; gap:8px;">
+      <button class="auth-btn" style="flex:1; margin-top:0; padding:10px;" onclick="applyPastedSync()">Synchroniser</button>
+      <button type="button" style="padding:10px 16px; border:1px solid #ccc; background:transparent; border-radius:10px; cursor:pointer;" onclick="closePasteSyncModal()">Annuler</button>
     </div>
   </div>
 </div>
@@ -205,6 +233,7 @@
 
 <script src="nav.js"></script>
 <script src="supabase.js"></script>
+<script src="sync-helper.js"></script>
 <script>
 async function handleLoginSubmit(event) {
   event.preventDefault();

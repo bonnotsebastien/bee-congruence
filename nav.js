@@ -56,11 +56,11 @@ async function checkUserSession() {
     }
   }
 
-  if (userEmail) {
+  if (userEmail && !window.location.pathname.includes('dashboard')) {
     const navActions = document.querySelector('.nav-actions');
     if (navActions) {
       navActions.innerHTML = `
-        <span style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--brown-mid);margin-right:8px;display:inline-flex;align-items:center;gap:4px;">🐝 ${userEmail}</span>
+        <span class="nav-email-badge" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--brown-mid);margin-right:8px;display:inline-flex;align-items:center;gap:4px;">🐝 ${userEmail}</span>
         <a href="dashboard.html" class="btn-primary">Mon Profil</a>
       `;
     }
