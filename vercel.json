@@ -22,6 +22,7 @@
     { "source": "/articles/pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite", "destination": "/pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite.html" },
     { "source": "/articles", "destination": "/articles.html" },
     { "source": "/introspection", "destination": "/introspection.html" },
-    { "source": "/scenario/:id", "destination": "/scenario-detail.html" }
+    { "source": "/scenario/:id", "destination": "/scenario-detail.html" },
+    { "source": "/admin", "destination": "/admin.html" }
   ]
 }

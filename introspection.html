@@ -140,6 +140,190 @@ input[type="range"].irange::-webkit-slider-thumb:hover { transform: scale(1.2); 
 .zone-btn:hover { border-color: rgba(217,119,6,0.5); }
 .zone-btn.sel   { border-color: #D97706; background: rgba(217,119,6,0.2); color: #FDFAF6; }
 
+/* ── Silhouette corporelle interactive ── */
+.silhouette-container {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 20px 16px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.silhouette-tabs {
+  display: inline-flex;
+  background: rgba(0,0,0,0.25);
+  border-radius: 50px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.silhouette-tab {
+  padding: 7px 18px;
+  border-radius: 50px;
+  border: none;
+  background: transparent;
+  color: rgba(253,250,246,0.6);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.silhouette-tab.active {
+  background: #D97706;
+  color: white;
+  box-shadow: 0 2px 8px rgba(217,119,6,0.3);
+}
+.silhouette-viewport {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 290px;
+}
+.body-svg {
+  width: 100%;
+  max-width: 170px;
+  height: auto;
+  filter: drop-shadow(0 4px 14px rgba(0,0,0,0.35));
+}
+.body-part {
+  fill: rgba(255,255,255,0.07);
+  stroke: rgba(255,255,255,0.18);
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: fill 0.25s, stroke 0.25s, filter 0.25s;
+}
+.body-part:hover {
+  fill: rgba(217,119,6,0.25);
+  stroke: #D97706;
+}
+.body-part.selected-agreable {
+  fill: rgba(74, 124, 89, 0.65) !important;
+  stroke: #5A8A3A !important;
+  filter: drop-shadow(0 0 6px rgba(90, 138, 58, 0.7));
+}
+.body-part.selected-tension {
+  fill: rgba(217, 119, 6, 0.65) !important;
+  stroke: #F59E0B !important;
+  filter: drop-shadow(0 0 6px rgba(217, 119, 6, 0.7));
+}
+.silhouette-hint {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  color: rgba(253,250,246,0.45);
+  margin-top: 10px;
+}
+/* Modal/popover choix de sensation */
+.sensation-dialog {
+  display: none;
+  background: #25201A;
+  border: 1px solid rgba(217,119,6,0.4);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 14px;
+  text-align: center;
+  animation: stepIn 0.25s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.sensation-dialog.active { display: block; }
+.sensation-dialog-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  color: #FDFAF6;
+  margin-bottom: 4px;
+}
+.sensation-dialog-sub {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  color: rgba(253,250,246,0.6);
+  margin-bottom: 12px;
+}
+.sensation-options {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.sensation-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 50px;
+  border: 1.5px solid transparent;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-sens-agreable {
+  background: rgba(74, 124, 89, 0.18);
+  border-color: #4A7C59;
+  color: #8FD8A0;
+}
+.btn-sens-agreable:hover {
+  background: rgba(74, 124, 89, 0.35);
+}
+.btn-sens-tension {
+  background: rgba(217, 119, 6, 0.18);
+  border-color: #D97706;
+  color: #FBBF24;
+}
+.btn-sens-tension:hover {
+  background: rgba(217, 119, 6, 0.35);
+}
+.btn-sens-remove {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.15);
+  color: rgba(253,250,246,0.6);
+}
+.btn-sens-remove:hover {
+  color: #FDFAF6;
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* Zone Tags list */
+.selected-zones-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.zone-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  animation: stepIn 0.2s ease;
+}
+.zone-chip.chip-agreable {
+  background: rgba(74, 124, 89, 0.2);
+  border: 1px solid #4A7C59;
+  color: #A3E6B5;
+}
+.zone-chip.chip-tension {
+  background: rgba(217, 119, 6, 0.2);
+  border: 1px solid #D97706;
+  color: #FCD34D;
+}
+.zone-chip-close {
+  cursor: pointer;
+  opacity: 0.6;
+  font-size: 14px;
+  margin-left: 2px;
+  transition: opacity 0.15s;
+}
+.zone-chip-close:hover { opacity: 1; }
+
+
 /* Textarea mental */
 .intro-textarea {
   width: 100%; padding: 14px 16px;
@@ -340,15 +524,89 @@ body.age-enfant .slider-name        { font-size: 15px; }
       </div>
 
       <div class="intro-divider"></div>
-      <div class="zone-section-label">Où ressens-tu des tensions ? (plusieurs choix)</div>
-      <div class="body-zones" id="bodyZones">
-        <button class="zone-btn" data-zone="Tête"     onclick="toggleZone(this)">🧠 Tête</button>
-        <button class="zone-btn" data-zone="Épaules"  onclick="toggleZone(this)">🤝 Épaules</button>
-        <button class="zone-btn" data-zone="Mâchoire" onclick="toggleZone(this)">😬 Mâchoire</button>
-        <button class="zone-btn" data-zone="Poitrine" onclick="toggleZone(this)">❤️ Poitrine</button>
-        <button class="zone-btn" data-zone="Ventre"   onclick="toggleZone(this)">🌀 Ventre</button>
-        <button class="zone-btn" data-zone="Jambes"   onclick="toggleZone(this)">🦵 Jambes</button>
-        <button class="zone-btn" data-zone="Nulle part" onclick="toggleZone(this)">✨ Nulle part</button>
+      <div class="zone-section-label">Carte corporelle interactive — Touche une zone pour qualifier ton ressenti</div>
+      
+      <div class="silhouette-container">
+        <!-- Toggle Face / Dos -->
+        <div class="silhouette-tabs">
+          <button type="button" class="silhouette-tab active" id="tabFace" onclick="switchSilhouetteView('face')">👤 Vue de Face</button>
+          <button type="button" class="silhouette-tab" id="tabDos" onclick="switchSilhouetteView('dos')">🔄 Vue de Dos</button>
+        </div>
+
+        <div class="silhouette-viewport">
+          <!-- Vue de Face -->
+          <svg class="body-svg" id="svgFace" viewBox="0 0 160 300">
+            <!-- Tête / Visage -->
+            <ellipse cx="80" cy="32" rx="18" ry="22" class="body-part" data-zone="Tête" data-view="face"/>
+            <!-- Gorge -->
+            <rect x="74" y="54" width="12" height="14" rx="3" class="body-part" data-zone="Gorge" data-view="face"/>
+            <!-- Épaules -->
+            <path d="M 40 76 C 52 64, 68 64, 74 68 L 86 68 C 92 64, 108 64, 120 76 L 114 86 C 102 76, 92 78, 86 78 L 74 78 C 68 78, 58 76, 46 86 Z" class="body-part" data-zone="Épaules" data-view="face"/>
+            <!-- Poitrine / Thorax -->
+            <path d="M 52 82 L 108 82 C 112 104, 102 118, 80 120 C 58 118, 48 104, 52 82 Z" class="body-part" data-zone="Poitrine" data-view="face"/>
+            <!-- Ventre / Plexus -->
+            <path d="M 54 122 C 70 120, 90 120, 106 122 C 108 142, 100 156, 80 158 C 60 156, 52 142, 54 122 Z" class="body-part" data-zone="Ventre" data-view="face"/>
+            <!-- Bras gauche -->
+            <path d="M 38 84 C 44 82, 48 88, 46 98 L 38 148 C 36 156, 26 156, 24 148 L 32 98 C 32 88, 35 84, 38 84 Z" class="body-part" data-zone="Bras" data-view="face"/>
+            <!-- Bras droit -->
+            <path d="M 122 84 C 116 82, 112 88, 114 98 L 122 148 C 124 156, 134 156, 136 148 L 128 98 C 128 88, 125 84, 122 84 Z" class="body-part" data-zone="Bras" data-view="face"/>
+            <!-- Bassin / Hanches -->
+            <path d="M 54 160 C 70 159, 90 159, 106 160 L 108 182 C 95 190, 88 190, 80 186 C 72 190, 65 190, 52 182 Z" class="body-part" data-zone="Bassin" data-view="face"/>
+            <!-- Jambe gauche -->
+            <path d="M 53 184 C 64 188, 75 186, 76 184 L 72 232 C 70 252, 72 280, 64 284 C 58 284, 54 267, 54 247 L 50 197 C 50 190, 51 186, 53 184 Z" class="body-part" data-zone="Jambes" data-view="face"/>
+            <!-- Jambe droite -->
+            <path d="M 107 184 C 96 188, 85 186, 84 184 L 88 232 C 90 252, 88 280, 96 284 C 102 284, 106 267, 106 247 L 110 197 C 110 190, 109 186, 107 184 Z" class="body-part" data-zone="Jambes" data-view="face"/>
+          </svg>
+
+          <!-- Vue de Dos -->
+          <svg class="body-svg" id="svgDos" viewBox="0 0 160 300" style="display:none;">
+            <!-- Arrière de tête -->
+            <ellipse cx="80" cy="32" rx="18" ry="22" class="body-part" data-zone="Tête" data-view="dos"/>
+            <!-- Nuque / Cervicales -->
+            <rect x="74" y="54" width="12" height="16" rx="4" class="body-part" data-zone="Nuque" data-view="dos"/>
+            <!-- Haut du dos / Omoplates -->
+            <path d="M 40 76 C 52 64, 68 64, 74 68 L 86 68 C 92 64, 108 64, 120 76 L 108 114 C 90 114, 70 114, 52 114 Z" class="body-part" data-zone="Haut du dos" data-view="dos"/>
+            <!-- Bas du dos / Lombaires -->
+            <path d="M 52 116 C 70 116, 90 116, 108 116 L 105 154 C 90 156, 70 156, 55 154 Z" class="body-part" data-zone="Bas du dos" data-view="dos"/>
+            <!-- Bras dos gauche -->
+            <path d="M 38 84 C 44 82, 48 88, 46 98 L 38 148 C 36 156, 26 156, 24 148 L 32 98 C 32 88, 35 84, 38 84 Z" class="body-part" data-zone="Bras" data-view="dos"/>
+            <!-- Bras dos droit -->
+            <path d="M 122 84 C 116 82, 112 88, 114 98 L 122 148 C 124 156, 134 156, 136 148 L 128 98 C 128 88, 125 84, 122 84 Z" class="body-part" data-zone="Bras" data-view="dos"/>
+            <!-- Fessiers / Sacrum -->
+            <path d="M 54 156 C 70 158, 90 158, 106 156 C 112 176, 102 188, 80 188 C 58 188, 48 176, 54 156 Z" class="body-part" data-zone="Fessiers" data-view="dos"/>
+            <!-- Jambes dos gauche -->
+            <path d="M 53 184 C 64 188, 75 186, 76 184 L 72 232 C 70 252, 72 280, 64 284 C 58 284, 54 267, 54 247 L 50 197 C 50 190, 51 186, 53 184 Z" class="body-part" data-zone="Jambes" data-view="dos"/>
+            <!-- Jambes dos droit -->
+            <path d="M 107 184 C 96 188, 85 186, 84 184 L 88 232 C 90 252, 88 280, 96 284 C 102 284, 106 267, 106 247 L 110 197 C 110 190, 109 186, 107 184 Z" class="body-part" data-zone="Jambes" data-view="dos"/>
+          </svg>
+        </div>
+
+        <div class="silhouette-hint">Touche n'importe quelle zone sur la silhouette pour exprimer ton ressenti</div>
+
+        <!-- Popover de sensation -->
+        <div class="sensation-dialog" id="sensationDialog">
+          <div class="sensation-dialog-title" id="sensationDialogTitle">Zone sélectionnée</div>
+          <div class="sensation-dialog-sub">Que ressens-tu dans cette partie de ton corps ?</div>
+          <div class="sensation-options">
+            <button type="button" class="sensation-btn btn-sens-agreable" onclick="applySensation('agreable')">
+              🟢 Agréable (détente, chaleur, ouverture)
+            </button>
+            <button type="button" class="sensation-btn btn-sens-tension" onclick="applySensation('tension')">
+              🔴 Inconfort / Tension (serrement, fatigue)
+            </button>
+            <button type="button" class="sensation-btn btn-sens-remove" onclick="applySensation('remove')">
+              ✕ Retirer
+            </button>
+          </div>
+        </div>
+
+        <!-- Zones sélectionnées -->
+        <div class="selected-zones-list" id="selectedZonesList"></div>
+      </div>
+
+      <!-- Option rapide globale -->
+      <div style="text-align:center;margin-bottom:28px;">
+        <button type="button" class="zone-btn" id="btnNullePart" onclick="resetAllBodyZones()">✨ Tout mon corps est détendu (aucune tension)</button>
       </div>
     </div>
 
@@ -490,7 +748,8 @@ const state = {
   emotions: [],
   emotionsSecondaires: [],
   intensite: 5,
-  corps: { energie: 5, tensions: 3, fatigue: 3, legerete: 6 },
+  corps: { energie: 5, tensions: 3, fatigue: 3, legerete: 6, zonesDetail: [] },
+  bodyZonesDetail: [], // [{ zone, view, sensation }]
   zonesTension: [],
   mental: { clarte: 6, concentration: 5, charge: 4, disponibilite: 7 },
   penseeOccupante: '',
@@ -513,9 +772,13 @@ function init() {
   buildEmotionGrid();
   buildSecEmotions();
 
+  // Silhouette corporelle interactive
+  initBodySilhouette();
+
   // Stepper dots
   buildStepper();
   updateNav();
+
 
   // Adaptation âge
   if (typeof applyAgeClass === 'function') applyAgeClass();
@@ -603,24 +866,155 @@ function toggleSecEmotion(btn, label) {
   }
 }
 
-function toggleZone(btn) {
-  const zone = btn.dataset.zone;
-  if (zone === 'Nulle part') {
-    document.querySelectorAll('#bodyZones .zone-btn').forEach(b => b.classList.remove('sel'));
-    btn.classList.add('sel');
-    state.zonesTension = [];
+// ── Silhouette corporelle interactive ──
+let currentActiveZone = null;
+
+function switchSilhouetteView(view) {
+  const isFace = view === 'face';
+  const tabFace = document.getElementById('tabFace');
+  const tabDos = document.getElementById('tabDos');
+  const svgFace = document.getElementById('svgFace');
+  const svgDos = document.getElementById('svgDos');
+  if (tabFace) tabFace.classList.toggle('active', isFace);
+  if (tabDos) tabDos.classList.toggle('active', !isFace);
+  if (svgFace) svgFace.style.display = isFace ? 'block' : 'none';
+  if (svgDos) svgDos.style.display = !isFace ? 'block' : 'none';
+  closeSensationDialog();
+}
+
+function initBodySilhouette() {
+  document.querySelectorAll('.body-part').forEach(part => {
+    part.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openSensationDialog(part);
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    const dialog = document.getElementById('sensationDialog');
+    if (dialog && !dialog.contains(e.target) && !e.target.classList.contains('body-part')) {
+      closeSensationDialog();
+    }
+  });
+}
+
+function openSensationDialog(part) {
+  const zone = part.dataset.zone;
+  const view = part.dataset.view;
+  currentActiveZone = { el: part, zone, view };
+
+  const dialog = document.getElementById('sensationDialog');
+  const title = document.getElementById('sensationDialogTitle');
+  if (title) {
+    title.textContent = `${zone} (${view === 'face' ? 'Vue de face' : 'Vue de dos'})`;
+  }
+  if (dialog) dialog.classList.add('active');
+}
+
+function closeSensationDialog() {
+  const dialog = document.getElementById('sensationDialog');
+  if (dialog) dialog.classList.remove('active');
+  currentActiveZone = null;
+}
+
+function applySensation(type) {
+  if (!currentActiveZone) return;
+  const { el, zone, view } = currentActiveZone;
+
+  const nullePartBtn = document.getElementById('btnNullePart');
+  if (nullePartBtn) nullePartBtn.classList.remove('sel');
+
+  if (type === 'remove') {
+    el.classList.remove('selected-agreable', 'selected-tension');
+    state.bodyZonesDetail = state.bodyZonesDetail.filter(z => !(z.zone === zone && z.view === view));
+  } else if (type === 'agreable') {
+    el.classList.remove('selected-tension');
+    el.classList.add('selected-agreable');
+    const existing = state.bodyZonesDetail.find(z => z.zone === zone && z.view === view);
+    if (existing) {
+      existing.sensation = 'agreable';
+    } else {
+      state.bodyZonesDetail.push({ zone, view, sensation: 'agreable' });
+    }
+  } else if (type === 'tension') {
+    el.classList.remove('selected-agreable');
+    el.classList.add('selected-tension');
+    const existing = state.bodyZonesDetail.find(z => z.zone === zone && z.view === view);
+    if (existing) {
+      existing.sensation = 'tension';
+    } else {
+      state.bodyZonesDetail.push({ zone, view, sensation: 'tension' });
+    }
+  }
+
+  syncZonesTension();
+  renderSelectedZones();
+  closeSensationDialog();
+}
+
+function syncZonesTension() {
+  state.zonesTension = Array.from(new Set(
+    state.bodyZonesDetail
+      .filter(z => z.sensation === 'tension')
+      .map(z => z.zone)
+  ));
+}
+
+function renderSelectedZones() {
+  const container = document.getElementById('selectedZonesList');
+  if (!container) return;
+
+  if (state.bodyZonesDetail.length === 0) {
+    container.innerHTML = '';
     return;
   }
-  document.querySelectorAll('#bodyZones .zone-btn[data-zone="Nulle part"]').forEach(b => b.classList.remove('sel'));
 
-  if (btn.classList.contains('sel')) {
-    btn.classList.remove('sel');
-    state.zonesTension = state.zonesTension.filter(z => z !== zone);
-  } else {
-    btn.classList.add('sel');
-    state.zonesTension.push(zone);
-  }
+  container.innerHTML = state.bodyZonesDetail.map(z => {
+    const isAgreable = z.sensation === 'agreable';
+    const icon = isAgreable ? '🟢' : '🔴';
+    const cls = isAgreable ? 'chip-agreable' : 'chip-tension';
+    const sensLabel = isAgreable ? 'Agréable' : 'Tension';
+    const viewLabel = z.view === 'face' ? 'Face' : 'Dos';
+    return `
+      <div class="zone-chip ${cls}">
+        <span>${icon} ${z.zone} <small style="opacity:0.7">(${viewLabel} · ${sensLabel})</small></span>
+        <span class="zone-chip-close" onclick="removeZoneFromList('${z.zone}','${z.view}')" title="Retirer">✕</span>
+      </div>
+    `;
+  }).join('');
 }
+
+function removeZoneFromList(zone, view) {
+  const svg = view === 'face' ? document.getElementById('svgFace') : document.getElementById('svgDos');
+  if (svg) {
+    const el = svg.querySelector(`.body-part[data-zone="${zone}"]`);
+    if (el) el.classList.remove('selected-agreable', 'selected-tension');
+  }
+  state.bodyZonesDetail = state.bodyZonesDetail.filter(z => !(z.zone === zone && z.view === view));
+  syncZonesTension();
+  renderSelectedZones();
+}
+
+function resetAllBodyZones() {
+  document.querySelectorAll('.body-part').forEach(p => {
+    p.classList.remove('selected-agreable', 'selected-tension');
+  });
+  state.bodyZonesDetail = [];
+  state.zonesTension = ['Nulle part'];
+  closeSensationDialog();
+
+  const container = document.getElementById('selectedZonesList');
+  if (container) {
+    container.innerHTML = `
+      <div class="zone-chip chip-agreable">
+        <span>✨ Tout le corps est détendu (aucune tension)</span>
+      </div>
+    `;
+  }
+  const btn = document.getElementById('btnNullePart');
+  if (btn) btn.classList.add('sel');
+}
+
 
 function togglePenseeField() {
   const show = document.getElementById('penseeCheck').checked;
@@ -709,7 +1103,9 @@ function collectCurrentStep() {
         tensions: parseInt(document.getElementById('tensionsSlider').value),
         fatigue: parseInt(document.getElementById('fatigueSlider').value),
         legerete: parseInt(document.getElementById('legereteSlider').value),
+        zonesDetail: [...state.bodyZonesDetail],
       };
+      syncZonesTension();
       break;
     case 2:
       state.mental = {
@@ -797,11 +1193,16 @@ function buildSynthesis() {
   const energyLevel = scores.energie >= 70 ? 'élevé' : scores.energie >= 40 ? 'moyen' : 'bas';
   const disponLevel = scores.disponibilite >= 70 ? 'pleinement disponible' : scores.disponibilite >= 40 ? 'assez disponible' : 'peu disponible';
 
+  const agreableZones = state.bodyZonesDetail.filter(z => z.sensation === 'agreable').map(z => z.zone);
+  const tensionZones = state.bodyZonesDetail.filter(z => z.sensation === 'tension').map(z => z.zone);
+  let zonesSummary = '';
+  if (agreableZones.length) zonesSummary += `Des zones de détente ou d'ouverture : ${agreableZones.join(', ')}. `;
+  if (tensionZones.length) zonesSummary += `Des tensions ou inconforts : ${tensionZones.join(', ')}. `;
+
   document.getElementById('synthesisText').textContent =
     `Tu arrives à ce scénario ${mainEmotion ? `avec une émotion de ${mainEmotion.label.toLowerCase()}` : 'prêt(e)'}, ` +
     `un niveau d'énergie ${energyLevel} et tu te sens ${disponLevel}. ` +
-    (state.zonesTension.length && !state.zonesTension.includes('Nulle part')
-      ? `Des tensions ont été notées dans : ${state.zonesTension.join(', ')}. ` : '') +
+    zonesSummary +
     `Cette photographie sera comparée à ton état à la fin de l'exercice.`;
 }
 

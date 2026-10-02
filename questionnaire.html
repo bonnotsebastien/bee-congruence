@@ -1189,72 +1189,132 @@ function computeAxisScores() {
 }
 
 async function showResultsAndSend() {
-  // 1. Afficher les résultats visuels normalement
-  showResults();
-
   const { scores, axeLabels } = computeAxisScores();
 
-  // Enregistrer immédiatement les résultats localement
+  // ── 1. Sauvegarde immédiate et robuste des résultats ──────────────
+  const diagnosticData = {
+    scores,
+    axis_labels: axeLabels,
+    completed_at: new Date().toISOString(),
+    answers: { ...answers },
+  };
+
+  // Sauvegarde locale (clé principale utilisée par dashboard.html)
+  try {
+    const existing = JSON.parse(localStorage.getItem('bee_diagnostic_results') || '[]');
+    existing.unshift(diagnosticData);
+    localStorage.setItem('bee_diagnostic_results', JSON.stringify(existing.slice(0, 10)));
+  } catch(e) {}
+
+  // Sauvegarde Supabase si disponible
   if (typeof saveDiagnosticResults === 'function') {
     saveDiagnosticResults('demo_user', scores, axeLabels).catch(() => {});
   }
 
-  // Notifier la fenêtre parente (si dans un iframe)
+  // Notifier iframe parent si applicable
   if (window.parent && window.parent !== window) {
-    window.parent.postMessage({
-      type: 'BEE_DIAGNOSTIC_COMPLETE',
-      scores,
-      axeLabels
-    }, '*');
+    window.parent.postMessage({ type: 'BEE_DIAGNOSTIC_COMPLETE', scores, axeLabels }, '*');
   }
 
-  // 2. Déclencher la modale d'inscription après 1.2s (laisse le temps de voir les résultats)
-  setTimeout(() => {
+  // ── 2. Afficher l'écran de chargement / génération du profil ──────
+  document.getElementById('questionnaireSection').style.display = 'none';
+  document.getElementById('submitSection').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+
+  // Créer ou afficher l'écran de génération
+  let genScreen = document.getElementById('profileGenScreen');
+  if (!genScreen) {
+    genScreen = document.createElement('div');
+    genScreen.id = 'profileGenScreen';
+    genScreen.style.cssText = 'max-width:640px;margin:80px auto;padding:40px 24px;text-align:center;';
+    genScreen.innerHTML = `
+      <div style="font-size:52px;margin-bottom:20px;animation:beeSpin 1.5s linear infinite;display:inline-block;">🐝</div>
+      <style>@keyframes beeSpin{0%{transform:rotate(-15deg) scale(1)}50%{transform:rotate(15deg) scale(1.15)}100%{transform:rotate(-15deg) scale(1)}}</style>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;font-style:italic;color:#1A1612;margin-bottom:12px;">Ton profil se construit…</h2>
+      <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:#7A7269;line-height:1.7;margin-bottom:32px;">Nous analysons tes réponses pour générer ton profil émotionnel et relationnel personnalisé.</p>
+      <div style="background:#F0E8D8;border-radius:4px;height:4px;overflow:hidden;max-width:280px;margin:0 auto;">
+        <div id="genProgressBar" style="height:100%;background:linear-gradient(90deg,#B8935A,#D4B483);border-radius:4px;width:0%;transition:width 0.4s ease;"></div>
+      </div>
+      <p id="genStatusMsg" style="font-family:'DM Sans',sans-serif;font-size:12px;color:#7A7269;margin-top:12px;">Calcul des scores en cours…</p>
+    `;
+    document.querySelector('.questionnaire') ? document.querySelector('.questionnaire').after(genScreen) : document.body.appendChild(genScreen);
+  }
+  genScreen.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Animation de progression
+  const bar = document.getElementById('genProgressBar');
+  const msg = document.getElementById('genStatusMsg');
+  const steps = [
+    { pct: 30, txt: 'Analyse des axes émotionnels…' },
+    { pct: 55, txt: 'Calcul du profil relationnel…' },
+    { pct: 75, txt: 'Génération des recommandations…' },
+    { pct: 92, txt: 'Finalisation de ton profil…' },
+  ];
+
+  for (const step of steps) {
+    await new Promise(r => setTimeout(r, 600));
+    if (bar) bar.style.width = step.pct + '%';
+    if (msg) msg.textContent = step.txt;
+  }
+
+  // ── 3. Tentative d'authentification / inscription automatique ──────
+  await new Promise(r => setTimeout(r, 500));
+
+  let user = null;
+  try {
+    if (typeof getUser === 'function') user = await getUser();
+  } catch(e) {}
+
+  if (!user) {
+    const localEmail = localStorage.getItem('bee_user_email');
+    if (localEmail) user = { id: 'demo_user', email: localEmail };
+  }
+
+  // Sauvegarde avec userId réel si disponible
+  if (user && typeof saveDiagnosticResults === 'function') {
+    try {
+      await saveDiagnosticResults(user.id, scores, axeLabels);
+    } catch(e) {}
+  }
+
+  // ── 4. Redirection vers dashboard avec données pré-chargées ───────
+  if (bar) bar.style.width = '100%';
+  if (msg) msg.textContent = 'Profil généré ! Redirection…';
+
+  await new Promise(r => setTimeout(r, 400));
+
+  // Stocker un flag pour que dashboard sache d'afficher les résultats immédiatement
+  localStorage.setItem('bee_just_completed_diagnostic', '1');
+
+  if (!user) {
+    // Pas connecté → ouvrir la modale d'inscription d'abord
     if (typeof beeAuthOpen === 'function') {
-      beeAuthOpen(scores, axeLabels);
-    }
-  }, 1200);
-
-  // 3. Envoi d'email via EmailJS
-  const banner = document.getElementById('emailBanner');
-  const bannerMsg = document.getElementById('emailBannerMsg');
-
-  if (typeof EMAILJS_PUBLIC_KEY !== 'undefined' && EMAILJS_PUBLIC_KEY.includes("VOTRE_PUBLIC_KEY")) {
-    if (banner) {
-      banner.style.display = 'flex';
-      bannerMsg.textContent = "✅ Diagnostic complété ! Vos résultats sont enregistrés.";
-      banner.style.background = "#1D9E75";
-      setTimeout(() => { banner.style.opacity = '0'; setTimeout(() => banner.style.display = 'none', 400); }, 4000);
+      genScreen.style.display = 'none';
+      showResults(); // afficher les résultats en attendant
+      setTimeout(() => beeAuthOpen(scores, axeLabels), 800);
+    } else {
+      window.location.href = 'dashboard.html';
     }
     return;
   }
 
-  if (banner) { banner.style.display = 'flex'; bannerMsg.textContent = "📩 Envoi du rapport à " + DEST_EMAIL + "…"; }
+  // Connecté → aller directement au dashboard
+  window.location.href = 'dashboard.html';
 
-  try {
-    const { html, date } = buildEmailSummary();
-
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      to_email:   DEST_EMAIL,
-      to_name:    "Sébastien Bonnot",
-      from_name:  "BEE Congruence",
-      subject:    "Profil Émotionnel & Relationnel — Questionnaire du " + date,
-      message_html: html,
-      reply_to:   DEST_EMAIL,
-    });
-
-    if (banner) {
-      bannerMsg.textContent = "✅ Rapport envoyé à " + DEST_EMAIL;
-      banner.style.background = "#1D9E75";
-      setTimeout(() => { banner.style.opacity = '0'; setTimeout(() => banner.style.display = 'none', 400); }, 4000);
-    }
-  } catch (err) {
-    console.error("EmailJS error:", err);
-    if (banner) {
-      bannerMsg.textContent = "⚠️ Résultats affichés — Configurez EmailJS pour l'envoi automatique par email.";
-      banner.style.background = "#B8935A";
-      setTimeout(() => { banner.style.opacity = '0'; setTimeout(() => banner.style.display = 'none', 400); }, 6000);
-    }
+  // ── 5. Envoi d'email (non-bloquant) ──────────────────────────────
+  if (typeof EMAILJS_PUBLIC_KEY !== 'undefined' && !EMAILJS_PUBLIC_KEY.includes("VOTRE_PUBLIC_KEY")) {
+    try {
+      const { html, date } = buildEmailSummary();
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email:   DEST_EMAIL,
+        to_name:    "Sébastien Bonnot",
+        from_name:  "BEE Congruence",
+        subject:    "Profil Émotionnel & Relationnel — Questionnaire du " + date,
+        message_html: html,
+        reply_to:   DEST_EMAIL,
+      }).catch(() => {});
+    } catch(e) {}
   }
 }
 

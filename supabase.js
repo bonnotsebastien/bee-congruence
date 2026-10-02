@@ -765,14 +765,37 @@ async function getDiagnosticResults(userId) {
     }
   }
 
-  const stored = localStorage.getItem('bee_latest_diag');
-  if (stored) {
+  // Lire les deux sources locales (rétrocompatibilité)
+  const results = [];
+
+  // Source 1 : bee_diagnostic_results (nouveau format tableau)
+  try {
+    const stored = localStorage.getItem('bee_diagnostic_results');
+    if (stored) {
+      const arr = JSON.parse(stored);
+      if (Array.isArray(arr) && arr.length > 0) {
+        results.push(...arr);
+      }
+    }
+  } catch(e) {}
+
+  // Source 2 : bee_latest_diag (ancien format objet simple)
+  if (results.length === 0) {
     try {
-      return [JSON.parse(stored)];
-    } catch (e) {}
+      const stored = localStorage.getItem('bee_latest_diag');
+      if (stored) {
+        const obj = JSON.parse(stored);
+        if (obj && obj.scores) results.push(obj);
+      }
+    } catch(e) {}
   }
-  return [];
+
+  // Trier par date décroissante
+  results.sort((a, b) => new Date(b.completed_at || 0) - new Date(a.completed_at || 0));
+
+  return results;
 }
+
 
 // ════════════════════════════════════════════════════════
 //  v1.03 — PROFIL UTILISATEUR (âge, préférences)

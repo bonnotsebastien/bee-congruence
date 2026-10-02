@@ -73,6 +73,20 @@
 }
 .billing-save-badge.visible { display: inline-block; }
 
+/* ── Badge discret carte Reine ── */
+.badge-principale {
+  display: inline-block;
+  background: rgba(90,138,58,0.12);
+  color: var(--green);
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 12px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
 /* ── Section achat unitaire ── */
 .unit-section {
   max-width: 1140px; margin: 0 auto 60px; padding: 0 24px;
@@ -128,6 +142,14 @@
 .price-annual  { display: none; }
 .body-annual .price-monthly { display: none; }
 .body-annual .price-annual  { display: block; }
+
+/* ── Mobile : empilement vertical des cartes ── */
+@media (max-width: 900px) {
+  .offres-grid {
+    grid-template-columns: 1fr;
+  }
+  .offre-card { order: unset !important; }
+}
 </style>
 </head>
 <body>
@@ -144,7 +166,7 @@
     <li><a href="index.html" class="nav-link">Accueil</a></li>
     <li><a href="experience.html" class="nav-link">Expérience 7 min</a></li>
     <li><a href="approche.html" class="nav-link">Notre approche</a></li>
-    <li><a href="articles.html" class="nav-link">Articles</a></li>
+    <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
     <li><a href="offres.html" class="nav-link active">Offres &amp; Tarifs</a></li>
   </ul>
   <div class="nav-actions">
@@ -178,25 +200,28 @@
 <!-- ═══ PRICING CARDS ═══ -->
 <div class="offres-grid">
 
-  <!-- GRATUIT (1er scénario) -->
-  <div class="offre-card">
-    <h3>Découverte</h3>
-    <div class="offre-rank">🐝 La Butineuse</div>
-    <span class="offre-price">Gratuit</span>
+  <!-- REINE (gauche) -->
+  <div class="offre-card reine">
+    <div class="badge-principale">🌟 Expérience complète BEE</div>
+    <span class="offre-icon">♛</span>
+    <h3>Reine</h3>
+    <div class="offre-rank">♛ La Souveraine de la ruche</div>
+    <span class="offre-price">19€ <small style="font-size:16px;font-family:'Nunito',sans-serif;">/mois</small></span>
     <ul class="offre-features">
-      <li><span class="check">✓</span> 1 scénario complet offert</li>
-      <li><span class="check">✓</span> Diagnostic émotionnel et relationnel</li>
-      <li><span class="check">✓</span> Toile d'araignée de votre profil</li>
-      <li><span class="check">✓</span> Accès à la page de profil</li>
-      <li class="unavail"><span class="check">○</span> Scénarios supplémentaires</li>
-      <li class="unavail"><span class="check">○</span> Graphique d'évolution</li>
-      <li class="unavail"><span class="check">○</span> Toile des compétences entraînées</li>
+      <li><span class="check">✓</span> Tout le contenu Premium</li>
+      <li><span class="check">✓</span> Accompagnement personnalisé par un(e) spécialiste</li>
+      <li><span class="check">✓</span> Bilan relationnel approfondi</li>
+      <li><span class="check">✓</span> Exercices sur-mesure adaptés à ton profil</li>
+      <li><span class="check">✓</span> Rapport de progression personnalisé (PDF)</li>
+      <li><span class="check">✓</span> Comptes enfants illimités</li>
+      <li><span class="check">✓</span> Accès prioritaire aux nouveautés</li>
     </ul>
-    <a href="inscription.html" class="btn-green btn-full">Commencer gratuitement</a>
-    <div class="offre-reassurance">Aucune carte bancaire requise</div>
+    <a href="inscription.html" class="btn-primary btn-full">Choisir Reine →</a>
+    <div class="offre-reassurance">Sans engagement · Résiliable à tout moment</div>
+    <a href="#accompagnement" class="offre-learn-more">→ En savoir plus sur l'accompagnement</a>
   </div>
 
-  <!-- MENSUEL / ANNUEL (toggle) -->
+  <!-- PREMIUM / MENSUEL / ANNUEL (toggle) — centre/featured -->
   <div class="offre-card featured">
     <div class="badge-recommande">⭐ Recommandé</div>
     <h3>Premium</h3>
@@ -224,24 +249,22 @@
     <div class="offre-reassurance">Sans engagement · Résiliable à tout moment</div>
   </div>
 
-  <!-- REINE -->
-  <div class="offre-card reine">
-    <span class="offre-icon">♛</span>
-    <h3>Reine</h3>
-    <div class="offre-rank">♛ La Souveraine de la ruche</div>
-    <span class="offre-price">19€ <small style="font-size:16px;font-family:'Nunito',sans-serif;">/mois</small></span>
+  <!-- GRATUIT (droite) — 1er scénario -->
+  <div class="offre-card">
+    <h3>Découverte</h3>
+    <div class="offre-rank">🐝 La Butineuse</div>
+    <span class="offre-price">Gratuit</span>
     <ul class="offre-features">
-      <li><span class="check">✓</span> Tout le contenu Premium</li>
-      <li><span class="check">✓</span> Accompagnement personnalisé par un(e) spécialiste</li>
-      <li><span class="check">✓</span> Bilan relationnel approfondi</li>
-      <li><span class="check">✓</span> Exercices sur-mesure adaptés à ton profil</li>
-      <li><span class="check">✓</span> Rapport de progression personnalisé (PDF)</li>
-      <li><span class="check">✓</span> Comptes enfants illimités</li>
-      <li><span class="check">✓</span> Accès prioritaire aux nouveautés</li>
+      <li><span class="check">✓</span> 1 scénario complet offert</li>
+      <li><span class="check">✓</span> Diagnostic émotionnel et relationnel</li>
+      <li><span class="check">✓</span> Toile d'araignée de votre profil</li>
+      <li><span class="check">✓</span> Accès à la page de profil</li>
+      <li class="unavail"><span class="check">○</span> Scénarios supplémentaires</li>
+      <li class="unavail"><span class="check">○</span> Graphique d'évolution</li>
+      <li class="unavail"><span class="check">○</span> Toile des compétences entraînées</li>
     </ul>
-    <a href="inscription.html" class="btn-primary btn-full">Choisir Reine →</a>
-    <div class="offre-reassurance">Sans engagement · Résiliable à tout moment</div>
-    <a href="#accompagnement" class="offre-learn-more">→ En savoir plus sur l'accompagnement</a>
+    <a href="inscription.html" class="btn-green btn-full">Commencer gratuitement</a>
+    <div class="offre-reassurance">Aucune carte bancaire requise</div>
   </div>
 
 </div>
@@ -350,7 +373,7 @@
       <a href="mentions-legales.html">Mentions légales</a>
       <a href="confidentialite.html">Confidentialité (RGPD)</a>
       <a href="contact.html">Contact</a>
-      <a href="articles.html">Articles</a>
+      <a href="articles.html">Guilde pratique</a>
       <a href="https://instagram.com/bee.congruence" target="_blank">Instagram</a>
     </nav>
   </div>

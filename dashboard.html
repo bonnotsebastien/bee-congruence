@@ -353,7 +353,9 @@
   </a>
   <ul class="nav-links">
     <li><a href="index.html" class="nav-link">Accueil</a></li>
+    <li><a href="experience.html" class="nav-link">Expérience 7 min</a></li>
     <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+    <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
     <li><a href="offres.html" class="nav-link">Offres & Tarifs</a></li>
   </ul>
   <div class="nav-actions">
@@ -361,6 +363,7 @@
     <button class="btn-outline" onclick="handleLogout()">Se déconnecter</button>
   </div>
 </nav>
+
 
 <div class="dashboard-wrapper">
 
@@ -456,6 +459,20 @@
       <div class="scenarios-grid" id="scenarios-grid"></div>
     </div>
 
+    <!-- ── Guilde pratique ── -->
+    <div id="section-guilde" style="margin-top: 56px; margin-bottom: 40px; display:none;">
+      <div class="dash-section-title">🛡️ Guilde pratique</div>
+      <p style="font-size:14px;color:var(--brown-mid);margin-bottom:24px;max-width:640px;line-height:1.7;">
+        Des ressources concrètes pour mieux comprendre tes automatismes relationnels et expérimenter de nouvelles réponses.
+      </p>
+      <div id="guilde-articles-preview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:24px;">
+        <!-- Généré en JS -->
+      </div>
+      <a href="articles.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--orange);text-decoration:none;padding:12px 24px;border:1.5px solid var(--orange);border-radius:50px;transition:all 0.2s;">
+        Voir toute la Guilde pratique →
+      </a>
+    </div>
+
     <!-- Empty state -->
     <div id="section-empty" class="dash-empty" style="display:none;">
       <p>Aucun résultat trouvé. Avez-vous complété le questionnaire ?</p>
@@ -463,6 +480,7 @@
     </div>
 
   </div>
+
 
   <!-- Not logged in -->
   <div id="dash-nologin" style="display:none;" class="dash-empty">
@@ -542,6 +560,17 @@ async function init() {
     history.replaceState({}, '', 'dashboard.html');
   }
 
+  // Notification post-questionnaire
+  const justCompleted = localStorage.getItem('bee_just_completed_diagnostic');
+  if (justCompleted === '1') {
+    localStorage.removeItem('bee_just_completed_diagnostic');
+    setTimeout(() => {
+      if (typeof showToast === 'function') {
+        showToast('🐝 Ton profil est prêt ! Découvre tes scénarios personnalisés.', 'success', 5000);
+      }
+    }, 800);
+  }
+
   let user = await getUser();
   if (!user) {
     const localEmail = localStorage.getItem('bee_user_email');
@@ -581,6 +610,7 @@ async function init() {
     document.getElementById('section-scenarios').style.display = 'none';
     document.getElementById('section-evolution').style.display = 'none';
     document.getElementById('section-empty').style.display = 'block';
+    renderGuildeSection();
     return;
   }
 
@@ -639,6 +669,9 @@ async function init() {
 
   // ── Scénarios ──
   renderScenarios(globalScenarios, access);
+
+  // ── Guilde pratique ──
+  renderGuildeSection();
 }
 
 // ════════════════════════════════════════════════════════
@@ -1149,6 +1182,45 @@ if (sessionStorage.getItem('rgpd_done')) {
   if (b) b.style.display = 'none';
 }
 function acceptRgpd() { sessionStorage.setItem('rgpd_done', '1'); dismissRgpd(); }
+
+// ════════════════════════════════════════════════════════
+//  GUILDE PRATIQUE — Aperçu des ressources dans le profil
+// ════════════════════════════════════════════════════════
+
+function renderGuildeSection() {
+  const section = document.getElementById('section-guilde');
+  const container = document.getElementById('guilde-articles-preview');
+  if (!section || !container) return;
+
+  // Articles de la Guilde (sources connues)
+  const guildeArticles = [
+    {
+      title: 'Pourquoi je réagis plus fort que la situation ne le mérite ?',
+      desc: 'Distinguer le fait de l\'activation émotionnelle pour comprendre vos automatismes.',
+      url: 'articles/pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite',
+      readTime: '2 min',
+      tag: 'Intelligence émotionnelle',
+    },
+    {
+      title: 'Les 7 piliers du développement personnel',
+      desc: 'La clé d\'une vie alignée — comprendre les fondations d\'un développement durable.',
+      url: 'articles',
+      readTime: '5 min',
+      tag: 'Développement personnel',
+    },
+  ];
+
+  container.innerHTML = guildeArticles.map(a => `
+    <a href="${a.url}" style="display:block;text-decoration:none;background:var(--warm-white);border:1.5px solid var(--border);border-radius:16px;padding:20px 18px;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 28px rgba(61,31,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <div style="font-family:'Nunito',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--orange);margin-bottom:8px;">${a.tag} · ${a.readTime}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--brown-dark);margin-bottom:8px;line-height:1.4;">${a.title}</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--brown-mid);line-height:1.6;">${a.desc}</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--orange);margin-top:12px;">Lire →</div>
+    </a>
+  `).join('');
+
+  section.style.display = 'block';
+}
 
 // ── Start ──
 init();

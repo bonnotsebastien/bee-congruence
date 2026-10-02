@@ -1135,48 +1135,40 @@ img {
   border-color: var(--terracotta);
 }
 
-/* ── Visual Enhancements & Glassmorphism ── */
+/* ── Human Warmth & Organic Cards ── */
 .glass-card {
-  background: rgba(253, 250, 246, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(184, 147, 90, 0.22);
+  background: var(--warm-white);
+  border: 1.5px solid var(--border);
   border-radius: 24px;
-  box-shadow: 0 14px 40px rgba(26, 22, 18, 0.07);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 8px 30px rgba(26, 22, 18, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .glass-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 48px rgba(26, 22, 18, 0.12);
-  border-color: rgba(184, 147, 90, 0.45);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(26, 22, 18, 0.08);
+  border-color: rgba(184, 147, 90, 0.35);
 }
 
-/* ── Floating & Pulse Animations ── */
+/* ── Subtle Motion ── */
 @keyframes floatSoft {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
-}
-
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 160, 32, 0.3); }
-  50% { box-shadow: 0 0 24px 8px rgba(232, 160, 32, 0.15); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
 }
 
 .animate-float {
-  animation: floatSoft 4s ease-in-out infinite;
+  animation: floatSoft 5s ease-in-out infinite;
 }
 
 .hero-profile-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(184, 147, 90, 0.25);
+  background: var(--warm-white);
+  border: 1.5px solid rgba(184, 147, 90, 0.2);
   border-radius: 28px;
   padding: 32px;
-  box-shadow: 0 20px 50px rgba(26, 22, 18, 0.08);
-  animation: pulseGlow 6s ease-in-out infinite;
+  box-shadow: 0 12px 40px rgba(26, 22, 18, 0.06);
 }
+
 
 .hero-tag {
   display: inline-flex;
