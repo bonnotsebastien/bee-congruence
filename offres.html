@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Offres &amp; Tarifs — BEE Congruence</title>
-<meta name="description" content="Comparez les offres BEE Congruence : 1er scénario gratuit, achats unitaires à 4,90€, abonnement mensuel 9€/mois, abonnement annuel 79€/an. Sans engagement.">
+<title>Offres d'entraînement relationnel — De la réaction au choix | BEE Congruence</title>
+<meta name="description" content="Comparez les offres BEE Congruence : La Butineuse (1er scénario offert), L'Ouvrière (9€/mois) et La Souveraine. Entraînez-vous à passer de la réaction automatique à la réponse choisie.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://www.beecongruence.com/offres.html">
+<link rel="canonical" href="https://www.beecongruence.com/offres">
 <link rel="icon" href="logo.jpg" type="image/jpeg">
 
 <meta property="og:site_name" content="BEE Congruence">
-<meta property="og:title" content="Offres &amp; Tarifs — BEE Congruence">
-<meta property="og:description" content="1er scénario gratuit. Achat unitaire 4,90€. Abonnement mensuel 9€ ou annuel 79€.">
-<meta property="og:url" content="https://www.beecongruence.com/offres.html">
+<meta property="og:title" content="Offres d'entraînement relationnel — BEE Congruence">
+<meta property="og:description" content="Passer de la réaction automatique à la réponse choisie. Découvrez nos 3 niveaux d'entraînement relationnel.">
+<meta property="og:url" content="https://www.beecongruence.com/offres">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://www.beecongruence.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
@@ -20,12 +20,12 @@
 <meta property="og:locale" content="fr_FR">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Offres &amp; Tarifs — BEE Congruence">
-<meta name="twitter:description" content="1er scénario gratuit. Mensuel 9€, annuel 79€. Sans engagement.">
+<meta name="twitter:title" content="Offres d'entraînement relationnel — BEE Congruence">
+<meta name="twitter:description" content="Passer de la réaction automatique à la réponse choisie. 1er scénario offert.">
 <meta name="twitter:image" content="https://www.beecongruence.com/og-image.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 
 <script type="application/ld+json">
@@ -33,22 +33,165 @@
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "BEE Congruence",
-  "description": "Plateforme d'entraînement émotionnel et relationnel par scénarios interactifs.",
+  "description": "Espace d'entraînement relationnel et émotionnel par scénarios interactifs.",
   "brand": {"@type": "Brand", "name": "BEE Congruence"},
   "offers": [
-    { "@type": "Offer", "name": "Gratuit (1er scénario)", "price": "0", "priceCurrency": "EUR" },
-    { "@type": "Offer", "name": "Unitaire", "price": "4.90", "priceCurrency": "EUR" },
-    { "@type": "Offer", "name": "Mensuel", "price": "9", "priceCurrency": "EUR" },
-    { "@type": "Offer", "name": "Annuel", "price": "79", "priceCurrency": "EUR" }
+    { "@type": "Offer", "name": "La Butineuse (Découvrir)", "price": "0", "priceCurrency": "EUR" },
+    { "@type": "Offer", "name": "Scénario à l'unité", "price": "4.90", "priceCurrency": "EUR" },
+    { "@type": "Offer", "name": "L'Ouvrière (Mensuel)", "price": "9", "priceCurrency": "EUR" },
+    { "@type": "Offer", "name": "L'Ouvrière (Annuel)", "price": "79", "priceCurrency": "EUR" },
+    { "@type": "Offer", "name": "La Souveraine (Accompagné)", "price": "19", "priceCurrency": "EUR" }
   ]
 }
 </script>
 
 <style>
+/* ── Section Transformation BEE ── */
+.transformation-strip {
+  max-width: 1080px;
+  margin: 0 auto 36px;
+  padding: 0 24px;
+}
+.transformation-inner {
+  background: var(--warm-white);
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: 0 6px 24px rgba(26,22,18,0.04);
+}
+.transformation-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--orange);
+  background: rgba(217,119,6,0.1);
+  padding: 4px 14px;
+  border-radius: 50px;
+  margin-bottom: 14px;
+}
+.transformation-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 3.5vw, 32px);
+  font-style: italic;
+  color: var(--brown-dark);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.transformation-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--brown-mid);
+  max-width: 680px;
+  margin: 0 auto 24px;
+  line-height: 1.7;
+}
+.transformation-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.trans-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cream);
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brown-dark);
+}
+.trans-step.highlight {
+  background: rgba(217,119,6,0.15);
+  border-color: var(--orange);
+  color: var(--orange-dark);
+  font-weight: 700;
+}
+.step-num {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--brown-light);
+}
+.trans-step.highlight .step-num { color: var(--orange); }
+.trans-arrow {
+  color: var(--brown-light);
+  font-weight: bold;
+}
+
+/* ── Progression 01 → 02 → 03 ── */
+.progression-banner {
+  max-width: 1080px;
+  margin: 0 auto 40px;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.prog-step {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  padding: 16px 20px;
+  text-align: center;
+  transition: all 0.2s;
+}
+.prog-step.active {
+  border-color: var(--orange);
+  background: rgba(217,119,6,0.03);
+  box-shadow: 0 4px 16px rgba(217,119,6,0.1);
+}
+.prog-num {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 4px;
+}
+.prog-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--brown-dark);
+  margin-bottom: 4px;
+}
+.prog-quote {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--brown-mid);
+  line-height: 1.4;
+}
+.prog-sep {
+  font-size: 18px;
+  color: var(--brown-light);
+  text-align: center;
+  font-weight: 700;
+}
+@media (max-width: 820px) {
+  .progression-banner {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .prog-sep { transform: rotate(0deg); margin: -4px 0; }
+}
+
 /* ── Toggle mensuel/annuel ── */
 .billing-toggle {
   display: flex; align-items: center; justify-content: center;
-  gap: 14px; margin: 32px auto 40px;
+  gap: 14px; margin: 20px auto 40px;
   font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--brown-mid);
 }
 .billing-toggle-track {
@@ -57,7 +200,7 @@
   cursor: pointer; transition: background 0.3s;
   border: 1.5px solid var(--border);
 }
-.billing-toggle-track.annual { background: var(--orange); border-color: var(--orange); }
+.billing-toggle-track.annual { background: var(--green); border-color: var(--green); }
 .billing-toggle-knob {
   position: absolute; top: 3px; left: 3px;
   width: 20px; height: 20px; border-radius: 50%;
@@ -73,21 +216,154 @@
 }
 .billing-save-badge.visible { display: inline-block; }
 
-/* ── Badge discret carte Reine ── */
-.badge-principale {
-  display: inline-block;
-  background: rgba(90,138,58,0.12);
-  color: var(--green);
+/* ── Cartes d'offres refondues ── */
+.offres-grid {
+  max-width: 1140px;
+  margin: 0 auto 60px;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+@media (max-width: 980px) {
+  .offres-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.offre-card {
+  background: var(--warm-white);
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 24px rgba(26,22,18,0.05);
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.offre-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(26,22,18,0.08);
+}
+.offre-card.featured {
+  border: 2px solid var(--orange);
+  background: var(--white);
+  box-shadow: 0 12px 36px rgba(217,119,6,0.12);
+  transform: scale(1.02);
+}
+.offre-card.featured:hover {
+  transform: scale(1.02) translateY(-3px);
+}
+@media (max-width: 980px) {
+  .offre-card.featured { transform: none; }
+  .offre-card.featured:hover { transform: translateY(-3px); }
+}
+
+.offre-rank-badge {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--orange);
+  margin-bottom: 6px;
+}
+.badge-recommande {
+  position: absolute;
+  top: -14px;
+  right: 24px;
+  background: var(--orange);
+  color: white;
   font-family: 'Nunito', sans-serif;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 4px 12px;
-  border-radius: 10px;
-  margin-bottom: 8px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(217,119,6,0.3);
 }
 
-/* ── Section achat unitaire ── */
+.offre-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: var(--brown-dark);
+  margin-bottom: 6px;
+}
+.offre-promise {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--orange);
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+.offre-card.reine .offre-promise { color: #8B5E52; }
+.offre-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  color: var(--brown-dark);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.offre-descr {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  color: var(--brown-mid);
+  line-height: 1.65;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--divider);
+}
+
+.offre-section-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brown-light);
+  margin-bottom: 14px;
+}
+
+.offre-features {
+  list-style: none;
+  margin-bottom: 30px;
+  flex-grow: 1;
+  padding: 0;
+}
+.offre-features li {
+  font-size: 13.5px;
+  color: var(--brown-mid);
+  margin-bottom: 11px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+.offre-features li strong { color: var(--brown-dark); }
+.offre-features li.unavail {
+  color: var(--brown-light);
+  opacity: 0.65;
+}
+.check {
+  color: var(--orange);
+  font-weight: bold;
+  flex-shrink: 0;
+}
+.check-green { color: var(--green); font-weight: bold; flex-shrink: 0; }
+
+.offre-reassurance {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  color: var(--brown-light);
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* ── Section Achat Unitaire ── */
 .unit-section {
   max-width: 1140px; margin: 0 auto 60px; padding: 0 24px;
 }
@@ -97,7 +373,7 @@
 }
 .unit-section-sub {
   font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--brown-mid);
-  text-align: center; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;
+  text-align: center; margin-bottom: 32px; max-width: 580px; margin-left: auto; margin-right: auto;
   line-height: 1.7;
 }
 .unit-grid {
@@ -142,14 +418,6 @@
 .price-annual  { display: none; }
 .body-annual .price-monthly { display: none; }
 .body-annual .price-annual  { display: block; }
-
-/* ── Mobile : empilement vertical des cartes ── */
-@media (max-width: 900px) {
-  .offres-grid {
-    grid-template-columns: 1fr;
-  }
-  .offre-card { order: unset !important; }
-}
 </style>
 </head>
 <body>
@@ -175,16 +443,60 @@
   </div>
 </nav>
 
+<!-- ═══ HEADER ═══ -->
 <div class="offres-header">
-  <div class="hero-tag" style="margin-bottom:16px;">🐝 Trouve ta place dans la ruche</div>
-  <h1>Nos offres</h1>
-  <p>Choisis l'accompagnement qui te correspond — commence gratuitement</p>
+  <div class="hero-tag" style="margin-bottom:16px;">🐝 De la réaction automatique à la réponse choisie</div>
+  <h1>Choisissez votre niveau d'entraînement</h1>
+  <p>Trois étapes progressives pour observer vos automatismes, expérimenter de nouvelles réponses et évoluer durablement.</p>
+</div>
+
+<!-- ═══ SECTION TRANSFORMATION BEE ═══ -->
+<section class="transformation-strip">
+  <div class="transformation-inner">
+    <div class="transformation-badge">🐝 La promesse BEE</div>
+    <h2 class="transformation-title">De la réaction automatique à la réponse choisie.</h2>
+    <p class="transformation-desc">
+      Nous avons tous des automatismes relationnels. BEE vous permet de les observer, de comprendre ce qui se joue en vous, puis de vous entraîner concrètement à répondre autrement.
+    </p>
+    <div class="transformation-steps">
+      <div class="trans-step"><span class="step-num">01</span><span>Automatisme</span></div>
+      <div class="trans-arrow">→</div>
+      <div class="trans-step"><span class="step-num">02</span><span>Prise de conscience</span></div>
+      <div class="trans-arrow">→</div>
+      <div class="trans-step highlight"><span class="step-num">03</span><span>Entraînement</span></div>
+      <div class="trans-arrow">→</div>
+      <div class="trans-step"><span class="step-num">04</span><span>Nouvelle réponse</span></div>
+      <div class="trans-arrow">→</div>
+      <div class="trans-step"><span class="step-num">05</span><span>Évolution</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROGRESSION VISUELLE DU PARCOURS ═══ -->
+<div class="progression-banner">
+  <div class="prog-step">
+    <div class="prog-num">01 — DÉCOUVRIR</div>
+    <div class="prog-name">La Butineuse · Gratuit</div>
+    <div class="prog-quote">« Je veux comprendre ce qui se passe chez moi. »</div>
+  </div>
+  <div class="prog-sep">→</div>
+  <div class="prog-step active">
+    <div class="prog-num">02 — S'ENTRAÎNER</div>
+    <div class="prog-name">L'Ouvrière · 9 €/mois</div>
+    <div class="prog-quote">« Je veux apprendre à répondre autrement. »</div>
+  </div>
+  <div class="prog-sep">→</div>
+  <div class="prog-step">
+    <div class="prog-num">03 — ÊTRE ACCOMPAGNÉ</div>
+    <div class="prog-name">La Souveraine · 19 €/mois</div>
+    <div class="prog-quote">« Je veux aller plus loin avec un regard humain. »</div>
+  </div>
 </div>
 
 <!-- ═══ SOFT ENTRY ═══ -->
 <div class="unsure-banner">
-  <span>🧭 Pas encore sûr(e) de ton profil ?</span>
-  <a href="index.html?diag=1">Fais le diagnostic gratuit en 3 minutes →</a>
+  <span>🧭 Pas encore sûr(e) de votre profil relationnel ?</span>
+  <a href="index.html?diag=1">Identifiez vos automatismes en 3 minutes →</a>
 </div>
 
 <!-- ═══ TOGGLE MENSUEL / ANNUEL ═══ -->
@@ -197,74 +509,98 @@
   <span class="billing-save-badge" id="saveBadge">🎉 Économisez 29€</span>
 </div>
 
-<!-- ═══ PRICING CARDS ═══ -->
+<!-- ═══ PRICING CARDS D'ENTRAÎNEMENT ═══ -->
 <div class="offres-grid">
 
-  <!-- REINE (gauche) -->
-  <div class="offre-card reine">
-    <div class="badge-principale">🌟 Expérience complète BEE</div>
-    <span class="offre-icon">♛</span>
-    <h3>Reine</h3>
-    <div class="offre-rank">♛ La Souveraine de la ruche</div>
-    <span class="offre-price">19€ <small style="font-size:16px;font-family:'Nunito',sans-serif;">/mois</small></span>
+  <!-- 01 — DÉCOUVRIR (La Butineuse - Gratuit) -->
+  <div class="offre-card">
+    <div class="offre-rank-badge">01 — DÉCOUVRIR</div>
+    <h3>La Butineuse</h3>
+    <div class="offre-promise">« Comprendre une réaction qui vous échappe. »</div>
+    <span class="offre-price">Gratuit</span>
+    
+    <p class="offre-descr">
+      Un premier entraînement pour observer ce qui se passe en vous lorsqu'une situation relationnelle vous active. Identifiez vos automatismes, mettez des mots sur votre ressenti et découvrez qu'une autre réponse est possible.
+    </p>
+
+    <div class="offre-section-title">Ce que vous allez explorer</div>
     <ul class="offre-features">
-      <li><span class="check">✓</span> Tout le contenu Premium</li>
-      <li><span class="check">✓</span> Accompagnement personnalisé par un(e) spécialiste</li>
-      <li><span class="check">✓</span> Bilan relationnel approfondi</li>
-      <li><span class="check">✓</span> Exercices sur-mesure adaptés à ton profil</li>
-      <li><span class="check">✓</span> Rapport de progression personnalisé (PDF)</li>
-      <li><span class="check">✓</span> Comptes enfants illimités</li>
-      <li><span class="check">✓</span> Accès prioritaire aux nouveautés</li>
+      <li><span class="check-green">✓</span> <strong>1 scénario complet offert</strong></li>
+      <li><span class="check-green">✓</span> Exploration guidée d'une situation relationnelle</li>
+      <li><span class="check-green">✓</span> Identification des réactions automatiques</li>
+      <li><span class="check-green">✓</span> Exploration du ressenti émotionnel et corporel</li>
+      <li><span class="check-green">✓</span> Profil relationnel personnalisé</li>
+      <li><span class="check-green">✓</span> Première expérience de la méthode BEE</li>
+      <li class="unavail"><span class="check">○</span> Entraînement continu sur d'autres situations</li>
+      <li class="unavail"><span class="check">○</span> Suivi de l'évolution des compétences</li>
     </ul>
-    <a href="inscription.html" class="btn-primary btn-full">Choisir Reine →</a>
-    <div class="offre-reassurance">Sans engagement · Résiliable à tout moment</div>
-    <a href="#accompagnement" class="offre-learn-more">→ En savoir plus sur l'accompagnement</a>
+
+    <a href="inscription.html" class="btn-green btn-full">Commencer gratuitement</a>
+    <div class="offre-reassurance">Sans engagement · Aucune carte bancaire requise</div>
   </div>
 
-  <!-- PREMIUM / MENSUEL / ANNUEL (toggle) — centre/featured -->
+  <!-- 02 — S'ENTRAÎNER (L'Ouvrière - 9€/mois) — Featured -->
   <div class="offre-card featured">
     <div class="badge-recommande">⭐ Recommandé</div>
-    <h3>Premium</h3>
-    <div class="offre-rank">🐝 L'Ouvrière</div>
+    <div class="offre-rank-badge">02 — S'ENTRAÎNER</div>
+    <h3>L'Ouvrière</h3>
+    <div class="offre-promise">« Expérimenter de nouvelles façons de répondre. »</div>
 
-    <!-- Prix mensuel -->
+    <!-- Prix mensuel / annuel -->
     <span class="offre-price price-monthly">9€ <small style="font-size:16px;color:var(--brown-mid);font-family:'Nunito',sans-serif;">/mois</small></span>
-    <!-- Prix annuel -->
     <span class="offre-price price-annual" style="color:var(--green);">79€ <small style="font-size:16px;color:var(--brown-mid);font-family:'Nunito',sans-serif;">/an</small></span>
-    <div class="price-annual" style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--green);font-weight:600;margin:-8px 0 8px;">= 6,58€/mois · Économisez 29€</div>
+    <div class="price-annual" style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--green);font-weight:600;margin:-10px 0 10px;">= 6,58€/mois · Économisez 29€</div>
 
+    <p class="offre-descr">
+      Transformez la prise de conscience en nouvelles réponses. Explorez différentes situations relationnelles, identifiez vos automatismes récurrents et entraînez-vous progressivement à répondre autrement.
+    </p>
+
+    <div class="offre-section-title">Ce que vous allez explorer</div>
     <ul class="offre-features">
-      <li><span class="check">✓</span> Tous les scénarios débloqués</li>
-      <li><span class="check">✓</span> Toile d'araignée enrichie (2 couches)</li>
-      <li><span class="check">✓</span> Graphique d'évolution des compétences</li>
-      <li><span class="check">✓</span> Page détaillée par scénario (7 sections)</li>
-      <li><span class="check">✓</span> Nouvelles compétences au fil des scénarios</li>
-      <li class="price-annual"><span class="check">✓</span> Accès aux nouveautés en avant-première</li>
-      <li class="unavail"><span class="check">○</span> Accompagnement personnalisé Reine</li>
+      <li><span class="check">✓</span> <strong>Accès à tous les scénarios d'entraînement</strong></li>
+      <li><span class="check">✓</span> Exploration de différentes situations relationnelles</li>
+      <li><span class="check">✓</span> Identification des automatismes récurrents</li>
+      <li><span class="check">✓</span> Expérimentation concrète de différentes réponses</li>
+      <li><span class="check">✓</span> Feedback après chaque entraînement</li>
+      <li><span class="check">✓</span> Visualisation de votre profil et de votre progression</li>
+      <li><span class="check">✓</span> Suivi des compétences entraînées au fil des scénarios</li>
+      <li><span class="check">✓</span> Exploration guidée de chaque situation, étape par étape</li>
+      <li class="price-annual"><span class="check">✓</span> Accès aux nouveaux scénarios en avant-première</li>
+      <li class="unavail"><span class="check">○</span> Accompagnement individuel personnalisé</li>
     </ul>
 
-    <!-- CTA dynamique selon le toggle -->
-    <a href="paiement.html?pm=cb" class="btn-cta btn-full price-monthly" id="ctaMonthly">Choisir Mensuel →</a>
-    <a href="paiement.html?pm=cb" class="btn-cta btn-full price-annual" id="ctaAnnual" style="background:var(--green);border-color:var(--green);">Choisir Annuel — Meilleur prix →</a>
-    <div class="offre-reassurance">Sans engagement · Résiliable à tout moment</div>
+    <!-- CTA dynamique -->
+    <a href="paiement.html?pm=cb" class="btn-cta btn-full price-monthly" id="ctaMonthly">Commencer à m'entraîner →</a>
+    <a href="paiement.html?pm=cb" class="btn-cta btn-full price-annual" id="ctaAnnual" style="background:var(--green);border-color:var(--green);">Commencer à m'entraîner — Meilleur prix →</a>
+    <div class="offre-reassurance">Sans engagement · Résiliable en un clic à tout moment</div>
   </div>
 
-  <!-- GRATUIT (droite) — 1er scénario -->
-  <div class="offre-card">
-    <h3>Découverte</h3>
-    <div class="offre-rank">🐝 La Butineuse</div>
-    <span class="offre-price">Gratuit</span>
+  <!-- 03 — ÊTRE ACCOMPAGNÉ (La Souveraine - 19€/mois) -->
+  <div class="offre-card reine">
+    <div class="offre-rank-badge" style="color:#8B5E52;">03 — ÊTRE ACCOMPAGNÉ</div>
+    <h3>La Souveraine</h3>
+    <div class="offre-promise">« Aller plus loin avec un regard humain. »</div>
+    <span class="offre-price">19€ <small style="font-size:16px;font-family:'Nunito',sans-serif;color:var(--brown-mid);">/mois</small></span>
+
+    <p class="offre-descr">
+      Lorsque vous souhaitez approfondir votre parcours, bénéficiez d'un accompagnement personnalisé à partir de vos expériences et de votre progression dans BEE. L'objectif est de vous aider à identifier les situations qui se répètent, choisir un axe de travail et construire de nouvelles réponses.
+    </p>
+
+    <div class="offre-section-title">Ce que vous allez explorer</div>
     <ul class="offre-features">
-      <li><span class="check">✓</span> 1 scénario complet offert</li>
-      <li><span class="check">✓</span> Diagnostic émotionnel et relationnel</li>
-      <li><span class="check">✓</span> Toile d'araignée de votre profil</li>
-      <li><span class="check">✓</span> Accès à la page de profil</li>
-      <li class="unavail"><span class="check">○</span> Scénarios supplémentaires</li>
-      <li class="unavail"><span class="check">○</span> Graphique d'évolution</li>
-      <li class="unavail"><span class="check">○</span> Toile des compétences entraînées</li>
+      <li><span class="check">✓</span> <strong>Tout l'entraînement de l'Ouvrière inclus</strong></li>
+      <li><span class="check">✓</span> Analyse personnalisée de votre parcours BEE</li>
+      <li><span class="check">✓</span> Identification des situations et automatismes récurrents</li>
+      <li><span class="check">✓</span> Définition d'un objectif d'entraînement personnel</li>
+      <li><span class="check">✓</span> Exercices adaptés aux situations rencontrées</li>
+      <li><span class="check">✓</span> Points d'étape avec un spécialiste relationnel</li>
+      <li><span class="check">✓</span> Suivi personnalisé de l'évolution (bilan PDF)</li>
+      <li><span class="check">✓</span> Comptes famille / enfants inclus</li>
     </ul>
-    <a href="inscription.html" class="btn-green btn-full">Commencer gratuitement</a>
-    <div class="offre-reassurance">Aucune carte bancaire requise</div>
+
+    <a href="inscription.html" class="btn-primary btn-full">Être accompagné →</a>
+    <div class="offre-reassurance">Sans engagement · Résiliable à tout moment</div>
+    <a href="#accompagnement" class="offre-learn-more" style="text-align:center;margin-top:12px;display:block;">→ En savoir plus sur l'accompagnement</a>
   </div>
 
 </div>
@@ -275,56 +611,55 @@
     <div class="trust-item"><div class="trust-item-icon">🔒</div> Paiement sécurisé</div>
     <div class="trust-item"><div class="trust-item-icon">🔄</div> Résiliable à tout moment</div>
     <div class="trust-item"><div class="trust-item-icon">🛡️</div> Données conformes RGPD</div>
-    <div class="trust-item"><div class="trust-item-icon">💌</div> Support réactif</div>
+    <div class="trust-item"><div class="trust-item-icon">💌</div> Accompagnement réactif</div>
   </div>
 </div>
 
 <!-- ═══ SECTION ACHAT UNITAIRE ═══ -->
 <div class="unit-section">
-  <h2 class="unit-section-title">🛒 Acheter un scénario à l'unité</h2>
+  <h2 class="unit-section-title">🛒 Vous préférez pratiquer à l'unité ?</h2>
   <p class="unit-section-sub">
-    Vous préférez tester sans vous engager ? Achetez uniquement le scénario qui vous intéresse.
-    Le 1er est toujours offert.
+    Testez une situation précise sans engagement récurrent. Le premier scénario est toujours offert.
   </p>
   <div class="unit-grid" id="unitGrid">
-    <!-- Généré par JS -->
+    <!-- Généré dynamiquement par JS -->
   </div>
-  <div style="text-align:center;margin-top:24px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--brown-light);">
-    💡 Si vous souhaitez accéder à plus de 2 scénarios, l'abonnement mensuel devient plus avantageux.
+  <div style="text-align:center;margin-top:24px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--brown-mid);line-height:1.6;">
+    💡 À 4,90€ par scénario, l'abonnement mensuel à 9€ devient plus avantageux dès le 2e scénario.
   </div>
 </div>
 
-<!-- ═══ REINE SECTION ═══ -->
+<!-- ═══ REINE / ACCOMPAGNEMENT SECTION ═══ -->
 <div class="reine-section" id="accompagnement">
   <div class="reine-box">
     <span class="reine-icon">♛</span>
-    <h2>L'offre Reine &amp; l'accompagnement personnalisé</h2>
-    <p>Va plus loin qu'un simple diagnostic : bénéficie d'un accompagnement personnalisé, pensé pour t'aider à transformer durablement tes schémas émotionnels et relationnels.</p>
+    <h2>L'accompagnement personnalisé Souveraine</h2>
+    <p>Allez plus loin qu'un entraînement autonome : bénéficiez d'un regard extérieur bienveillant et structuré pour vous aider à transformer durablement vos schémas relationnels.</p>
     <div class="reine-cards">
       <div class="reine-card">
         <span class="reine-card-icon">🧭</span>
-        <h4>Bilan approfondi</h4>
-        <p>Une analyse complète de ton diagnostic émotionnel et relationnel</p>
+        <h4>Bilan relationnel</h4>
+        <p>Une lecture approfondie de vos automatismes observés dans vos scénarios BEE.</p>
       </div>
       <div class="reine-card">
         <span class="reine-card-icon">🎯</span>
         <h4>Objectifs sur-mesure</h4>
-        <p>Un plan d'accompagnement adapté à tes priorités du moment</p>
+        <p>Un axe de travail clair et adapté aux situations qui comptent pour vous en ce moment.</p>
       </div>
       <div class="reine-card">
         <span class="reine-card-icon">🗓️</span>
-        <h4>Suivi régulier</h4>
-        <p>Des points d'étape pour ajuster ton parcours dans le temps</p>
+        <h4>Points d'étape</h4>
+        <p>Des échanges réguliers avec un spécialiste pour ajuster vos réponses dans le temps.</p>
       </div>
       <div class="reine-card">
         <span class="reine-card-icon">📈</span>
-        <h4>Rapport personnalisé</h4>
-        <p>Bilan de progression et recommandations, en PDF</p>
+        <h4>Synthèse de progression</h4>
+        <p>Un bilan clair de vos évolutions et de vos nouvelles réponses acquises, en PDF.</p>
       </div>
     </div>
     <div style="margin-top:40px;">
-      <a href="inscription.html" class="btn-cta btn-lg">Débloquer mon accompagnement personnalisé →</a>
-      <div class="offre-reassurance" style="color:rgba(255,255,255,0.5);">Sans engagement · Résiliable à tout moment</div>
+      <a href="inscription.html" class="btn-cta btn-lg">Choisir l'accompagnement personnalisé →</a>
+      <div class="offre-reassurance" style="color:rgba(255,255,255,0.6);">Sans engagement · Résiliable à tout moment</div>
     </div>
   </div>
 </div>
@@ -335,31 +670,35 @@
   <div class="faq-grid">
     <div class="faq-item">
       <h4>Le 1er scénario est-il vraiment gratuit ?</h4>
-      <p>Oui, sans carte bancaire. Vous accédez au 1er scénario complet (7 sections, conseils d'expert) dès votre inscription.</p>
+      <p>Oui, sans carte bancaire. Vous accédez au premier scénario complet d'entraînement, étape par étape avec son debriefing et ses conseils, dès votre inscription.</p>
     </div>
     <div class="faq-item">
       <h4>Puis-je acheter un seul scénario ?</h4>
-      <p>Oui. Chaque scénario est disponible à l'unité pour 4,90€. Si vous souhaitez en débloquer plusieurs, l'abonnement mensuel à 9€ devient plus avantageux dès le 2e scénario.</p>
+      <p>Oui. Chaque scénario est disponible à l'unité pour 4,90€. Si vous souhaitez en explorer plusieurs, l'abonnement mensuel à 9€ devient plus avantageux dès le 2e scénario.</p>
+    </div>
+    <div class="faq-item">
+      <h4>En quoi BEE diffère-t-il d'une thérapie ou d'un diagnostic médical ?</h4>
+      <p>BEE n'est ni une thérapie ni un dispositif médical. C'est un espace d'entraînement relationnel conçu pour vous aider à observer vos réactions du quotidien et à développer de nouvelles réponses choisies dans vos relations personnelles et professionnelles.</p>
     </div>
     <div class="faq-item">
       <h4>Puis-je changer d'offre à tout moment ?</h4>
-      <p>Oui. Tu peux passer d'un abonnement mensuel à annuel (ou inversement) depuis ton profil, sans frais ni délai d'attente.</p>
+      <p>Oui. Vous pouvez passer d'un abonnement mensuel à annuel (ou inversement), ou opter pour l'accompagnement Souveraine depuis votre profil, sans frais ni délai d'attente.</p>
     </div>
     <div class="faq-item">
       <h4>Comment fonctionne la résiliation ?</h4>
-      <p>En un clic depuis ton compte, sans justification. Tu gardes l'accès jusqu'à la fin de la période déjà payée. Les achats unitaires sont permanents.</p>
+      <p>En un clic depuis votre espace, sans justification. Vous conservez vos accès jusqu'à la fin de la période déjà réglée. Les scénarios achetés à l'unité restent quant à eux acquis en permanence.</p>
     </div>
     <div class="faq-item">
-      <h4>Mes données sont-elles en sécurité ?</h4>
-      <p>Toutes tes données sont hébergées de façon sécurisée et conformes au RGPD. Elles ne sont jamais revendues à des tiers.</p>
+      <h4>Mes données sont-elles protégées ?</h4>
+      <p>Toutes vos réflexions et données de progression sont hébergées de façon sécurisée et strictement conformes au RGPD. Elles ne sont jamais revendues ni partagées à des tiers.</p>
     </div>
     <div class="faq-item">
       <h4>Quels modes de paiement sont acceptés ?</h4>
-      <p>Carte bancaire (Visa, Mastercard), PayPal, Apple Pay et Google Pay. Le mode choisi peut influencer les offres mises en avant — <a href="paiement.html" style="color:var(--orange);">voir la page de paiement</a>.</p>
+      <p>Carte bancaire (Visa, Mastercard), PayPal, Apple Pay et Google Pay. Tous les paiements sont chiffrés et 100% sécurisés via nos partenaires certifiés.</p>
     </div>
   </div>
   <div style="text-align:center;margin-top:40px;">
-    <a href="index.html?diag=1" class="btn-outline btn-lg">Encore indécis(e) ? Fais le diagnostic gratuit</a>
+    <a href="index.html?diag=1" class="btn-outline btn-lg">Encore indécis(e) ? Identifiez vos automatismes en 3 minutes</a>
   </div>
 </div>
 
@@ -417,7 +756,7 @@ function renderUnitGrid() {
       <div class="unit-card-theme">${(s.theme || '').replace(/_/g, ' ')} · ${['','🟢','🟡','🔴'][s.difficulte] || ''} Niv. ${s.difficulte}</div>
       <div class="unit-card-price">${s.gratuit ? 'Offert' : `${s.prix_unitaire ? s.prix_unitaire.toFixed(2).replace('.', ',') : '4,90'}€`}</div>
       <a class="unit-card-btn ${s.gratuit ? 'btn-unit-free' : 'btn-unit-pay'}" href="${payUrl}">
-        ${s.gratuit ? 'Commencer gratuitement' : 'Acheter ce scénario'}
+        ${s.gratuit ? 'Commencer gratuitement' : 'S\'entraîner sur cette situation'}
       </a>
     `;
     grid.appendChild(card);
