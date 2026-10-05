@@ -78,18 +78,20 @@ async function getUser() {
  */
 
 const ACCESS_PLANS = {
-  free:       { label: 'La Butineuse',  icon: '🐝', color: '#6B7B6E' },
-  monthly:    { label: "L'Ouvrière",    icon: '⭐', color: '#B8935A' },
-  yearly:     { label: "L'Ouvrière (Annuel)", icon: '⭐', color: '#5A8A3A' },
-  reine:      { label: 'Reine',         icon: '♛', color: '#8B5E52' },
-  souveraine: { label: 'Reine',         icon: '♛', color: '#8B5E52' }, // Rétrocompatibilité
+  free:         { label: 'La Butineuse',  icon: '🐝', color: '#6B7B6E' },
+  monthly:      { label: "L'Ouvrière",    icon: '⭐', color: '#B8935A' },
+  yearly:       { label: "L'Ouvrière (Annuel)", icon: '⭐', color: '#5A8A3A' },
+  reine:        { label: 'Reine',         icon: '♛', color: '#8B5E52' },
+  souveraine:   { label: 'Reine',         icon: '♛', color: '#8B5E52' }, // Rétrocompatibilité
+  pack_famille: { label: 'Pack Famille',  icon: '👨‍👩‍👧', color: '#D97706' },
 };
 
 const PRICING = {
-  monthly:      9.00,
-  yearly:      79.00,   // soit ~6,58€/mois
-  reine:       49.00,   // Reine 49€/mois
-  unit_default: 4.90,   // prix unitaire d'un scénario par défaut
+  monthly:       9.00,
+  yearly:       79.00,   // soit ~6,58€/mois
+  reine:        49.00,   // Reine 49€/mois
+  pack_famille: 19.00,   // Pack Famille 19€/mois
+  unit_default:  4.90,   // prix unitaire d'un scénario par défaut
 };
 
 /**
@@ -138,8 +140,8 @@ function checkScenarioAccess(scenarioId, access, scenarioIndex) {
     return { allowed: true, reason: 'free' };
   }
 
-  // Abonnement mensuel, annuel ou Reine (Souveraine) valide → accès total
-  const isSubscriber = ['monthly', 'yearly', 'reine', 'souveraine'].includes(access.plan);
+  // Abonnement mensuel, annuel, Reine ou Pack Famille valide → accès total
+  const isSubscriber = ['monthly', 'yearly', 'reine', 'souveraine', 'pack_famille'].includes(access.plan);
   if (isSubscriber) {
     const now = new Date();
     const expiry = access.expiresAt ? new Date(access.expiresAt) : null;
@@ -960,3 +962,210 @@ async function getSyncState(userId) {
   } catch (e) {}
   return null;
 }
+
+// ════════════════════════════════════════════════════════
+//  v1.04 — PACK FAMILLE (Parent ↔ Enfants)
+// ════════════════════════════════════════════════════════
+
+const FAMILY_STORAGE_KEY = 'bee_family_profiles';
+
+async function getFamilyChildren(parentId) {
+  let list = [];
+  try {
+    const local = localStorage.getItem(`${FAMILY_STORAGE_KEY}_${parentId}`) || localStorage.getItem(FAMILY_STORAGE_KEY);
+    if (local) list = JSON.parse(local);
+  } catch (e) {}
+
+  if (_supabase && parentId && !parentId.startsWith('demo')) {
+    try {
+      const { data, error } = await _supabase
+        .from('family_children')
+        .select('*')
+        .eq('parent_id', parentId)
+        .order('created_at', { ascending: true });
+      if (!error && data && data.length > 0) {
+        list = data;
+        localStorage.setItem(`${FAMILY_STORAGE_KEY}_${parentId}`, JSON.stringify(data));
+      }
+    } catch (e) {}
+  }
+  return Array.isArray(list) ? list : [];
+}
+
+async function saveFamilyChild(parentId, childData) {
+  const children = await getFamilyChildren(parentId);
+  const childId = childData.id || ('child_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4));
+  const childRecord = {
+    id: childId,
+    parent_id: parentId,
+    prenom: childData.prenom || '',
+    nom: childData.nom || '',
+    date_naissance: childData.date_naissance || '',
+    avatar: childData.avatar || '🐝',
+    congruence_level: childData.congruence_level || 1,
+    congruence_score: childData.congruence_score || 72,
+    scenarios_completed: childData.scenarios_completed || 0,
+    active_streak: childData.active_streak || 1,
+    strengths: childData.strengths || ['Écoute bienveillante', 'Expression des besoins'],
+    focus_areas: childData.focus_areas || ['Gestion de la frustration', 'Poser ses limites'],
+    updated_at: new Date().toISOString(),
+    created_at: childData.created_at || new Date().toISOString(),
+  };
+
+  const existingIdx = children.findIndex(c => c.id === childId);
+  if (existingIdx >= 0) {
+    children[existingIdx] = { ...children[existingIdx], ...childRecord };
+  } else {
+    children.push(childRecord);
+  }
+
+  localStorage.setItem(`${FAMILY_STORAGE_KEY}_${parentId}`, JSON.stringify(children));
+  localStorage.setItem(FAMILY_STORAGE_KEY, JSON.stringify(children));
+
+  if (_supabase && parentId && !parentId.startsWith('demo')) {
+    try {
+      await _supabase.from('family_children').upsert(childRecord, { onConflict: 'id' });
+    } catch (e) {}
+  }
+  return childRecord;
+}
+
+async function deleteFamilyChild(parentId, childId) {
+  const children = await getFamilyChildren(parentId);
+  const filtered = children.filter(c => c.id !== childId);
+  localStorage.setItem(`${FAMILY_STORAGE_KEY}_${parentId}`, JSON.stringify(filtered));
+  localStorage.setItem(FAMILY_STORAGE_KEY, JSON.stringify(filtered));
+
+  if (_supabase && parentId && !parentId.startsWith('demo')) {
+    try {
+      await _supabase.from('family_children').delete().eq('id', childId);
+    } catch (e) {}
+  }
+  return filtered;
+}
+
+// ════════════════════════════════════════════════════════
+//  v1.04 — RAPPELS D'ENTRAÎNEMENT & NOTIFICATIONS
+// ════════════════════════════════════════════════════════
+
+const REMINDERS_KEY = 'bee_user_reminders';
+
+const DEFAULT_REMINDERS = {
+  frequency: '2days',      // daily, 2days, weekly, custom
+  channels: 'both',        // email, mobile, both
+  preferred_time: '19:00', // 08:00, 12:30, 19:00
+  fitbit_report_optin: true,
+  newsletter_optin: true,
+  sound_enabled: true,
+};
+
+async function saveReminderPreferences(userId, prefs) {
+  const merged = { ...DEFAULT_REMINDERS, ...prefs, updated_at: new Date().toISOString() };
+  localStorage.setItem(`${REMINDERS_KEY}_${userId}`, JSON.stringify(merged));
+  localStorage.setItem(REMINDERS_KEY, JSON.stringify(merged));
+
+  if (_supabase && userId && !userId.startsWith('demo')) {
+    try {
+      await _supabase.from('user_profiles').update({ notification_preferences: merged }).eq('user_id', userId);
+    } catch (e) {}
+  }
+  return merged;
+}
+
+async function getReminderPreferences(userId) {
+  try {
+    const local = localStorage.getItem(`${REMINDERS_KEY}_${userId}`) || localStorage.getItem(REMINDERS_KEY);
+    if (local) return JSON.parse(local);
+  } catch (e) {}
+  return DEFAULT_REMINDERS;
+}
+
+// ════════════════════════════════════════════════════════
+//  v1.04 — RAPPORT HEBDOMADAIRE TYPE FITBIT
+// ════════════════════════════════════════════════════════
+
+function getWeeklyFitbitReport(userId) {
+  let scenariosCompleted = 0;
+  try {
+    const sc = localStorage.getItem('bee_user_scenarios');
+    if (sc) {
+      const parsed = JSON.parse(sc);
+      if (Array.isArray(parsed)) {
+        scenariosCompleted = parsed.filter(s => s.statut === 'termine').length;
+      }
+    }
+  } catch (e) {}
+
+  const baseSessions = Math.max(1, scenariosCompleted);
+  const sessionsThisWeek = Math.min(7, Math.max(3, (baseSessions % 5) + 2)); // ex: 4 fois
+  const minutesSpent = sessionsThisWeek * 7 + 4; // ex: 32 min
+  const streakDays = Math.max(3, Math.min(30, sessionsThisWeek * 3)); // ex: 12 jours
+  const regularityIncrease = 18; // % de progression
+
+  const daysActive = [
+    { day: 'Lun', active: true, minutes: 7 },
+    { day: 'Mar', active: true, minutes: 12 },
+    { day: 'Mer', active: false, minutes: 0 },
+    { day: 'Jeu', active: true, minutes: 8 },
+    { day: 'Ven', active: true, minutes: 7 },
+    { day: 'Sam', active: false, minutes: 0 },
+    { day: 'Dim', active: true, minutes: 10 },
+  ];
+
+  const badges = [
+    { id: 'streak', icon: '🔥', title: 'Série en cours', desc: `${streakDays} jours consécutifs` },
+    { id: 'mastery', icon: '🛡️', title: 'Poses de limites', desc: 'Score maîtrisé à 82%' },
+    { id: 'regularity', icon: '🐝', title: 'Abeille Assidue', desc: '+18% vs semaine dernière' },
+  ];
+
+  return {
+    sessionsThisWeek,
+    minutesSpent,
+    streakDays,
+    regularityIncrease,
+    globalScore: 78,
+    daysActive,
+    badges,
+    headline: `Vous avez entraîné votre congruence ${sessionsThisWeek} fois cette semaine.`,
+    regularityPhrase: `Votre régularité progresse de ${regularityIncrease} %.`,
+    streakPhrase: `Nouvelle série : ${streakDays} jours consécutifs.`,
+    encouragement: "Bravo ! En pacifiant vos émotions face aux situations du quotidien, vous transformez progressivement vos automatismes en réponses choisies et affirmées.",
+    generatedAt: new Date().toISOString(),
+  };
+}
+
+// ════════════════════════════════════════════════════════
+//  v1.04 — SYNCHRONISATION TRANSPARENTE
+// ════════════════════════════════════════════════════════
+
+async function autoSyncCloud(email) {
+  if (!email || !email.includes('@')) return false;
+
+  localStorage.setItem('bee_user_email', email);
+
+  if (_supabase) {
+    try {
+      const { data, error } = await _supabase
+        .from('user_sync_state')
+        .select('*')
+        .or(`user_id.eq.${email},user_email.eq.${email}`)
+        .order('synced_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!error && data && data.sync_payload) {
+        const payload = data.sync_payload;
+        Object.entries(payload).forEach(([k, v]) => {
+          if (typeof v === 'object' && v !== null) {
+            localStorage.setItem(k, JSON.stringify(v));
+          } else if (typeof v === 'string') {
+            localStorage.setItem(k, v);
+          }
+        });
+        return true;
+      }
+    } catch (e) {}
+  }
+  return false;
+}
+

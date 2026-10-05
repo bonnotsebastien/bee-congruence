@@ -358,6 +358,26 @@ const OFFERS_BY_PAYMENT = {
       ctaClass: '',
     },
     {
+      id: 'pack_famille',
+      name: 'Pack Famille',
+      badge: '👨‍👩‍👧‍👦 Foyer & Enfants',
+      badgeClass: 'orange',
+      price: '19€',
+      priceSuffix: '/ mois',
+      saving: '1 compte parent + jusqu\'à 5 profils enfants/ados',
+      highlighted: false,
+      features: [
+        'Accès illimité pour toute la famille',
+        '1 compte parent avec suivi bienveillant',
+        'Jusqu\'à 5 profils enfants / ados personnalisés',
+        'Espace Enfant dédié (Météo du cœur, Bouclier de calme)',
+        'Exercices guidés parents-enfants sans crier',
+        'Sans engagement · Résiliable en 1 clic',
+      ],
+      cta: 'Choisir le Pack Famille (19€/mois) →',
+      ctaClass: '',
+    },
+    {
       id: 'yearly',
       name: 'L\'Ouvrière (Annuel)',
       badge: '⭐ Entraînement autonome',
@@ -410,6 +430,25 @@ const OFFERS_BY_PAYMENT = {
         'Paiement sécurisé PayPal',
       ],
       cta: 'Choisir Reine (49€/mois) →',
+      ctaClass: '',
+    },
+    {
+      id: 'pack_famille',
+      name: 'Pack Famille',
+      badge: '👨‍👩‍👧‍👦 Foyer & Enfants',
+      badgeClass: 'orange',
+      price: '19€',
+      priceSuffix: '/ mois',
+      saving: '1 compte parent + jusqu\'à 5 profils enfants/ados',
+      highlighted: false,
+      features: [
+        'Accès illimité pour toute la famille',
+        '1 compte parent avec suivi bienveillant',
+        'Jusqu\'à 5 profils enfants / ados personnalisés',
+        'Espace Enfant dédié (Météo du cœur, Bouclier de calme)',
+        'Paiement sécurisé PayPal',
+      ],
+      cta: 'Choisir Pack Famille (19€/mois) →',
       ctaClass: '',
     },
     {
@@ -588,6 +627,9 @@ async function simulateStripeRedirect(offerId, user, paymentMode) {
   } else if (offerId === 'reine' || offerId === 'souveraine') {
     await saveSubscription(user.id, 'reine', 'demo_session_' + Date.now());
     showToast('👑 Félicitations ! Votre accompagnement Reine (49€/mois) est activé.', 'success');
+  } else if (offerId === 'pack_famille') {
+    await saveSubscription(user.id, 'pack_famille', 'demo_session_' + Date.now());
+    showToast('👨‍👩‍👧‍👦 Félicitations ! Votre Pack Famille (19€/mois) est activé. Espace junior débloqué !', 'success');
   } else if (offerId === 'monthly' || offerId === 'yearly' || offerId === 'ouvriere') {
     await saveSubscription(user.id, offerId, 'demo_session_' + Date.now());
     showToast('🎉 Abonnement activé ! Accès complet débloqué.', 'success');

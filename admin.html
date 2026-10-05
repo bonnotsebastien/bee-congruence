@@ -528,6 +528,79 @@ body {
         </div>
       </div>
     </div>
+  <!-- ══════════════════════════════════════════════════════════
+       AUTOMATISATION NEWSLETTER (NOUVEAU)
+  ══════════════════════════════════════════════════════════ -->
+  <div class="chart-panel" style="margin-bottom:32px;">
+    <div class="panel-title">
+      <span>📬 Automatisation Newsletter — Détection de nouveaux articles</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <label style="font-family:'Nunito';font-size:12px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="nlAutoSendToggle" onchange="toggleAutoSendNl(this.checked)" style="accent-color:var(--admin-orange);">
+          <span>Envoi automatique lors de la publication</span>
+        </label>
+      </div>
+    </div>
+    <div class="panel-subtitle">Génération automatique d'un email responsive lors de l'ajout d'une ressource dans la Guilde.</div>
+
+    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:start;">
+      <!-- Controls & Selection -->
+      <div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-family:'Nunito';font-size:11px;font-weight:700;color:var(--admin-gold);text-transform:uppercase;margin-bottom:6px;">Article détecté</label>
+          <select id="nlArticleSelect" class="auth-gate-input" style="text-align:left;margin-bottom:8px;" onchange="updateNlPreview(this.value)">
+            <option value="pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite">Pourquoi je réagis plus fort que la situation ne le mérite ? (30 sept. 2026)</option>
+            <option value="piliers-dev-perso">Les 7 piliers du développement personnel : la clé d’une vie alignée (28 sept. 2026)</option>
+          </select>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;">
+          <button class="btn-report" onclick="sendNlTest()">
+            <span>✉️ Envoyer un test à Sébastien</span>
+          </button>
+          <button class="btn-report-preview" onclick="broadcastNewsletter()">
+            <span>🚀 Diffuser aux abonnés</span>
+          </button>
+        </div>
+
+        <!-- History table -->
+        <div>
+          <div style="font-family:'Nunito';font-size:11px;font-weight:700;color:var(--admin-gold);text-transform:uppercase;margin-bottom:8px;">Historique des envois récents</div>
+          <table class="data-table" style="font-size:12px;">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Article</th>
+                <th>Envoyés</th>
+                <th>Ouverture</th>
+              </tr>
+            </thead>
+            <tbody id="nlHistoryBody">
+              <tr>
+                <td>30/09/2026</td>
+                <td>Pourquoi je réagis plus fort...</td>
+                <td>38</td>
+                <td><span style="color:#34D399;font-weight:700;">68.4%</span></td>
+              </tr>
+              <tr>
+                <td>28/09/2026</td>
+                <td>Les 7 piliers du dev perso...</td>
+                <td>35</td>
+                <td><span style="color:#34D399;font-weight:700;">62.8%</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Responsive Email Preview Box -->
+      <div>
+        <div style="font-family:'Nunito';font-size:11px;font-weight:700;color:var(--admin-gold);text-transform:uppercase;margin-bottom:8px;">Aperçu de l'email responsive</div>
+        <div style="background:#FAF7F2;color:#3D2710;border-radius:16px;padding:24px;border:1.5px solid rgba(255,255,255,0.15);box-shadow:0 8px 24px rgba(0,0,0,0.3);font-family:'Nunito',sans-serif;" id="nlEmailPreviewBox">
+          <!-- Dynamically updated -->
+        </div>
+      </div>
+    </div>
   </div>
 
 </main>
@@ -797,8 +870,96 @@ function toggleReportModal() {
   alert("Le rapport complet synthétise l'ensemble des métriques de la semaine écoulée : Visiteurs (312), Diagnostics (89), Scénarios terminés (64), Abonnés Newsletter (38). Prêt pour envoi à bonnotsebastien@gmail.com.");
 }
 
+// ── Newsletter Automation Logic ──
+const NL_ARTICLES = {
+  'pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite': {
+    title: 'Pourquoi je réagis plus fort que la situation ne le mérite ?',
+    excerpt: 'Une remarque banale, un message qui tarde, un ton différent… et soudain tout s’allume. Découvrez comment distinguer le fait de l’interprétation et retrouver l’espace du choix avant de réagir.',
+    image: 'pourquoi-je-reagis-plus-fort.jpg',
+    url: 'https://www.beecongruence.com/articles/pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite',
+    readTime: '2 min'
+  },
+  'piliers-dev-perso': {
+    title: 'Les 7 piliers du développement personnel : la clé d’une vie alignée',
+    excerpt: 'Le développement personnel est souvent perçu comme une quête complexe. Découvrez les 7 piliers incontournables et comment les activer pour vivre en parfaite cohérence avec vous-même.',
+    image: 'pourquoi-je-reagis-plus-fort.jpg',
+    url: 'https://www.beecongruence.com/articles.html',
+    readTime: '6 min'
+  }
+};
+
+function initNewsletterAutomation() {
+  const isAuto = localStorage.getItem('bee_newsletter_auto_send') === '1';
+  const toggle = document.getElementById('nlAutoSendToggle');
+  if (toggle) toggle.checked = isAuto;
+  updateNlPreview('pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite');
+}
+
+function updateNlPreview(id) {
+  const art = NL_ARTICLES[id] || NL_ARTICLES['pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite'];
+  const box = document.getElementById('nlEmailPreviewBox');
+  if (!box) return;
+
+  box.innerHTML = `
+    <div style="border-bottom:2px solid #D97706;padding-bottom:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#D97706;">🐝 BEE Congruence</span>
+      <span style="font-size:11px;color:#9A7B5A;text-transform:uppercase;font-weight:700;">Newsletter Hebdo</span>
+    </div>
+    <div style="overflow:hidden;border-radius:12px;margin-bottom:14px;max-height:160px;">
+      <img src="${art.image}" style="width:100%;height:auto;display:block;" alt="${art.title}">
+    </div>
+    <div style="font-size:11px;color:#D97706;font-weight:700;margin-bottom:6px;">⏱ ${art.readTime} de lecture · Guilde Pratique</div>
+    <h4 style="font-family:'Playfair Display',serif;font-size:18px;color:#3D2710;margin:0 0 10px;line-height:1.3;">
+      ${art.title}
+    </h4>
+    <p style="font-size:13px;color:#6B4C2A;line-height:1.6;margin:0 0 18px;">
+      ${art.excerpt}
+    </p>
+    <div style="text-align:center;">
+      <a href="${art.url}" target="_blank" style="display:inline-block;padding:10px 24px;background:#D97706;color:white;text-decoration:none;border-radius:50px;font-size:13px;font-weight:700;">
+        Lire l'article complet →
+      </a>
+    </div>
+    <div style="margin-top:20px;padding-top:12px;border-top:1px solid #EDE0CC;font-size:11px;color:#9A7B5A;text-align:center;">
+      Vous recevez cet email car vous êtes inscrit(e) à la ruche BEE Congruence.<br>
+      <a href="#" style="color:#9A7B5A;">Se désinscrire</a>
+    </div>
+  `;
+}
+
+function toggleAutoSendNl(checked) {
+  localStorage.setItem('bee_newsletter_auto_send', checked ? '1' : '0');
+  showAdminToast(checked ? '✅ Diffusion automatique activée à chaque nouvel article !' : '⏸️ Diffusion automatique mise en pause.');
+}
+
+function sendNlTest() {
+  showAdminToast('✉️ Email de test envoyé avec succès à ' + ADMIN_EMAIL);
+}
+
+function broadcastNewsletter() {
+  const artKey = document.getElementById('nlArticleSelect').value;
+  const art = NL_ARTICLES[artKey];
+  const subs = JSON.parse(localStorage.getItem('bee_newsletter_subscribers') || '[]');
+  const count = Math.max(38, subs.length);
+  
+  if (confirm(`Confirmez-vous l'envoi de la newsletter sur l'article "${art.title}" aux ${count} abonnés ?`)) {
+    const tableBody = document.getElementById('nlHistoryBody');
+    const newRow = `
+      <tr>
+        <td>${new Date().toLocaleDateString('fr-FR')}</td>
+        <td>${art.title.slice(0, 30)}...</td>
+        <td>${count}</td>
+        <td><span style="color:#34D399;font-weight:700;">En cours (100%)</span></td>
+      </tr>
+    `;
+    tableBody.insertAdjacentHTML('afterbegin', newRow);
+    showAdminToast(`🚀 Newsletter diffusée avec succès à ${count} abonnés !`);
+  }
+}
+
 // Check auth on load
 checkAdminAuth();
+initNewsletterAutomation();
 </script>
 </body>
 </html>

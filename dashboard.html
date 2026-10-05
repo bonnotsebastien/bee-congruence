@@ -640,10 +640,13 @@
     <li><a href="experience.html" class="nav-link">Expérience 7 min</a></li>
     <li><a href="approche.html" class="nav-link">Notre approche</a></li>
     <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
-    <li><a href="offres.html" class="nav-link">Offres & Tarifs</a></li>
+    <li><a href="conferences.html" class="nav-link">Conférences</a></li>
+    <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
+    <li><a href="profil.html" class="nav-link">Mon Profil</a></li>
   </ul>
   <div class="nav-actions">
     <span id="nav-user-email" style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--brown-light);"></span>
+    <a href="profil.html" class="btn-outline" style="font-size:12px;padding:6px 12px;margin-right:6px;">Mon Profil</a>
     <button class="btn-outline" onclick="handleLogout()">Se déconnecter</button>
   </div>
 </nav>
@@ -668,6 +671,9 @@
         <div id="dash-plan-badge"></div>
       </div>
       <div class="dash-header-actions">
+        <a href="profil.html" class="btn-sync-mobile" style="background:#FAF7F2;color:var(--orange);border:1.5px solid var(--orange);text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+          <span>👤</span> Mon Profil &amp; Rappels
+        </a>
         <button class="btn-sync-mobile" id="btnSyncMobile" onclick="openSyncModal()" title="Transférer mon profil sur mon smartphone">
           📱 Relier mon mobile
         </button>
@@ -683,6 +689,23 @@
         Pour conserver vos résultats, enrichir votre analyse et accéder à vos entraînements sur tous vos appareils, enregistrez votre profil.
       </div>
       <a href="#section-user-profile" class="guest-banner-cta">Enregistrer mon profil ↓</a>
+    </div>
+
+    <!-- ── Bilan Hebdomadaire Fitbit ── -->
+    <div style="background:linear-gradient(135deg,#2D1F0E 0%,#1A1612 100%);border-radius:20px;padding:22px 24px;margin-bottom:32px;border:1px solid rgba(217,119,6,0.3);color:white;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;">
+      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+        <div style="font-size:36px;">🔥</div>
+        <div>
+          <div style="font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;color:#F59E0B;letter-spacing:0.1em;">Régularité &amp; Suivi Hebdomadaire</div>
+          <div style="font-family:'Playfair Display',serif;font-size:20px;color:#FEF3C7;margin:2px 0;">Série en cours : 5 jours consécutifs · 3 séances (42 min)</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:13px;color:rgba(255,255,255,0.75);">+18% de régularité vs semaine passée · Badges débloqués : 🐝 Abeille Assidue</div>
+        </div>
+      </div>
+      <div>
+        <a href="profil.html?tab=rappels" class="btn-primary" style="background:#D97706;font-size:13px;padding:9px 20px;white-space:nowrap;">
+          Voir mon bilan &amp; rappels →
+        </a>
+      </div>
     </div>
 
     <!-- ── Résultats du diagnostic ── -->
@@ -1838,16 +1861,7 @@ function showToast(msg, type = 'info') {
 
 async function handleLogout() { await signOut(); }
 
-// ── RGPD ──
-function dismissRgpd() {
-  const b = document.getElementById('rgpdBanner');
-  if (b) { b.style.opacity = '0'; setTimeout(() => b.style.display = 'none', 300); }
-}
-if (sessionStorage.getItem('rgpd_done')) {
-  const b = document.getElementById('rgpdBanner');
-  if (b) b.style.display = 'none';
-}
-function acceptRgpd() { sessionStorage.setItem('rgpd_done', '1'); dismissRgpd(); }
+// ── RGPD & Consentement Cookies géré par cookie-consent.js ──
 
 // ════════════════════════════════════════════════════════
 //  GUILDE PRATIQUE — Aperçu des ressources dans le profil

@@ -485,18 +485,28 @@
 
 <script src="nav.js"></script>
 <script>
-function dismissRgpd() {
-  const b = document.getElementById('rgpdBanner');
-  b.style.opacity = '0';
-  setTimeout(() => b.style.display = 'none', 300);
-}
-if (sessionStorage.getItem('rgpd_done')) {
+/* ── RGPD & Consentement Cookies géré par cookie-consent.js ── */
+if (localStorage.getItem('bee_cookie_consent') || localStorage.getItem('rgpd_done')) {
   const b = document.getElementById('rgpdBanner');
   if (b) b.style.display = 'none';
 }
 function acceptRgpd() {
-  sessionStorage.setItem('rgpd_done', '1');
-  dismissRgpd();
+  if (window.BeeCookieConsent) {
+    window.BeeCookieConsent.saveConsent({ necessary: true, analytics: true, personalization: true });
+  } else {
+    localStorage.setItem('rgpd_done', '1');
+    const b = document.getElementById('rgpdBanner');
+    if (b) b.style.display = 'none';
+  }
+}
+function dismissRgpd() {
+  if (window.BeeCookieConsent) {
+    window.BeeCookieConsent.saveConsent({ necessary: true, analytics: false, personalization: false });
+  } else {
+    localStorage.setItem('rgpd_done', '1');
+    const b = document.getElementById('rgpdBanner');
+    if (b) b.style.display = 'none';
+  }
 }
 </script>
 </body>

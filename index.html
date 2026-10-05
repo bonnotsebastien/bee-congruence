@@ -54,7 +54,7 @@
     
     <div class="hero-sub" style="font-size:17px; line-height:1.75; margin-bottom:26px;">
       Certaines situations réactivent toujours les mêmes tensions : la fermeture, le reproche, la justification ou la fuite.<br><br>
-      <strong style="color:var(--brown-dark);">BEE Congruence vous offre un espace bienveillant et structurant pour comprendre ce qui se joue, apaiser vos émotions et vous entraîner à choisir des réponses saines et alignées.</strong>
+      <strong style="color:var(--brown-dark);">BEE Congruence vous offre un espace bienveillant et structurant pour comprendre ce qui se joue, pacifier vos émotions et transformer leur énergie en une ressource lucide et affirmée.</strong>
     </div>
 
     <!-- ── Captation AIDA légère : Prénom + Email ── -->
@@ -527,21 +527,29 @@ const revealObs = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-/* ── RGPD ── */
-function dismissRgpd() {
-  const b = document.getElementById('rgpdBanner');
-  if (b) {
-    b.style.opacity = '0';
-    setTimeout(() => b.style.display = 'none', 300);
-  }
-}
-if (sessionStorage.getItem('rgpd_done')) {
+/* ── RGPD & Consentement Cookies géré par cookie-consent.js ── */
+if (localStorage.getItem('bee_cookie_consent') || localStorage.getItem('rgpd_done')) {
   const b = document.getElementById('rgpdBanner');
   if (b) b.style.display = 'none';
 }
 function acceptRgpd() {
-  sessionStorage.setItem('rgpd_done', '1');
-  dismissRgpd();
+  if (window.BeeCookieConsent) {
+    window.BeeCookieConsent.saveConsent({ necessary: true, analytics: true, personalization: true });
+  } else {
+    localStorage.setItem('rgpd_done', '1');
+    localStorage.setItem('bee_cookie_consent', JSON.stringify({ necessary: true, analytics: true, personalization: true }));
+    const b = document.getElementById('rgpdBanner');
+    if (b) b.style.display = 'none';
+  }
+}
+function dismissRgpd() {
+  if (window.BeeCookieConsent) {
+    window.BeeCookieConsent.saveConsent({ necessary: true, analytics: false, personalization: false });
+  } else {
+    localStorage.setItem('rgpd_done', '1');
+    const b = document.getElementById('rgpdBanner');
+    if (b) b.style.display = 'none';
+  }
 }
 </script>
 </body>

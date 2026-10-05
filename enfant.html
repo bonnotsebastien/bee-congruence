@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace Enfant & Ados — La Ruche Bienveillante | BEE Congruence</title>
+<link rel="icon" href="logo.jpg" type="image/jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<style>
+:root {
+  --kid-bg: #FFFDF9;
+  --kid-yellow: #FBBF24;
+  --kid-orange: #F59E0B;
+  --kid-green: #34D399;
+  --kid-blue: #60A5FA;
+  --kid-purple: #A78BFA;
+  --kid-card-border: #F3E8D7;
+}
+
+body {
+  background-color: var(--kid-bg);
+  background-image: radial-gradient(#FDE68A 1px, transparent 1px);
+  background-size: 24px 24px;
+  font-family: 'Nunito', sans-serif;
+  color: #3D2710;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.kid-header {
+  background: white;
+  border-bottom: 2px solid #F3E8D7;
+  padding: 16px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 4px 14px rgba(245,158,11,0.08);
+}
+.kid-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #D97706;
+}
+.kid-avatar-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #FEF3C7;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #B45309;
+}
+.btn-parent-return {
+  background: white;
+  border: 1.5px solid #D97706;
+  color: #D97706;
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-parent-return:hover {
+  background: #D97706;
+  color: white;
+}
+
+.kid-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 36px 20px 80px;
+}
+
+/* ── Hero Welcome ── */
+.kid-welcome {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border-radius: 28px;
+  padding: 36px 30px;
+  text-align: center;
+  margin-bottom: 36px;
+  box-shadow: 0 8px 24px rgba(245,158,11,0.12);
+  border: 2px solid #FCD34D;
+  position: relative;
+  overflow: hidden;
+}
+.kid-welcome h1 {
+  font-size: clamp(24px, 4.5vw, 36px);
+  font-weight: 900;
+  color: #78350F;
+  margin: 0 0 10px;
+}
+.kid-welcome p {
+  font-size: 16px;
+  color: #92400E;
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── Météo des émotions ── */
+.kid-meteo-section {
+  background: white;
+  border-radius: 24px;
+  padding: 28px;
+  border: 2px solid var(--kid-card-border);
+  margin-bottom: 32px;
+  box-shadow: 0 6px 20px rgba(61,39,16,0.04);
+}
+.kid-section-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: #3D2710;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.kid-section-subtitle {
+  font-size: 14px;
+  color: #6B4C2A;
+  margin-bottom: 20px;
+}
+.meteo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+}
+.meteo-card {
+  background: #FAF7F2;
+  border: 2px solid #EDE0CC;
+  border-radius: 20px;
+  padding: 18px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.meteo-card:hover {
+  transform: translateY(-3px);
+  border-color: #D97706;
+}
+.meteo-card.active {
+  background: #FEF3C7;
+  border-color: #D97706;
+  box-shadow: 0 6px 18px rgba(217,119,6,0.2);
+  transform: scale(1.05);
+}
+.meteo-icon { font-size: 42px; margin-bottom: 8px; }
+.meteo-label { font-size: 14px; font-weight: 800; color: #3D2710; }
+.meteo-msg {
+  display: none;
+  background: #ECFDF5;
+  border: 1.5px solid #A7F3D0;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-top: 18px;
+  font-size: 14px;
+  color: #065F46;
+  line-height: 1.6;
+}
+
+/* ── Exercices ludiques ── */
+.kid-exercises-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+.kid-exo-card {
+  background: white;
+  border: 2px solid var(--kid-card-border);
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s;
+  box-shadow: 0 4px 14px rgba(61,39,16,0.04);
+}
+.kid-exo-card:hover {
+  transform: translateY(-4px);
+  border-color: #D97706;
+  box-shadow: 0 12px 30px rgba(61,39,16,0.09);
+}
+.kid-exo-icon { font-size: 38px; margin-bottom: 12px; }
+.kid-exo-title { font-size: 18px; font-weight: 800; color: #3D2710; margin-bottom: 8px; }
+.kid-exo-desc { font-size: 13.5px; color: #6B4C2A; line-height: 1.6; margin-bottom: 18px; flex-grow: 1; }
+.kid-exo-btn {
+  background: #D97706;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: center;
+  text-decoration: none;
+}
+.kid-exo-btn:hover { background: #B45309; }
+
+/* ── Interactive Activity Modal ── */
+.kid-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(30,20,10,0.8);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.kid-modal-backdrop.open { display: flex; }
+.kid-modal-box {
+  background: white;
+  border-radius: 28px;
+  max-width: 540px;
+  width: 100%;
+  padding: 36px 30px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  position: relative;
+  text-align: center;
+}
+.kid-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  background: #F3E8D7;
+  border: none;
+  color: #78350F;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-weight: 800;
+  cursor: pointer;
+}
+.breathing-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: #FDE68A;
+  margin: 24px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #78350F;
+  border: 4px solid #F59E0B;
+  animation: breatheAnim 8s infinite ease-in-out;
+}
+@keyframes breatheAnim {
+  0%, 100% { transform: scale(0.8); background: #FEF3C7; }
+  50% { transform: scale(1.3); background: #FCD34D; }
+}
+</style>
+</head>
+<body>
+
+<header class="kid-header">
+  <div class="kid-brand">
+    <span>🐝</span>
+    <span>BEE Ruche Junior</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <div class="kid-avatar-badge" id="kidAvatarBadge">
+      <span>🧒</span>
+      <span id="kidNameLabel">Enfant</span>
+    </div>
+    <a href="profil.html?tab=famille" class="btn-parent-return">← Retour Espace Parent</a>
+  </div>
+</header>
+
+<main class="kid-container">
+
+  <!-- Welcome banner -->
+  <div class="kid-welcome">
+    <div style="font-size:44px;margin-bottom:8px;">🌟</div>
+    <h1>Bienvenue dans ton espace d'entraînement secret !</h1>
+    <p>
+      Ici, tu apprends à comprendre ce qui se passe dans ton cœur et dans ta tête quand tu es fâché, triste ou stressé. Tu découvriras des super-pouvoirs pour rester calme et te faire entendre sans crier !
+    </p>
+  </div>
+
+  <!-- Météo des émotions -->
+  <section class="kid-meteo-section">
+    <div class="kid-section-title">
+      <span>🌤️</span>
+      <span>Quelle est ta météo du cœur aujourd'hui ?</span>
+    </div>
+    <p class="kid-section-subtitle">Toutes les émotions sont les bienvenues. Clique sur celle qui te ressemble en ce moment :</p>
+    
+    <div class="meteo-grid">
+      <div class="meteo-card" onclick="selectMeteo('soleil', '☀️ C\'est super ! Savoure cette joie et partage-la autour de toi.')">
+        <div class="meteo-icon">☀️</div>
+        <div class="meteo-label">Ensoleillé</div>
+      </div>
+      <div class="meteo-card" onclick="selectMeteo('nuage', '⛅ C\'est normal d\'avoir des jours un peu calmes ou hésitants. Prends ton temps.')">
+        <div class="meteo-icon">⛅</div>
+        <div class="meteo-label">Un peu mitigé</div>
+      </div>
+      <div class="meteo-card" onclick="selectMeteo('orage', '⚡ La colère est une énergie puissante. Ton corps te dit que quelque chose n\'est pas juste pour toi. Faisons le bouclier de calme ensemble !')">
+        <div class="meteo-icon">⚡</div>
+        <div class="meteo-label">Orage &amp; Colère</div>
+      </div>
+      <div class="meteo-card" onclick="selectMeteo('pluie', '🌧️ La tristesse a besoin de douceur. Tu as le droit de pleurer ou de demander un gros câlin.')">
+        <div class="meteo-icon">🌧️</div>
+        <div class="meteo-label">Triste ou lourd</div>
+      </div>
+      <div class="meteo-card" onclick="selectMeteo('brouillard', '🌫️ Quand on est perdu, le mieux est de ralentir et de respirer doucement.')">
+        <div class="meteo-icon">🌫️</div>
+        <div class="meteo-label">Dans le flou</div>
+      </div>
+    </div>
+
+    <div class="meteo-msg" id="meteoMsg"></div>
+  </section>
+
+  <!-- Exercices pratiques Junior -->
+  <div class="kid-section-title" style="margin-bottom:14px;">
+    <span>🎮</span>
+    <span>Tes missions d'entraînement</span>
+  </div>
+
+  <div class="kid-exercises-grid">
+
+    <!-- Mission 1 : Bouclier de calme -->
+    <div class="kid-exo-card">
+      <div class="kid-exo-icon">🛡️</div>
+      <div class="kid-exo-title">Le Bouclier de Calme</div>
+      <p class="kid-exo-desc">
+        Un super-pouvoir de respiration en 3 temps quand tu sens que tu vas exploser ou crier. Pacifie le volcan intérieur en 60 secondes.
+      </p>
+      <button class="kid-exo-btn" onclick="openActivity('bouclier')">Activer le bouclier →</button>
+    </div>
+
+    <!-- Mission 2 : Parler à papa/maman -->
+    <div class="kid-exo-card">
+      <div class="kid-exo-icon">🗣️</div>
+      <div class="kid-exo-title">La Formule Magique</div>
+      <p class="kid-exo-desc">
+        Comment dire à tes parents ce qui ne va pas sans déclencher une dispute ? Apprends la règle secrète : « Quand tu dis ça, je ressens... et j'ai besoin de... ».
+      </p>
+      <button class="kid-exo-btn" onclick="openActivity('formule')">Découvrir la formule →</button>
+    </div>
+
+    <!-- Mission 3 : Pause réconciliation -->
+    <div class="kid-exo-card">
+      <div class="kid-exo-icon">🤝</div>
+      <div class="kid-exo-title">Désamorcer avec un ami</div>
+      <p class="kid-exo-desc">
+        Une dispute à l'école ou avec ton frère / ta sœur ? Teste les 3 phrases pour faire la paix sans perdre ta fierté.
+      </p>
+      <button class="kid-exo-btn" onclick="openActivity('paix')">Faire la paix →</button>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- ACTIVITY MODAL -->
+<div class="kid-modal-backdrop" id="kidModal">
+  <div class="kid-modal-box">
+    <button class="kid-modal-close" onclick="closeKidModal()">✕</button>
+    <div id="kidModalBody"></div>
+  </div>
+</div>
+
+<script>
+function selectMeteo(type, msg) {
+  document.querySelectorAll('.meteo-card').forEach(c => c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  const box = document.getElementById('meteoMsg');
+  box.textContent = msg;
+  box.style.display = 'block';
+  localStorage.setItem('bee_kid_last_meteo', JSON.stringify({ type, date: new Date().toISOString() }));
+}
+
+function openActivity(act) {
+  const modal = document.getElementById('kidModal');
+  const body = document.getElementById('kidModalBody');
+
+  if (act === 'bouclier') {
+    body.innerHTML = `
+      <div style="font-size:48px;">🛡️</div>
+      <h2 style="font-size:22px;color:#78350F;margin:8px 0;">Le Bouclier de Calme</h2>
+      <p style="font-size:14px;color:#92400E;line-height:1.6;">
+        Regarde le cercle magique : inspire quand il grossit, retiens ton souffle un instant, puis souffle lentement comme pour refroidir une soupe quand il rétrécit.
+      </p>
+      <div class="breathing-circle">Respire...</div>
+      <button class="kid-exo-btn" style="margin-top:16px;" onclick="closeKidModal();alert('Super ! Tu as gagné le badge Abeille Paisible 🐝 !');">J'ai retrouvé mon calme !</button>
+    `;
+  } else if (act === 'formule') {
+    body.innerHTML = `
+      <div style="font-size:48px;">🗣️</div>
+      <h2 style="font-size:22px;color:#78350F;margin:8px 0;">La Formule Magique</h2>
+      <p style="font-size:14px;color:#6B4C2A;text-align:left;line-height:1.7;background:#FEF3C7;padding:16px;border-radius:14px;margin:16px 0;">
+        <strong>1. Ce qui s'est passé :</strong> « Quand tu m'as demandé d'arrêter ma console tout de suite... »<br>
+        <strong>2. Ce que j'ai ressenti :</strong> « Je me suis senti frustré parce que j'étais presque à la fin du niveau. »<br>
+        <strong>3. Ce dont j'ai besoin :</strong> « J'ai besoin qu'on se mette d'accord 5 minutes avant pour que je puisse sauvegarder. »
+      </p>
+      <button class="kid-exo-btn" onclick="closeKidModal()">J'ai compris la formule !</button>
+    `;
+  } else {
+    body.innerHTML = `
+      <div style="font-size:48px;">🤝</div>
+      <h2 style="font-size:22px;color:#78350F;margin:8px 0;">Faire la paix avec un ami</h2>
+      <p style="font-size:14px;color:#6B4C2A;text-align:left;line-height:1.7;background:#ECFDF5;padding:16px;border-radius:14px;margin:16px 0;">
+        💡 <strong>Phrase magique :</strong> « Je n'ai pas aimé qu'on se dispute tout à l'heure. Est-ce qu'on peut s'écouter 2 minutes chacun pour rejouer ensemble ? »
+      </p>
+      <button class="kid-exo-btn" onclick="closeKidModal()">Je vais essayer ça !</button>
+    `;
+  }
+
+  modal.classList.add('open');
+}
+
+function closeKidModal() {
+  document.getElementById('kidModal').classList.remove('open');
+}
+
+// Récupérer le nom de l'enfant sélectionné
+const currentKid = localStorage.getItem('bee_current_child_name') || 'Lucas';
+document.getElementById('kidNameLabel').textContent = currentKid;
+</script>
+</body>
+</html>

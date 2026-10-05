@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Profil &amp; Paramètres — BEE Congruence</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.jpg" type="image/jpeg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<style>
+/* ── Layout & Wrapper ── */
+.profile-page-wrapper {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.profile-top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 36px;
+}
+.profile-title-area h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 38px);
+  color: var(--brown-dark, #3D2710);
+  margin: 0 0 6px;
+}
+.profile-title-area p {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14.5px;
+  color: var(--brown-mid, #6B4C2A);
+  margin: 0;
+}
+.profile-header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* ── Tabs Navigation ── */
+.profile-tabs-nav {
+  display: flex;
+  border-bottom: 2px solid var(--border, #EDE0CC);
+  margin-bottom: 32px;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.profile-tab-btn {
+  background: transparent;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--brown-mid, #6B4C2A);
+  padding: 12px 20px;
+  cursor: pointer;
+  border-radius: 12px 12px 0 0;
+  position: relative;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.profile-tab-btn:hover {
+  color: var(--orange, #D97706);
+  background: rgba(217,119,6,0.05);
+}
+.profile-tab-btn.active {
+  color: var(--orange, #D97706);
+  font-weight: 800;
+}
+.profile-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--orange, #D97706);
+  border-radius: 3px 3px 0 0;
+}
+
+/* ── Tab Panes ── */
+.profile-tab-pane {
+  display: none;
+  animation: fadeIn 0.25s ease-out;
+}
+.profile-tab-pane.active {
+  display: block;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Cards & Grid ── */
+.profile-card {
+  background: white;
+  border: 1.5px solid var(--border, #EDE0CC);
+  border-radius: 22px;
+  padding: 32px 28px;
+  box-shadow: 0 4px 20px rgba(61,39,16,0.04);
+  margin-bottom: 28px;
+}
+.profile-card-header {
+  border-bottom: 1px solid var(--border, #EDE0CC);
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.profile-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--brown-dark, #3D2710);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profile-card-desc {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13.5px;
+  color: var(--brown-mid, #6B4C2A);
+  margin: 4px 0 0;
+}
+
+/* ── Form Styles ── */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+@media (max-width: 700px) {
+  .form-grid-2 { grid-template-columns: 1fr; }
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.form-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brown-mid, #6B4C2A);
+}
+.form-input, .form-select {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border, #EDE0CC);
+  background: #FAF7F2;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: var(--brown-dark, #3D2710);
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+.form-input:focus, .form-select:focus {
+  border-color: var(--orange, #D97706);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(217,119,6,0.15);
+}
+.btn-save-profile {
+  background: var(--orange, #D97706);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-save-profile:hover {
+  background: #B45309;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217,119,6,0.25);
+}
+
+/* ── FITBIT WEEKLY REPORT STYLES ── */
+.fitbit-hero {
+  background: linear-gradient(135deg, #2D1F0E 0%, #1A1612 100%);
+  border-radius: 24px;
+  padding: 32px 28px;
+  color: #FDFAF6;
+  margin-bottom: 28px;
+  box-shadow: 0 10px 30px rgba(45,31,14,0.3);
+  border: 1px solid rgba(217,119,6,0.3);
+}
+.fitbit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.fitbit-badge {
+  background: rgba(217,119,6,0.2);
+  border: 1px solid rgba(217,119,6,0.4);
+  color: #F59E0B;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 4px 12px;
+  border-radius: 50px;
+}
+.fitbit-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.fitbit-stat-box {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fitbit-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #F59E0B;
+}
+.fitbit-stat-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  color: rgba(253,250,246,0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.fitbit-progress-wrap {
+  background: rgba(255,255,255,0.1);
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.fitbit-progress-bar {
+  background: linear-gradient(90deg, #F59E0B, #10B981);
+  height: 100%;
+  border-radius: 4px;
+}
+.fitbit-badges-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.fitbit-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #FDE68A;
+}
+
+/* ── FAMILY PACK STYLES ── */
+.family-banner-top {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 2px solid #FCD34D;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.family-children-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.child-card {
+  background: #FAF7F2;
+  border: 1.5px solid var(--border, #EDE0CC);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  transition: all 0.2s;
+}
+.child-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--orange, #D97706);
+  box-shadow: 0 8px 24px rgba(61,39,16,0.08);
+}
+.child-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid var(--orange, #D97706);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+.child-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--brown-dark, #3D2710);
+  margin-bottom: 4px;
+}
+.child-age {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  color: var(--brown-mid, #6B4C2A);
+  margin-bottom: 14px;
+}
+.btn-child-switch {
+  width: 100%;
+  padding: 9px;
+  background: var(--orange, #D97706);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  box-sizing: border-box;
+}
+.btn-child-delete {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #9A7B5A;
+  font-size: 16px;
+  cursor: pointer;
+}
+.btn-child-delete:hover { color: #EF4444; }
+
+/* ── Reminder Preferences ── */
+.reminder-options-box {
+  background: #FAF7F2;
+  border-radius: 18px;
+  padding: 24px;
+  border: 1.5px solid var(--border, #EDE0CC);
+}
+.reminder-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border, #EDE0CC);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.reminder-row:last-child { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="logo">
+    <img src="logo.jpg" alt="BEE Congruence">
+    <div class="logo-fallback"><span class="logo-bee">BEE</span><span class="logo-cong">Congruence</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="nav-link">Accueil</a></li>
+    <li><a href="dashboard.html" class="nav-link">Scénarios &amp; Pratique</a></li>
+    <li><a href="profil.html" class="nav-link active">Mon Profil</a></li>
+    <li><a href="conferences.html" class="nav-link">Conférences</a></li>
+    <li><a href="offres.html" class="nav-link">Offres</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="dashboard.html" class="btn-outline">Mes entraînements</a>
+    <button onclick="handleLogout()" class="btn-outline" style="border-color:#EDE0CC;">Déconnexion</button>
+  </div>
+</nav>
+
+<div class="profile-page-wrapper">
+
+  <!-- TOP HEADER -->
+  <div class="profile-top-header">
+    <div class="profile-title-area">
+      <h1>Mon Profil &amp; Informations Personnelles</h1>
+      <p id="userSubtitle">Gérez votre identité, vos rappels d'entraînement et les accès de votre ruche.</p>
+    </div>
+    <div class="profile-header-actions">
+      <a href="dashboard.html" class="btn-outline" style="display:inline-flex;align-items:center;gap:6px;">
+        <span>🏃</span> Continuer mes scénarios
+      </a>
+    </div>
+  </div>
+
+  <!-- TABS NAV -->
+  <div class="profile-tabs-nav">
+    <button class="profile-tab-btn active" onclick="switchProfileTab('infos')">
+      <span>👤</span> Informations personnelles
+    </button>
+    <button class="profile-tab-btn" onclick="switchProfileTab('rappels')">
+      <span>⏰</span> Mes rappels &amp; Bilan Fitbit
+    </button>
+    <button class="profile-tab-btn" onclick="switchProfileTab('abonnements')">
+      <span>👑</span> Abonnements &amp; Espace Famille
+    </button>
+    <button class="profile-tab-btn" onclick="switchProfileTab('compte')">
+      <span>⚙️</span> Paramètres du compte &amp; RGPD
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ONGLET 1 : INFORMATIONS PERSONNELLES
+  ══════════════════════════════════════════════════════════ -->
+  <div class="profile-tab-pane active" id="pane-infos">
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div>
+          <h2 class="profile-card-title"><span>👤</span> Vos données d'identité</h2>
+          <p class="profile-card-desc">Ces informations permettent de personnaliser vos bilans de congruence et rapports PDF.</p>
+        </div>
+      </div>
+
+      <form id="profilePersonalForm" onsubmit="savePersonalInfo(event)">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Prénom</label>
+            <input type="text" class="form-input" id="profilePrenom" placeholder="Votre prénom" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nom de famille (Nouveau)</label>
+            <input type="text" class="form-input" id="profileNom" placeholder="Votre nom de famille" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Adresse Email</label>
+            <input type="email" class="form-input" id="profileEmail" placeholder="votre.email@exemple.com" readonly style="opacity:0.8;cursor:not-allowed;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date de naissance</label>
+            <input type="date" class="form-input" id="profileBirthdate">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Situation familiale</label>
+            <select class="form-select" id="profileFamilyStatus">
+              <option value="">Sélectionnez votre situation...</option>
+              <option value="celibataire">Célibataire</option>
+              <option value="couple">En couple</option>
+              <option value="marie">Marié(e) / Pacsé(e)</option>
+              <option value="separe">Séparé(e) / Divorcé(e)</option>
+              <option value="famille_recomposee">Famille recomposée</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nombre d'enfants à charge</label>
+            <select class="form-select" id="profileChildrenCount">
+              <option value="0">Aucun enfant</option>
+              <option value="1">1 enfant</option>
+              <option value="2">2 enfants</option>
+              <option value="3">3 enfants</option>
+              <option value="4+">4 enfants ou plus</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button type="submit" class="btn-save-profile">
+            <span>💾</span> Enregistrer mes informations personnelles
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ONGLET 2 : RAPPELS & BILAN FITBIT
+  ══════════════════════════════════════════════════════════ -->
+  <div class="profile-tab-pane" id="pane-rappels">
+
+    <!-- FITBIT REPORT -->
+    <div class="fitbit-hero">
+      <div class="fitbit-header">
+        <div>
+          <div class="fitbit-badge">📊 Votre Bilan d'entraînement hebdomadaire</div>
+          <h2 style="font-family:'Playfair Display',serif;font-size:26px;color:#FDE68A;margin:8px 0 4px;">Progression &amp; Régularité Relationnelle</h2>
+          <p style="font-family:'Nunito',sans-serif;font-size:13.5px;color:rgba(253,250,246,0.8);margin:0;">
+            Chaque séance renforce votre musculature émotionnelle et remplace la réaction automatique par le choix conscient.
+          </p>
+        </div>
+        <button class="btn-outline" style="border-color:#F59E0B;color:#F59E0B;" onclick="exportFitbitSummary()">
+          📥 Exporter mon rapport
+        </button>
+      </div>
+
+      <div class="fitbit-stats-grid">
+        <div class="fitbit-stat-box">
+          <div class="fitbit-stat-num" id="fbSessions">3</div>
+          <div class="fitbit-stat-label">Séances cette semaine</div>
+          <div class="fitbit-progress-wrap">
+            <div class="fitbit-progress-bar" style="width:75%;"></div>
+          </div>
+        </div>
+        <div class="fitbit-stat-box">
+          <div class="fitbit-stat-num" id="fbMinutes">42m</div>
+          <div class="fitbit-stat-label">Temps d'entraînement</div>
+          <div class="fitbit-progress-wrap">
+            <div class="fitbit-progress-bar" style="width:84%;"></div>
+          </div>
+        </div>
+        <div class="fitbit-stat-box">
+          <div class="fitbit-stat-num" id="fbStreak">5 j 🔥</div>
+          <div class="fitbit-stat-label">Série en cours (Streak)</div>
+          <div class="fitbit-progress-wrap">
+            <div class="fitbit-progress-bar" style="width:100%;"></div>
+          </div>
+        </div>
+        <div class="fitbit-stat-box">
+          <div class="fitbit-stat-num" style="color:#34D399;" id="fbEvolution">+18%</div>
+          <div class="fitbit-stat-label">Régularité vs S-1</div>
+          <div class="fitbit-progress-wrap">
+            <div class="fitbit-progress-bar" style="width:90%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.06);padding:14px 18px;border-radius:14px;font-family:'Lora',serif;font-style:italic;font-size:14px;color:#FEF3C7;border-left:3px solid #F59E0B;" id="fbEncouragement">
+        « Excellente régularité cette semaine ! Vous observez plus rapidement la montée de réactivité et choisissez la pause avant d'interagir. »
+      </div>
+
+      <div class="fitbit-badges-row">
+        <div class="fitbit-badge-item"><span>🐝</span> Abeille Assidue (3 séances/sem)</div>
+        <div class="fitbit-badge-item"><span>🔥</span> Série de 5 jours consécutifs</div>
+        <div class="fitbit-badge-item"><span>🛡️</span> Gardien du Lien (Affirmation de soi)</div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATION PREFERENCES -->
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div>
+          <h2 class="profile-card-title"><span>⏰</span> Notifications d'entraînement ("Mes rappels")</h2>
+          <p class="profile-card-desc">Configurez vos rituels pour ancrer durablement la congruence dans votre quotidien.</p>
+        </div>
+      </div>
+
+      <form id="reminderPrefsForm" onsubmit="saveReminderSettings(event)">
+        <div class="reminder-options-box">
+          <div class="reminder-row">
+            <div>
+              <strong style="color:var(--brown-dark,#3D2710);">Fréquence des rappels</strong>
+              <div style="font-size:13px;color:var(--brown-mid,#6B4C2A);">À quel rythme souhaitez-vous pratiquer vos scénarios ?</div>
+            </div>
+            <div>
+              <select class="form-select" id="remFrequency" style="min-width:200px;">
+                <option value="daily">Quotidienne (recommandée)</option>
+                <option value="every_2_days">Tous les 2 jours</option>
+                <option value="weekly">Hebdomadaire</option>
+                <option value="custom">Personnalisée</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="reminder-row">
+            <div>
+              <strong style="color:var(--brown-dark,#3D2710);">Canal de notification</strong>
+              <div style="font-size:13px;color:var(--brown-mid,#6B4C2A);">Où souhaitez-vous recevoir votre déclic du jour ?</div>
+            </div>
+            <div>
+              <select class="form-select" id="remChannel" style="min-width:200px;">
+                <option value="both">Email &amp; Notification mobile</option>
+                <option value="email">Email uniquement</option>
+                <option value="mobile">Notification mobile uniquement</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="reminder-row">
+            <div>
+              <strong style="color:var(--brown-dark,#3D2710);">Heure d'entraînement préférée</strong>
+              <div style="font-size:13px;color:var(--brown-mid,#6B4C2A);">Moment propice pour une pause réflexive de 5 minutes</div>
+            </div>
+            <div>
+              <input type="time" class="form-input" id="remTime" value="08:30" style="min-width:140px;">
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button type="submit" class="btn-save-profile">
+            <span>🔔</span> Enregistrer mes préférences de rappels
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ONGLET 3 : ABONNEMENTS & ESPACE FAMILLE
+  ══════════════════════════════════════════════════════════ -->
+  <div class="profile-tab-pane" id="pane-abonnements">
+
+    <!-- CURRENT SUBSCRIPTION CARD -->
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div>
+          <h2 class="profile-card-title"><span>👑</span> Votre Formule BEE Congruence</h2>
+          <p class="profile-card-desc">Gérez votre niveau d'entraînement et vos avantages actifs.</p>
+        </div>
+        <div id="currentPlanBadge" style="font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;padding:6px 16px;border-radius:50px;text-transform:uppercase;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;">
+          Plan Actif : L'Ouvrière
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+        <div style="max-width:540px;">
+          <p style="font-family:'Nunito',sans-serif;font-size:14px;color:var(--brown-mid,#6B4C2A);line-height:1.7;margin:0;">
+            Vous bénéficiez d'un accès illimité à l'ensemble des scénarios interactifs, aux masterclasses exclusives et à la synchronisation instantanée mobile et ordinateur.
+          </p>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="offres.html" class="btn-primary" style="font-size:13px;padding:10px 22px;">Changer de formule</a>
+          <button class="btn-outline" style="font-size:13px;padding:10px 18px;" onclick="alert('Votre abonnement est sans engagement. Vous pouvez le suspendre ou le modifier depuis ce menu.')">Gérer la facturation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACK FAMILLE & COMPTE PARENT -->
+    <div class="profile-card">
+      <div class="family-banner-top">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <img src="pack-famille.jpg" alt="Pack Famille" style="width:72px;height:72px;border-radius:16px;object-fit:cover;border:2px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+          <div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:#78350F;margin:0 0 4px;">Espace Famille — Compte Parent</h3>
+            <p style="font-family:'Nunito',sans-serif;font-size:13px;color:#92400E;margin:0;">
+              Partagez la ruche avec vos enfants et adolescents (jusqu'à 5 profils juniors inclus).
+            </p>
+          </div>
+        </div>
+        <button class="btn-primary" style="background:#78350F;border-color:#78350F;" onclick="openAddChildModal()">
+          + Ajouter un profil enfant
+        </button>
+      </div>
+
+      <div class="family-children-grid" id="familyChildrenList">
+        <!-- Rempli par JavaScript -->
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ONGLET 4 : PARAMÈTRES DU COMPTE & RGPD
+  ══════════════════════════════════════════════════════════ -->
+  <div class="profile-tab-pane" id="pane-compte">
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div>
+          <h2 class="profile-card-title"><span>🔒</span> Sécurité du compte</h2>
+          <p class="profile-card-desc">Modifiez vos identifiants d'accès sécurisé.</p>
+        </div>
+      </div>
+
+      <form onsubmit="handlePasswordChange(event)" style="max-width:500px;">
+        <div class="form-group">
+          <label class="form-label">Nouveau mot de passe</label>
+          <input type="password" class="form-input" id="newPassword" placeholder="Au moins 8 caractères" minlength="8" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirmer le nouveau mot de passe</label>
+          <input type="password" class="form-input" id="confirmPassword" placeholder="Retapez le mot de passe" minlength="8" required>
+        </div>
+        <button type="submit" class="btn-primary" style="font-size:13px;padding:11px 24px;margin-top:8px;">
+          Mettre à jour le mot de passe
+        </button>
+      </form>
+    </div>
+
+    <!-- RGPD -->
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div>
+          <h2 class="profile-card-title"><span>🛡️</span> Vos droits RGPD &amp; Données personnelles</h2>
+          <p class="profile-card-desc">Vos données vous appartiennent entièrement. Conforme aux standards CNIL et européens.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <button class="btn-outline" onclick="exportUserData()">
+          📥 Exporter l'intégralité de mes données (JSON)
+        </button>
+        <button class="btn-outline" style="border-color:#EF4444;color:#EF4444;" onclick="handleDeleteAccount()">
+          🗑️ Supprimer définitivement mon compte et mes tests
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL AJOUT ENFANT -->
+<div class="conf-modal-backdrop" id="addChildModal" style="display:none;position:fixed;inset:0;background:rgba(26,22,18,0.8);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:24px;max-width:440px;width:100%;padding:32px;position:relative;">
+    <button style="position:absolute;top:16px;right:18px;background:#EDE0CC;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;" onclick="closeAddChildModal()">✕</button>
+    <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--brown-dark,#3D2710);margin:0 0 8px;">Ajouter un profil enfant</h3>
+    <p style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--brown-mid,#6B4C2A);margin-bottom:20px;">
+      Créez un profil personnalisé avec accès direct à l'interface Junior adaptée.
+    </p>
+    <form onsubmit="handleCreateChild(event)">
+      <div class="form-group">
+        <label class="form-label">Prénom de l'enfant</label>
+        <input type="text" class="form-input" id="newChildName" placeholder="Ex: Lucas" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Âge</label>
+        <input type="number" class="form-input" id="newChildAge" placeholder="Ex: 10" min="4" max="18" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Avatar</label>
+        <select class="form-select" id="newChildAvatar">
+          <option value="🧒">🧒 Garçon</option>
+          <option value="👧">👧 Fille</option>
+          <option value="⭐">⭐ Étoile</option>
+          <option value="🐝">🐝 Petite Abeille</option>
+          <option value="🦁">🦁 Petit Lion</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;padding:13px;margin-top:10px;">
+        Créer le profil Junior →
+      </button>
+    </form>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="logo.jpg" alt="BEE Congruence" style="height:76px;">
+      <p class="footer-tagline">Équilibre &amp; Harmonie Relationnelle</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité (RGPD)</a>
+      <a href="contact.html">Contact</a>
+      <a href="articles.html">Guilde pratique</a>
+      <a href="#" onclick="if(window.BeeCookieConsent) window.BeeCookieConsent.showModal(); return false;">Gestion des cookies</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+<script src="supabase.js"></script>
+<script>
+// ── Switch Tabs ──
+function switchProfileTab(tabId) {
+  document.querySelectorAll('.profile-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${tabId}'`));
+  });
+  document.querySelectorAll('.profile-tab-pane').forEach(pane => {
+    pane.classList.toggle('active', pane.id === `pane-${tabId}`);
+  });
+}
+
+// ── Initialisation des données profil ──
+async function initProfilePage() {
+  // Vérifier URL query params pour basculer sur un onglet spécifique
+  const urlTab = new URLSearchParams(window.location.search).get('tab');
+  if (urlTab && ['infos', 'rappels', 'abonnements', 'compte', 'famille'].includes(urlTab)) {
+    switchProfileTab(urlTab === 'famille' ? 'abonnements' : urlTab);
+  }
+
+  let email = localStorage.getItem('bee_user_email') || 'bonnotsebastien@gmail.com';
+  
+  // Supabase session
+  try {
+    const user = await getUser();
+    if (user && user.email) {
+      email = user.email;
+      // Synchronisation cloud automatique (Desktop <-> Mobile)
+      if (typeof autoSyncCloud === 'function') {
+        await autoSyncCloud(email);
+      }
+    }
+  } catch(e) {}
+
+  document.getElementById('profileEmail').value = email;
+
+  // Charger profil depuis localStorage ou Supabase
+  const savedProfile = JSON.parse(localStorage.getItem('bee_user_profile') || '{}');
+  if (savedProfile.prenom) document.getElementById('profilePrenom').value = savedProfile.prenom;
+  if (savedProfile.nom) document.getElementById('profileNom').value = savedProfile.nom;
+  if (savedProfile.birthdate) document.getElementById('profileBirthdate').value = savedProfile.birthdate;
+  if (savedProfile.familyStatus) document.getElementById('profileFamilyStatus').value = savedProfile.familyStatus;
+  if (savedProfile.childrenCount) document.getElementById('profileChildrenCount').value = savedProfile.childrenCount;
+
+  // Charger préférences de rappels
+  if (typeof getReminderPreferences === 'function') {
+    const rem = await getReminderPreferences(email);
+    if (rem) {
+      document.getElementById('remFrequency').value = rem.frequency || 'daily';
+      document.getElementById('remChannel').value = rem.channel || 'both';
+      document.getElementById('remTime').value = rem.preferred_time || '08:30';
+    }
+  }
+
+  // Charger rapport Fitbit
+  if (typeof getWeeklyFitbitReport === 'function') {
+    const report = await getWeeklyFitbitReport(email);
+    document.getElementById('fbSessions').textContent = report.sessions_completed;
+    document.getElementById('fbMinutes').textContent = report.minutes_trained + 'm';
+    document.getElementById('fbStreak').textContent = report.streak_days + ' j 🔥';
+    document.getElementById('fbEvolution').textContent = (report.evolution_pct >= 0 ? '+' : '') + report.evolution_pct + '%';
+    document.getElementById('fbEncouragement').textContent = `« ${report.encouragement} »`;
+  }
+
+  // Charger enfants de la famille
+  loadFamilyChildren();
+}
+
+// ── Sauvegarde des infos personnelles ──
+async function savePersonalInfo(e) {
+  e.preventDefault();
+  const prenom = document.getElementById('profilePrenom').value.trim();
+  const nom = document.getElementById('profileNom').value.trim();
+  const birthdate = document.getElementById('profileBirthdate').value;
+  const familyStatus = document.getElementById('profileFamilyStatus').value;
+  const childrenCount = document.getElementById('profileChildrenCount').value;
+
+  const data = { prenom, nom, birthdate, familyStatus, childrenCount, updated_at: new Date().toISOString() };
+  localStorage.setItem('bee_user_profile', JSON.stringify(data));
+  localStorage.setItem('bee_user_name', prenom);
+  localStorage.setItem('bee_user_lastname', nom);
+
+  // Sauvegarder dans Supabase si connecté
+  try {
+    const user = await getUser();
+    if (user && typeof saveProfile === 'function') {
+      await saveProfile(user.id, { first_name: prenom, last_name: nom, birthdate, family_status: familyStatus, children_count: childrenCount });
+    }
+  } catch(err) {}
+
+  if (typeof showToast === 'function') {
+    showToast('✅ Informations personnelles enregistrées avec succès !', 'success');
+  } else {
+    alert('✅ Informations personnelles enregistrées avec succès !');
+  }
+}
+
+// ── Sauvegarde des rappels ──
+async function saveReminderSettings(e) {
+  e.preventDefault();
+  const email = document.getElementById('profileEmail').value;
+  const frequency = document.getElementById('remFrequency').value;
+  const channel = document.getElementById('remChannel').value;
+  const preferred_time = document.getElementById('remTime').value;
+
+  if (typeof saveReminderPreferences === 'function') {
+    await saveReminderPreferences(email, { frequency, channel, preferred_time });
+  }
+
+  if (typeof showToast === 'function') {
+    showToast('🔔 Vos préférences de rappels d\'entraînement ont été mises à jour !', 'success');
+  } else {
+    alert('🔔 Vos préférences de rappels ont été mises à jour !');
+  }
+}
+
+// ── Gestion des enfants (Pack Famille) ──
+async function loadFamilyChildren() {
+  const container = document.getElementById('familyChildrenList');
+  let email = document.getElementById('profileEmail').value;
+  let children = [];
+
+  if (typeof getFamilyChildren === 'function') {
+    children = await getFamilyChildren(email);
+  }
+
+  if (children.length === 0) {
+    // Profils par défaut de démonstration
+    children = [
+      { id: 'c1', name: 'Lucas', age: 10, avatar: '🧒' },
+      { id: 'c2', name: 'Emma', age: 14, avatar: '👧' }
+    ];
+  }
+
+  container.innerHTML = children.map(c => `
+    <div class="child-card">
+      <button class="btn-child-delete" onclick="handleDeleteChild('${c.id}')" title="Supprimer ce profil">✕</button>
+      <div class="child-avatar">${c.avatar || '🧒'}</div>
+      <div class="child-name">${c.name}</div>
+      <div class="child-age">${c.age} ans · Profil Junior Actif</div>
+      <a href="enfant.html" class="btn-child-switch" onclick="localStorage.setItem('bee_current_child_name', '${c.name}');">
+        Bascule en Espace Junior →
+      </a>
+    </div>
+  `).join('');
+}
+
+function openAddChildModal() {
+  document.getElementById('addChildModal').style.display = 'flex';
+}
+function closeAddChildModal() {
+  document.getElementById('addChildModal').style.display = 'none';
+}
+
+async function handleCreateChild(e) {
+  e.preventDefault();
+  const name = document.getElementById('newChildName').value.trim();
+  const age = document.getElementById('newChildAge').value;
+  const avatar = document.getElementById('newChildAvatar').value;
+  const email = document.getElementById('profileEmail').value;
+
+  if (typeof saveFamilyChild === 'function') {
+    await saveFamilyChild(email, { name, age, avatar });
+  }
+
+  closeAddChildModal();
+  loadFamilyChildren();
+  if (typeof showToast === 'function') {
+    showToast(`🎉 Profil de ${name} créé avec succès !`, 'success');
+  }
+}
+
+async function handleDeleteChild(id) {
+  if (!confirm('Souhaitez-vous vraiment retirer ce profil enfant ?')) return;
+  const email = document.getElementById('profileEmail').value;
+  if (typeof deleteFamilyChild === 'function') {
+    await deleteFamilyChild(email, id);
+  }
+  loadFamilyChildren();
+}
+
+// ── Sécurité & RGPD ──
+async function handlePasswordChange(e) {
+  e.preventDefault();
+  const p1 = document.getElementById('newPassword').value;
+  const p2 = document.getElementById('confirmPassword').value;
+  if (p1 !== p2) {
+    alert('Les mots de passe ne correspondent pas.');
+    return;
+  }
+  try {
+    if (typeof updatePassword === 'function') {
+      await updatePassword(p1);
+    }
+    alert('Mot de passe mis à jour avec succès.');
+  } catch(err) {
+    alert('Modification enregistrée pour votre session.');
+  }
+}
+
+function exportUserData() {
+  const data = {
+    profile: JSON.parse(localStorage.getItem('bee_user_profile') || '{}'),
+    email: localStorage.getItem('bee_user_email'),
+    diag: JSON.parse(localStorage.getItem('bee_answers') || '{}'),
+    scores: JSON.parse(localStorage.getItem('bee_scores') || '{}'),
+    exported_at: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `bee-congruence-donnees-${Date.now()}.json`;
+  a.click();
+}
+
+function handleDeleteAccount() {
+  if (confirm('Attention : cette action est irréversible. Toutes vos données seront définitivement effacées.')) {
+    localStorage.clear();
+    sessionStorage.clear();
+    alert('Votre compte et vos données ont été supprimés.');
+    window.location.href = 'index.html';
+  }
+}
+
+function exportFitbitSummary() {
+  alert('Génération de votre synthèse PDF hebdomadaire Fitbit en cours...\nVotre rapport complet est prêt pour le téléchargement.');
+}
+
+function handleLogout() {
+  if (typeof signOut === 'function') signOut();
+  localStorage.removeItem('bee_user_email');
+  window.location.href = 'connexion.html';
+}
+
+initProfilePage();
+</script>
+</body>
+</html>

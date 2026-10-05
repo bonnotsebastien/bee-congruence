@@ -318,8 +318,8 @@
           <input type="text" id="prenom" required placeholder="ex : Julie" class="form-input">
         </div>
         <div class="form-group">
-          <label for="deuxiemePrenom" class="form-label">Deuxième prénom <span style="font-weight:400;text-transform:none;color:var(--brown-light, #8C8275);">(optionnel)</span></label>
-          <input type="text" id="deuxiemePrenom" placeholder="ex : Marie" class="form-input">
+          <label for="nom" class="form-label">Nom de famille <span style="color:var(--orange, #E8A020);">*</span></label>
+          <input type="text" id="nom" required placeholder="ex : Dupont" class="form-input">
         </div>
       </div>
 
@@ -517,7 +517,7 @@ async function handleSignupSubmit(event) {
   errorEl.style.display = 'none';
 
   const prenom            = document.getElementById('prenom').value.trim();
-  const deuxieme_prenom   = document.getElementById('deuxiemePrenom').value.trim();
+  const nom               = document.getElementById('nom')?.value.trim() || '';
   const email             = document.getElementById('email').value.trim();
   const password          = document.getElementById('password').value || 'demo123456';
   const date_naissance    = document.getElementById('dateNaissance').value;
@@ -527,6 +527,12 @@ async function handleSignupSubmit(event) {
   // Validation email
   if (!email || !email.includes('@')) {
     showError('Veuillez saisir une adresse email valide.');
+    return;
+  }
+
+  // Validation nom et prénom
+  if (!prenom || !nom) {
+    showError('Veuillez renseigner votre prénom et votre nom de famille.');
     return;
   }
 
@@ -546,13 +552,15 @@ async function handleSignupSubmit(event) {
       if (user && user.id) { userId = user.id; }
     }
 
-    // Sauvegarder l'email de session
+    // Sauvegarder l'email et l'identité
     localStorage.setItem('bee_user_email', email);
+    localStorage.setItem('bee_user_name', prenom);
+    localStorage.setItem('bee_user_lastname', nom);
 
     // Construire le payload profil
     const profilePayload = {
       prenom:              prenom,
-      deuxieme_prenom:     deuxieme_prenom || null,
+      nom:                 nom,
       email:               email,
       date_naissance:      date_naissance,
       situation_familiale: situation_familiale || null,

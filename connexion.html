@@ -258,8 +258,16 @@ async function handleLoginSubmit(event) {
     // Save user session locally
     localStorage.setItem('bee_user_email', email);
 
-    // Redirect to dashboard
-    window.location.href = 'dashboard.html';
+    // Synchronisation automatique cloud (mobile <-> desktop)
+    if (typeof autoSyncCloud === 'function') {
+      try {
+        await autoSyncCloud(email);
+      } catch(e) {}
+    }
+
+    // Redirect to destination
+    const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html';
+    window.location.href = redirectUrl;
   } catch (err) {
     console.error('Login error:', err);
     localStorage.setItem('bee_user_email', email);
