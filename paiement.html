@@ -338,14 +338,34 @@ const STRIPE_PRICES = {
 const OFFERS_BY_PAYMENT = {
   cb: [
     {
+      id: 'reine',
+      name: 'Reine',
+      badge: '👑 Le meilleur accompagnement',
+      badgeClass: 'orange',
+      price: '49€',
+      priceSuffix: '/ mois',
+      saving: 'Accompagnement individuel personnalisé avec un spécialiste',
+      highlighted: true,
+      features: [
+        'Accès illimité à tous les scénarios BEE',
+        'Points d\'étape personnalisés avec un spécialiste',
+        'Analyse de vos schémas et blocages récurrents',
+        'Objectifs sur-mesure et bilan complet (PDF)',
+        'Comptes famille / enfants inclus',
+        'Sans engagement · Résiliable en 1 clic',
+      ],
+      cta: 'Choisir l\'accompagnement Reine (49€/mois) →',
+      ctaClass: '',
+    },
+    {
       id: 'yearly',
-      name: 'Annuel',
-      badge: '♛ Meilleur rapport qualité/prix',
+      name: 'L\'Ouvrière (Annuel)',
+      badge: '⭐ Entraînement autonome',
       badgeClass: 'green',
       price: '79€',
       priceSuffix: '/ an',
       saving: 'Soit 6,58€/mois — Économisez 29€ vs mensuel',
-      highlighted: true,
+      highlighted: false,
       features: [
         'Tous les scénarios débloqués',
         'Toile d\'araignée des compétences',
@@ -353,16 +373,16 @@ const OFFERS_BY_PAYMENT = {
         'Accès aux nouveautés en avant-première',
         'Rapport de progression mensuel',
       ],
-      cta: 'Choisir l\'annuel →',
-      ctaClass: '',
+      cta: 'Choisir l\'Ouvrière Annuel →',
+      ctaClass: 'secondary',
     },
     {
       id: 'monthly',
-      name: 'Mensuel',
+      name: 'L\'Ouvrière (Mensuel)',
       badge: null,
       price: '9€',
       priceSuffix: '/ mois',
-      saving: '',
+      saving: 'Sans engagement',
       highlighted: false,
       features: [
         'Tous les scénarios débloqués',
@@ -370,32 +390,49 @@ const OFFERS_BY_PAYMENT = {
         'Graphique d\'évolution complet',
         'Sans engagement',
       ],
-      cta: 'Choisir le mensuel',
+      cta: 'Choisir l\'Ouvrière Mensuel',
       ctaClass: 'secondary',
     },
   ],
   paypal: [
     {
+      id: 'reine',
+      name: 'Reine',
+      badge: '👑 Recommandé via PayPal',
+      badgeClass: 'orange',
+      price: '49€',
+      priceSuffix: '/ mois',
+      saving: 'Accompagnement individuel complet',
+      highlighted: true,
+      features: [
+        'Accès illimité à tous les scénarios',
+        'Accompagnement individuel personnalisé',
+        'Paiement sécurisé PayPal',
+      ],
+      cta: 'Choisir Reine (49€/mois) →',
+      ctaClass: '',
+    },
+    {
       id: 'monthly',
-      name: 'Mensuel',
-      badge: '⭐ Recommandé via PayPal',
+      name: 'L\'Ouvrière (Mensuel)',
+      badge: null,
       badgeClass: '',
       price: '9€',
       priceSuffix: '/ mois',
       saving: 'Sans engagement · Résiliable à tout moment',
-      highlighted: true,
+      highlighted: false,
       features: [
         'Tous les scénarios débloqués',
         'Toile d\'araignée des compétences',
         'Graphique d\'évolution complet',
         'Paiement sécurisé PayPal',
       ],
-      cta: 'Choisir le mensuel →',
-      ctaClass: '',
+      cta: 'Choisir l\'Ouvrière Mensuel →',
+      ctaClass: 'secondary',
     },
     {
       id: 'yearly',
-      name: 'Annuel',
+      name: 'L\'Ouvrière (Annuel)',
       badge: null,
       price: '79€',
       priceSuffix: '/ an',
@@ -412,26 +449,42 @@ const OFFERS_BY_PAYMENT = {
   ],
   apple: [
     {
+      id: 'reine',
+      name: 'Reine',
+      badge: '👑 Accompagnement VIP',
+      badgeClass: 'orange',
+      price: '49€',
+      priceSuffix: '/ mois',
+      saving: 'Paiement express Apple / Google Pay',
+      highlighted: true,
+      features: [
+        'Tous les scénarios en illimité',
+        'Points d\'étape personnalisés',
+        'Bilan complet et plan d\'action',
+      ],
+      cta: 'Choisir Reine (49€/mois) →',
+      ctaClass: '',
+    },
+    {
       id: 'unit',
       name: 'Scénario à l\'unité',
-      badge: '📱 Idéal pour commencer',
+      badge: '📱 Pratique ponctuelle',
       badgeClass: 'blue',
       price: '4,90€',
       priceSuffix: '/ scénario',
       saving: 'Achetez uniquement ce dont vous avez besoin',
-      highlighted: true,
+      highlighted: false,
       features: [
         'Accès permanent au scénario choisi',
         'Déroulé complet en 7 sections',
         'Conseils d\'expert',
-        'Paiement rapide Apple/Google Pay',
       ],
       cta: 'Acheter ce scénario →',
-      ctaClass: '',
+      ctaClass: 'secondary',
     },
     {
       id: 'monthly',
-      name: 'Mensuel',
+      name: 'L\'Ouvrière (Mensuel)',
       badge: null,
       price: '9€',
       priceSuffix: '/ mois',
@@ -441,7 +494,7 @@ const OFFERS_BY_PAYMENT = {
         'Tous les scénarios débloqués',
         'Meilleur rapport qualité/prix si +2 scénarios',
       ],
-      cta: 'Passer à l\'illimité',
+      cta: 'Passer à l\'illimité (9€)',
       ctaClass: 'secondary',
     },
   ],
@@ -532,9 +585,15 @@ async function simulateStripeRedirect(offerId, user, paymentMode) {
   if (offerId === 'unit' && scenarioId) {
     await saveUnitPurchase(user.id, scenarioId);
     showToast('🎉 Scénario débloqué avec succès !', 'success');
-  } else if (offerId === 'monthly' || offerId === 'yearly') {
+  } else if (offerId === 'reine' || offerId === 'souveraine') {
+    await saveSubscription(user.id, 'reine', 'demo_session_' + Date.now());
+    showToast('👑 Félicitations ! Votre accompagnement Reine (49€/mois) est activé.', 'success');
+  } else if (offerId === 'monthly' || offerId === 'yearly' || offerId === 'ouvriere') {
     await saveSubscription(user.id, offerId, 'demo_session_' + Date.now());
     showToast('🎉 Abonnement activé ! Accès complet débloqué.', 'success');
+  } else {
+    await saveSubscription(user.id, offerId, 'demo_session_' + Date.now());
+    showToast('🎉 Offre activée avec succès !', 'success');
   }
 
   setTimeout(() => {

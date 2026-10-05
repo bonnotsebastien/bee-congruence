@@ -78,14 +78,17 @@ async function getUser() {
  */
 
 const ACCESS_PLANS = {
-  free:    { label: 'Basique',        icon: '🐝', color: '#6B7B6E' },
-  monthly: { label: 'Premium Mensuel', icon: '⭐', color: '#B8935A' },
-  yearly:  { label: 'Premium Annuel',  icon: '♛', color: '#8B5E52' },
+  free:       { label: 'La Butineuse',  icon: '🐝', color: '#6B7B6E' },
+  monthly:    { label: "L'Ouvrière",    icon: '⭐', color: '#B8935A' },
+  yearly:     { label: "L'Ouvrière (Annuel)", icon: '⭐', color: '#5A8A3A' },
+  reine:      { label: 'Reine',         icon: '♛', color: '#8B5E52' },
+  souveraine: { label: 'Reine',         icon: '♛', color: '#8B5E52' }, // Rétrocompatibilité
 };
 
 const PRICING = {
   monthly:      9.00,
-  yearly:      79.00,   // soit ~6,58€/mois, économie de 12%
+  yearly:      79.00,   // soit ~6,58€/mois
+  reine:       49.00,   // Reine 49€/mois
   unit_default: 4.90,   // prix unitaire d'un scénario par défaut
 };
 
@@ -111,7 +114,7 @@ async function getUserAccess(userId) {
         access = {
           plan: data.plan,
           expiresAt: data.expires_at,
-          unitPurchases: data.unit_purchases || [],
+          unitPurchases: data.unit_purchases || access.unitPurchases || [],
         };
         localStorage.setItem('bee_user_access', JSON.stringify(access));
       }
@@ -135,8 +138,9 @@ function checkScenarioAccess(scenarioId, access, scenarioIndex) {
     return { allowed: true, reason: 'free' };
   }
 
-  // Abonnement mensuel ou annuel valide → accès total
-  if (access.plan === 'monthly' || access.plan === 'yearly') {
+  // Abonnement mensuel, annuel ou Reine (Souveraine) valide → accès total
+  const isSubscriber = ['monthly', 'yearly', 'reine', 'souveraine'].includes(access.plan);
+  if (isSubscriber) {
     const now = new Date();
     const expiry = access.expiresAt ? new Date(access.expiresAt) : null;
     if (!expiry || expiry > now) {
@@ -154,24 +158,37 @@ function checkScenarioAccess(scenarioId, access, scenarioIndex) {
 }
 
 /**
- * Sauvegarde un abonnement (appelé après confirmation de paiement Stripe).
+ * Sauvegarde un abonnement (appelé après confirmation de paiement Stripe ou changement d'offre).
+ * GARANTIE : Ne supprime JAMAIS les données utilisateurs (profil, diagnostics, scénarios).
  */
 async function saveSubscription(userId, plan, stripeSessionId) {
   const expiresAt = plan === 'yearly'
     ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
     : new Date(Date.now() + 30  * 24 * 60 * 60 * 1000).toISOString();
 
+  // Conserver impérativement les achats unitaires et historiques existants
+  let currentAccess = { unitPurchases: [] };
+  try {
+    const local = localStorage.getItem('bee_user_access');
+    if (local) currentAccess = JSON.parse(local);
+  } catch(e) {}
+
+  const preservedUnits = Array.isArray(currentAccess.unitPurchases) ? currentAccess.unitPurchases : [];
+
   const payload = {
     user_id:          userId,
     plan:             plan,
     expires_at:       expiresAt,
     stripe_session:   stripeSessionId || null,
-    unit_purchases:   [],
+    unit_purchases:   preservedUnits,
     created_at:       new Date().toISOString(),
   };
 
+  // Met à jour UNIQUEMENT l'accès sans jamais toucher aux diagnostics ni profils
   localStorage.setItem('bee_user_access', JSON.stringify({
-    plan, expiresAt, unitPurchases: [],
+    plan,
+    expiresAt,
+    unitPurchases: preservedUnits,
   }));
 
   if (_supabase) {

@@ -40,8 +40,8 @@ function beeAuthOpen(scores, axeLabels) {
           <input type="password" id="beeAuthPassword" placeholder="••••••••" style="width:100%; padding:14px 18px; border-radius:12px; border:1px solid rgba(26,22,18,0.15); background:white; font-family:inherit; font-size:14px; outline:none;" />
         </div>
 
-        <button type="submit" class="btn-primary btn-full btn-lg" style="width:100%; justify-content:center; background:var(--ink, #1A1612); color:var(--warm-white, #FDFAF6); border-radius:50px; padding:14px; font-weight:600; cursor:pointer;">
-          Accéder à mes scénarios →
+        <button type="submit" class="btn-primary btn-full btn-lg" style="width:100%; justify-content:center; background:var(--orange, #C3651B); color:white; border-radius:50px; padding:14px; font-weight:700; cursor:pointer;">
+          Découvrir mon profil de congruence →
         </button>
       </form>
 

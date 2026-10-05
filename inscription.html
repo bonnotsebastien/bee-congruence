@@ -138,144 +138,140 @@
     border: 1px solid rgba(217,83,79,0.2);
   }
 
-  /* ── Séparateur ── */
-  .age-group-divider {
-    height: 1px;
-    background: rgba(26,22,18,0.07);
-    margin: 24px 0;
-  }
-
-  /* ── Label tranche d'âge ── */
-  .age-group-label {
-    display: block;
-    font-family: 'Nunito', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--brown-mid, #5C5349);
-    margin-bottom: 12px;
-  }
-  .age-group-label .required-star {
-    color: var(--orange, #E8A020);
-    margin-left: 3px;
-  }
-
-  /* ── Grille 2x2 de cartes ── */
-  .age-cards-grid {
+  /* ── Formulaire enrichi ── */
+  .form-row-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 8px;
+    gap: 12px;
   }
-
-  /* ── Carte individuelle ── */
-  .age-card {
-    position: relative;
-    cursor: pointer;
-    border-radius: 14px;
-    border: 2px solid rgba(26,22,18,0.1);
-    background: var(--warm-white, #FDFAF6);
-    padding: 14px 10px 12px;
-    text-align: center;
-    transition: border-color 0.2s, background 0.2s, transform 0.12s, box-shadow 0.2s;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-  .age-card:hover {
-    border-color: rgba(232,160,32,0.5);
-    background: rgba(232,160,32,0.04);
-  }
-  .age-card.selected {
-    border-color: var(--orange, #E8A020);
-    background: rgba(232,160,32,0.08);
-    box-shadow: 0 0 0 3px rgba(232,160,32,0.18);
-  }
-
-  /* Radio input masqué (accessibilité préservée) */
-  .age-card input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-  }
-
-  .age-card-emoji { font-size: 34px; line-height: 1; display: block; margin-bottom: 6px; }
-  .age-card-title {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--brown-dark, #1A1612);
-    display: block;
-    margin-bottom: 2px;
-  }
-  .age-card-range {
-    font-family: 'Nunito', sans-serif;
-    font-size: 11px;
-    color: var(--brown-mid, #5C5349);
-    display: block;
-  }
-
-  /* Indicateur rond en coin haut-droit */
-  .age-card::after {
-    content: '';
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 2px solid rgba(26,22,18,0.15);
-    background: white;
-    transition: all 0.2s;
-  }
-  .age-card.selected::after {
-    background: var(--orange, #E8A020);
-    border-color: var(--orange, #E8A020);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 9'%3E%3Cpath d='M1 4l3.5 3.5L11 1' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 10px;
-  }
-
-  /* ── Champ âge précis (optionnel) ── */
-  .age-precise-wrap { margin-top: 12px; }
-  .age-precise-label {
-    font-family: 'Nunito', sans-serif;
-    font-size: 12px;
-    color: var(--brown-mid, #5C5349);
-    margin-bottom: 6px;
-    display: block;
-  }
-  .age-precise-input {
+  .form-select {
     width: 100%;
-    padding: 11px 16px;
-    border-radius: 10px;
-    border: 1px solid rgba(26,22,18,0.12);
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border, rgba(26,22,18,0.15));
     background: var(--warm-white, #FDFAF6);
-    font-family: 'Nunito', sans-serif;
+    font-family: inherit;
     font-size: 14px;
     color: var(--brown-dark, #1A1612);
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
-    -moz-appearance: textfield;
+    cursor: pointer;
   }
-  .age-precise-input::-webkit-inner-spin-button,
-  .age-precise-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-  .age-precise-input:focus {
+  .form-select:focus {
     border-color: var(--orange, #E8A020);
-    box-shadow: 0 0 0 3px rgba(232,160,32,0.12);
+    box-shadow: 0 0 0 3px rgba(232,160,32,0.15);
+  }
+  .form-divider {
+    height: 1px;
+    background: rgba(26,22,18,0.08);
+    margin: 22px 0;
+  }
+  .radio-pill-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .radio-pill-label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border, rgba(26,22,18,0.15));
+    background: var(--warm-white, #FDFAF6);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--brown-dark, #1A1612);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .radio-pill-label:hover {
+    border-color: var(--orange, #E8A020);
+    background: rgba(232,160,32,0.04);
+  }
+  .radio-pill-label.active {
+    border-color: var(--orange, #E8A020);
+    background: rgba(232,160,32,0.1);
+    color: var(--orange, #C3651B);
+    box-shadow: 0 0 0 2px rgba(232,160,32,0.15);
+  }
+  .radio-pill-label input[type="radio"] {
+    display: none;
+  }
+  .children-section {
+    margin-top: 14px;
+    padding: 16px;
+    background: rgba(232,160,32,0.04);
+    border: 1.5px dashed rgba(232,160,32,0.35);
+    border-radius: 16px;
+  }
+  .child-item-card {
+    background: white;
+    border: 1px solid var(--border, rgba(26,22,18,0.12));
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  .child-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .child-item-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--orange, #C3651B);
+  }
+  .btn-remove-child {
+    background: none;
+    border: none;
+    color: #d9534f;
+    font-size: 18px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .btn-remove-child:hover {
+    background: rgba(217,83,79,0.1);
+  }
+  .btn-add-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1.5px dashed var(--orange, #E8A020);
+    color: var(--orange, #C3651B);
+    padding: 11px 18px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-add-child:hover {
+    background: rgba(232,160,32,0.08);
   }
 
   /* ── Responsive mobile ── */
-  @media (max-width: 420px) {
+  @media (max-width: 480px) {
     .auth-card { padding: 28px 18px; }
-    .age-cards-grid { gap: 8px; }
-    .age-card-emoji { font-size: 28px; }
-    .age-card-title { font-size: 12px; }
-    .age-card { padding: 12px 8px 10px; }
+    .form-row-2 { grid-template-columns: 1fr; gap: 10px; }
   }
 </style>
 </head>
@@ -315,90 +311,85 @@
 
     <form id="signupForm" onsubmit="handleSignupSubmit(event)">
 
+      <!-- ── Prénom & Deuxième prénom ── -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="prenom" class="form-label">Prénom <span style="color:var(--orange, #E8A020);">*</span></label>
+          <input type="text" id="prenom" required placeholder="ex : Julie" class="form-input">
+        </div>
+        <div class="form-group">
+          <label for="deuxiemePrenom" class="form-label">Deuxième prénom <span style="font-weight:400;text-transform:none;color:var(--brown-light, #8C8275);">(optionnel)</span></label>
+          <input type="text" id="deuxiemePrenom" placeholder="ex : Marie" class="form-input">
+        </div>
+      </div>
+
       <!-- ── Email ── -->
       <div class="form-group">
-        <label for="email" class="form-label">Adresse Email</label>
+        <label for="email" class="form-label">Adresse Email <span style="color:var(--orange, #E8A020);">*</span></label>
         <input type="email" id="email" required placeholder="votre@email.com" class="form-input">
       </div>
 
       <!-- ── Mot de passe ── -->
       <div class="form-group">
         <label for="password" class="form-label">Créer un mot de passe</label>
-        <input type="password" id="password" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" class="form-input">
+        <input type="password" id="password" placeholder="••••••••" class="form-input">
       </div>
 
-      <div class="age-group-divider"></div>
+      <div class="form-divider"></div>
 
-      <!-- ── Tranche d'âge (obligatoire) ── -->
-      <div class="form-group" id="ageGroupSection">
-        <span class="age-group-label">
-          Quelle est votre tranche d'âge ?<span class="required-star" aria-hidden="true">*</span>
-        </span>
+      <!-- ── Date de naissance (obligatoire) ── -->
+      <div class="form-group" id="dateNaissanceGroup">
+        <label for="dateNaissance" class="form-label">Date de naissance <span style="color:var(--orange, #E8A020);">*</span></label>
+        <input type="date" id="dateNaissance" required class="form-input">
+      </div>
 
-        <div class="age-cards-grid" role="radiogroup" aria-label="Tranche d'âge">
+      <!-- ── Situation familiale ── -->
+      <div class="form-group">
+        <label for="situationFamiliale" class="form-label">Situation familiale <span style="font-weight:400;text-transform:none;color:var(--brown-light, #8C8275);">(statut marital)</span></label>
+        <select id="situationFamiliale" class="form-select">
+          <option value="">Sélectionnez votre situation</option>
+          <option value="celibataire">Célibataire</option>
+          <option value="en_couple">En couple</option>
+          <option value="marie">Marié(e)</option>
+          <option value="pacse">Pacsé(e)</option>
+          <option value="separe">Séparé(e)</option>
+          <option value="divorce">Divorcé(e)</option>
+          <option value="veuf">Veuf / Veuve</option>
+        </select>
+      </div>
 
-          <!-- Enfant 6–11 ans -->
-          <label class="age-card" id="card-enfant" for="age-enfant" title="Enfant (6-11 ans)">
-            <input type="radio" id="age-enfant" name="age_group" value="enfant">
-            <span class="age-card-emoji">&#x1F423;</span>
-            <span class="age-card-title">Enfant</span>
-            <span class="age-card-range">6 – 11 ans</span>
+      <!-- ── Enfants ── -->
+      <div class="form-group">
+        <label class="form-label">Avez-vous des enfants ?</label>
+        <div class="radio-pill-group">
+          <label class="radio-pill-label active" id="labelEnfantsNon">
+            <input type="radio" name="has_children" value="non" checked onchange="toggleEnfants(false)">
+            <span>Non</span>
           </label>
-
-          <!-- Adolescent 12–17 ans -->
-          <label class="age-card" id="card-ado" for="age-ado" title="Adolescent (12-17 ans)">
-            <input type="radio" id="age-ado" name="age_group" value="ado">
-            <span class="age-card-emoji">&#x1F331;</span>
-            <span class="age-card-title">Adolescent</span>
-            <span class="age-card-range">12 – 17 ans</span>
+          <label class="radio-pill-label" id="labelEnfantsOui">
+            <input type="radio" name="has_children" value="oui" onchange="toggleEnfants(true)">
+            <span>Oui</span>
           </label>
-
-          <!-- Adulte 18–59 ans -->
-          <label class="age-card" id="card-adulte" for="age-adulte" title="Adulte (18-59 ans)">
-            <input type="radio" id="age-adulte" name="age_group" value="adulte">
-            <span class="age-card-emoji">&#x1F33F;</span>
-            <span class="age-card-title">Adulte</span>
-            <span class="age-card-range">18 – 59 ans</span>
-          </label>
-
-          <!-- Senior 60+ -->
-          <label class="age-card" id="card-senior" for="age-senior" title="Senior (60 ans et +)">
-            <input type="radio" id="age-senior" name="age_group" value="senior">
-            <span class="age-card-emoji">&#x1F333;</span>
-            <span class="age-card-title">Senior</span>
-            <span class="age-card-range">60 ans et +</span>
-          </label>
-
-        </div><!-- /.age-cards-grid -->
-
-        <!-- ── Âge précis (optionnel) ── -->
-        <div class="age-precise-wrap">
-          <label class="age-precise-label" for="agePrecise">
-            Mon âge précis <em>(optionnel)</em>
-          </label>
-          <input
-            type="number"
-            id="agePrecise"
-            class="age-precise-input"
-            placeholder="ex : 34"
-            min="6"
-            max="120"
-            autocomplete="off"
-          >
         </div>
 
-      </div><!-- /#ageGroupSection -->
+        <div id="enfantsSection" class="children-section" style="display:none;">
+          <div id="enfantsList"></div>
+          <button type="button" class="btn-add-child" onclick="ajouterEnfant()">
+            <span>+ Ajouter un enfant</span>
+          </button>
+        </div>
+      </div>
 
-      <div class="age-group-divider"></div>
+      <div class="form-divider"></div>
 
       <button type="submit" class="auth-btn">
-        Créer mon compte gratuit &#x2192;
+        Découvrir mon profil de congruence &#x2192;
       </button>
     </form>
 
     <div style="margin-top:16px;">
       <a href="questionnaire.html" class="auth-btn-secondary">
-        &#x1F9ED; Commencer par le diagnostic gratuit &#x2192;
+        &#x1F9ED; Passer le questionnaire en direct &#x2192;
       </a>
     </div>
 
@@ -427,39 +418,94 @@
 <script src="supabase.js"></script>
 <script>
 // ────────────────────────────────────────────────────────
-//  Gestion visuelle des cartes d'âge
+//  Gestion des enfants (dynamique multi-enfants)
 // ────────────────────────────────────────────────────────
-(function () {
-  var cards = document.querySelectorAll('.age-card');
+let enfantsCount = 0;
 
-  cards.forEach(function (card) {
-    // Clic sur la carte entière
-    card.addEventListener('click', function () {
-      selectCard(this);
-    });
-    // Accessibilité clavier (Espace / Entrée)
-    card.addEventListener('keydown', function (e) {
-      if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        selectCard(this);
-      }
-    });
-  });
+function toggleEnfants(hasChildren) {
+  const sec = document.getElementById('enfantsSection');
+  const labelNon = document.getElementById('labelEnfantsNon');
+  const labelOui = document.getElementById('labelEnfantsOui');
 
-  function selectCard(card) {
-    // Désélectionner toutes les cartes
-    cards.forEach(function (c) { c.classList.remove('selected'); });
-    // Activer la carte cliquée
-    card.classList.add('selected');
-    var radio = card.querySelector('input[type="radio"]');
-    if (radio) {
-      radio.checked = true;
-      // Micro-animation rebond
-      card.style.transform = 'scale(0.95)';
-      setTimeout(function () { card.style.transform = ''; }, 120);
+  if (hasChildren) {
+    labelOui.classList.add('active');
+    labelNon.classList.remove('active');
+    sec.style.display = 'block';
+    if (document.querySelectorAll('.child-item-card').length === 0) {
+      ajouterEnfant();
+    }
+  } else {
+    labelNon.classList.add('active');
+    labelOui.classList.remove('active');
+    sec.style.display = 'none';
+  }
+}
+
+function ajouterEnfant(prenom = '', dateNaissance = '') {
+  enfantsCount++;
+  const container = document.getElementById('enfantsList');
+  const childId = 'child_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+
+  const card = document.createElement('div');
+  card.className = 'child-item-card';
+  card.id = childId;
+  card.innerHTML = `
+    <div class="child-item-header">
+      <span class="child-item-title">Enfant <span class="child-num"></span></span>
+      <button type="button" class="btn-remove-child" onclick="supprimerEnfant('${childId}')" title="Supprimer cet enfant">&times;</button>
+    </div>
+    <div class="form-row-2">
+      <div>
+        <label class="form-label" style="font-size:11px;">Prénom</label>
+        <input type="text" class="form-input child-prenom" placeholder="Prénom" value="${prenom.replace(/"/g, '&quot;')}" style="padding:10px 14px;">
+      </div>
+      <div>
+        <label class="form-label" style="font-size:11px;">Date de naissance</label>
+        <input type="date" class="form-input child-dob" value="${dateNaissance}" style="padding:10px 14px;">
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+  updateChildrenNumbers();
+}
+
+function supprimerEnfant(childId) {
+  const el = document.getElementById(childId);
+  if (el) {
+    el.remove();
+    updateChildrenNumbers();
+  }
+  if (document.querySelectorAll('.child-item-card').length === 0) {
+    const radioNon = document.querySelector('input[name="has_children"][value="non"]');
+    if (radioNon) {
+      radioNon.checked = true;
+      toggleEnfants(false);
     }
   }
-})();
+}
+
+function updateChildrenNumbers() {
+  const cards = document.querySelectorAll('.child-item-card');
+  cards.forEach((c, idx) => {
+    const numEl = c.querySelector('.child-num');
+    if (numEl) numEl.textContent = '#' + (idx + 1);
+  });
+}
+
+function collectEnfantsData() {
+  const radioOui = document.querySelector('input[name="has_children"][value="oui"]');
+  if (!radioOui || !radioOui.checked) return [];
+
+  const enfants = [];
+  document.querySelectorAll('.child-item-card').forEach(card => {
+    const prenom = card.querySelector('.child-prenom')?.value.trim() || '';
+    const date_naissance = card.querySelector('.child-dob')?.value || '';
+    if (prenom || date_naissance) {
+      enfants.push({ prenom, date_naissance });
+    }
+  });
+  return enfants;
+}
 
 // ────────────────────────────────────────────────────────
 //  Soumission du formulaire d'inscription
@@ -467,11 +513,16 @@
 async function handleSignupSubmit(event) {
   event.preventDefault();
 
-  var errorEl = document.getElementById('authErrorMsg');
+  const errorEl = document.getElementById('authErrorMsg');
   errorEl.style.display = 'none';
 
-  var email    = document.getElementById('email').value.trim();
-  var password = document.getElementById('password').value || 'demo123456';
+  const prenom            = document.getElementById('prenom').value.trim();
+  const deuxieme_prenom   = document.getElementById('deuxiemePrenom').value.trim();
+  const email             = document.getElementById('email').value.trim();
+  const password          = document.getElementById('password').value || 'demo123456';
+  const date_naissance    = document.getElementById('dateNaissance').value;
+  const situation_familiale = document.getElementById('situationFamiliale').value;
+  const enfants           = collectEnfantsData();
 
   // Validation email
   if (!email || !email.includes('@')) {
@@ -479,33 +530,19 @@ async function handleSignupSubmit(event) {
     return;
   }
 
-  // Validation tranche d'âge (obligatoire)
-  var selectedRadio = document.querySelector('input[name="age_group"]:checked');
-  if (!selectedRadio) {
-    showError("Veuillez sélectionner votre tranche d'âge pour continuer.");
-    // Scroll doux vers la section
-    document.getElementById('ageGroupSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    // Flash rouge sur les cartes pour attirer l'attention
-    var allCards = document.querySelectorAll('.age-card');
-    allCards.forEach(function (c) { c.style.borderColor = 'rgba(217,83,79,0.45)'; });
-    setTimeout(function () {
-      allCards.forEach(function (c) { c.style.borderColor = ''; });
-    }, 2000);
+  // Validation date de naissance (obligatoire)
+  if (!date_naissance) {
+    showError('Veuillez renseigner votre date de naissance.');
+    document.getElementById('dateNaissance').focus();
     return;
   }
 
-  var ageGroup = selectedRadio.value;
-
-  // Âge précis (optionnel)
-  var agePreciseVal = document.getElementById('agePrecise').value.trim();
-  var agePrecise    = agePreciseVal ? parseInt(agePreciseVal, 10) : null;
-
   try {
-    var userId = 'demo_user_' + Date.now();
+    let userId = 'demo_user_' + Date.now();
 
     // Tentative d'inscription Supabase
     if (typeof signUp === 'function') {
-      var user = await signUp(email, password).catch(function () { return null; });
+      const user = await signUp(email, password).catch(() => null);
       if (user && user.id) { userId = user.id; }
     }
 
@@ -513,18 +550,22 @@ async function handleSignupSubmit(event) {
     localStorage.setItem('bee_user_email', email);
 
     // Construire le payload profil
-    var profilePayload = { age_group: ageGroup };
-    if (agePrecise !== null && !isNaN(agePrecise)) {
-      profilePayload.age = agePrecise;
-    }
+    const profilePayload = {
+      prenom:              prenom,
+      deuxieme_prenom:     deuxieme_prenom || null,
+      email:               email,
+      date_naissance:      date_naissance,
+      situation_familiale: situation_familiale || null,
+      enfants:             enfants,
+      has_enfants:         enfants.length > 0,
+      updated_at:          new Date().toISOString(),
+    };
 
-    // Persister le profil (localStorage + Supabase si dispo)
+    // Persister le profil
     if (typeof saveUserProfile === 'function') {
       await saveUserProfile(userId, profilePayload);
     } else {
-      // Fallback si saveUserProfile n'est pas encore disponible
-      var fallback = Object.assign({ email: email, created_at: new Date().toISOString() }, profilePayload);
-      localStorage.setItem('bee_user_profile', JSON.stringify(fallback));
+      localStorage.setItem('bee_user_profile', JSON.stringify(profilePayload));
     }
 
     // Redirection vers le tableau de bord
@@ -532,10 +573,15 @@ async function handleSignupSubmit(event) {
 
   } catch (err) {
     console.error('Signup error:', err);
-    // En cas d'erreur imprévue : sauvegarde locale + redirection
     localStorage.setItem('bee_user_email', email);
-    var emergency = { email: email, age_group: ageGroup, created_at: new Date().toISOString() };
-    if (agePrecise !== null && !isNaN(agePrecise)) { emergency.age = agePrecise; }
+    const emergency = {
+      prenom,
+      deuxieme_prenom: deuxieme_prenom || null,
+      email,
+      date_naissance,
+      situation_familiale: situation_familiale || null,
+      enfants,
+    };
     localStorage.setItem('bee_user_profile', JSON.stringify(emergency));
     window.location.href = 'dashboard.html';
   }
@@ -543,6 +589,7 @@ async function handleSignupSubmit(event) {
   function showError(msg) {
     errorEl.textContent = msg;
     errorEl.style.display = 'block';
+    errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
 </script>

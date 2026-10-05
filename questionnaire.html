@@ -1199,12 +1199,14 @@ async function showResultsAndSend() {
     answers: { ...answers },
   };
 
-  // Sauvegarde locale (clé principale utilisée par dashboard.html)
+  // Sauvegarde locale instantanée (clé principale + clé de secours)
   try {
     const existing = JSON.parse(localStorage.getItem('bee_diagnostic_results') || '[]');
     existing.unshift(diagnosticData);
     localStorage.setItem('bee_diagnostic_results', JSON.stringify(existing.slice(0, 10)));
   } catch(e) {}
+  localStorage.setItem('bee_latest_diag', JSON.stringify(diagnosticData));
+  localStorage.setItem('bee_just_completed_diagnostic', '1');
 
   // Sauvegarde Supabase si disponible
   if (typeof saveDiagnosticResults === 'function') {
@@ -1230,10 +1232,10 @@ async function showResultsAndSend() {
     genScreen.innerHTML = `
       <div style="font-size:52px;margin-bottom:20px;animation:beeSpin 1.5s linear infinite;display:inline-block;">🐝</div>
       <style>@keyframes beeSpin{0%{transform:rotate(-15deg) scale(1)}50%{transform:rotate(15deg) scale(1.15)}100%{transform:rotate(-15deg) scale(1)}}</style>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;font-style:italic;color:#1A1612;margin-bottom:12px;">Ton profil se construit…</h2>
-      <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:#7A7269;line-height:1.7;margin-bottom:32px;">Nous analysons tes réponses pour générer ton profil émotionnel et relationnel personnalisé.</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;font-style:italic;color:#1A1612;margin-bottom:12px;">Votre profil se construit…</h2>
+      <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:#7A7269;line-height:1.7;margin-bottom:32px;">Nous analysons vos réponses pour révéler vos dynamiques relationnelles.</p>
       <div style="background:#F0E8D8;border-radius:4px;height:4px;overflow:hidden;max-width:280px;margin:0 auto;">
-        <div id="genProgressBar" style="height:100%;background:linear-gradient(90deg,#B8935A,#D4B483);border-radius:4px;width:0%;transition:width 0.4s ease;"></div>
+        <div id="genProgressBar" style="height:100%;background:linear-gradient(90deg,#B8935A,#D4B483);border-radius:4px;width:0%;transition:width 0.3s ease;"></div>
       </div>
       <p id="genStatusMsg" style="font-family:'DM Sans',sans-serif;font-size:12px;color:#7A7269;margin-top:12px;">Calcul des scores en cours…</p>
     `;
@@ -1242,64 +1244,36 @@ async function showResultsAndSend() {
   genScreen.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Animation de progression
+  // Animation de progression fluide
   const bar = document.getElementById('genProgressBar');
   const msg = document.getElementById('genStatusMsg');
   const steps = [
-    { pct: 30, txt: 'Analyse des axes émotionnels…' },
-    { pct: 55, txt: 'Calcul du profil relationnel…' },
-    { pct: 75, txt: 'Génération des recommandations…' },
-    { pct: 92, txt: 'Finalisation de ton profil…' },
+    { pct: 35, txt: 'Analyse des dynamiques émotionnelles…' },
+    { pct: 65, txt: 'Calcul du profil relationnel…' },
+    { pct: 90, txt: 'Sélection des scénarios recommandés…' },
+    { pct: 100, txt: 'Profil généré avec succès !' },
   ];
 
   for (const step of steps) {
-    await new Promise(r => setTimeout(r, 600));
+    await new Promise(r => setTimeout(r, 280));
     if (bar) bar.style.width = step.pct + '%';
     if (msg) msg.textContent = step.txt;
   }
 
-  // ── 3. Tentative d'authentification / inscription automatique ──────
-  await new Promise(r => setTimeout(r, 500));
-
+  // ── 3. Sauvegarde utilisateur si connecté ──────
   let user = null;
   try {
     if (typeof getUser === 'function') user = await getUser();
   } catch(e) {}
 
-  if (!user) {
-    const localEmail = localStorage.getItem('bee_user_email');
-    if (localEmail) user = { id: 'demo_user', email: localEmail };
-  }
-
-  // Sauvegarde avec userId réel si disponible
-  if (user && typeof saveDiagnosticResults === 'function') {
+  if (user && user.id && typeof saveDiagnosticResults === 'function') {
     try {
       await saveDiagnosticResults(user.id, scores, axeLabels);
     } catch(e) {}
   }
 
-  // ── 4. Redirection vers dashboard avec données pré-chargées ───────
-  if (bar) bar.style.width = '100%';
-  if (msg) msg.textContent = 'Profil généré ! Redirection…';
-
-  await new Promise(r => setTimeout(r, 400));
-
-  // Stocker un flag pour que dashboard sache d'afficher les résultats immédiatement
-  localStorage.setItem('bee_just_completed_diagnostic', '1');
-
-  if (!user) {
-    // Pas connecté → ouvrir la modale d'inscription d'abord
-    if (typeof beeAuthOpen === 'function') {
-      genScreen.style.display = 'none';
-      showResults(); // afficher les résultats en attendant
-      setTimeout(() => beeAuthOpen(scores, axeLabels), 800);
-    } else {
-      window.location.href = 'dashboard.html';
-    }
-    return;
-  }
-
-  // Connecté → aller directement au dashboard
+  // ── 4. Redirection immédiate vers dashboard pour affichage instantané ───────
+  await new Promise(r => setTimeout(r, 350));
   window.location.href = 'dashboard.html';
 
   // ── 5. Envoi d'email (non-bloquant) ──────────────────────────────

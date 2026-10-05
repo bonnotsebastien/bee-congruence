@@ -36,11 +36,11 @@
   "description": "Espace d'entraînement relationnel et émotionnel par scénarios interactifs.",
   "brand": {"@type": "Brand", "name": "BEE Congruence"},
   "offers": [
-    { "@type": "Offer", "name": "La Butineuse (Découvrir)", "price": "0", "priceCurrency": "EUR" },
-    { "@type": "Offer", "name": "Scénario à l'unité", "price": "4.90", "priceCurrency": "EUR" },
+    { "@type": "Offer", "name": "Reine (Le meilleur accompagnement)", "price": "49", "priceCurrency": "EUR" },
     { "@type": "Offer", "name": "L'Ouvrière (Mensuel)", "price": "9", "priceCurrency": "EUR" },
     { "@type": "Offer", "name": "L'Ouvrière (Annuel)", "price": "79", "priceCurrency": "EUR" },
-    { "@type": "Offer", "name": "La Souveraine (Accompagné)", "price": "19", "priceCurrency": "EUR" }
+    { "@type": "Offer", "name": "La Butineuse (Découvrir)", "price": "0", "priceCurrency": "EUR" },
+    { "@type": "Offer", "name": "Scénario à l'unité", "price": "4.90", "priceCurrency": "EUR" }
   ]
 }
 </script>
@@ -249,17 +249,41 @@
   box-shadow: 0 14px 36px rgba(26,22,18,0.08);
 }
 .offre-card.featured {
-  border: 2px solid var(--orange);
+  border: 2.5px solid var(--orange);
   background: var(--white);
-  box-shadow: 0 12px 36px rgba(217,119,6,0.12);
-  transform: scale(1.02);
+  box-shadow: 0 16px 44px rgba(217,119,6,0.18);
+  transform: scale(1.04);
+  z-index: 2;
 }
 .offre-card.featured:hover {
-  transform: scale(1.02) translateY(-3px);
+  transform: scale(1.04) translateY(-4px);
+  box-shadow: 0 22px 52px rgba(217,119,6,0.24);
 }
 @media (max-width: 980px) {
   .offre-card.featured { transform: none; }
   .offre-card.featured:hover { transform: translateY(-3px); }
+}
+
+.btn-reine-primary {
+  background: linear-gradient(135deg, #E8A020 0%, #D97706 60%, #B45309 100%) !important;
+  color: #FFFFFF !important;
+  font-family: 'Nunito', sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 15px !important;
+  padding: 16px 22px !important;
+  border-radius: 50px !important;
+  border: none !important;
+  box-shadow: 0 8px 24px rgba(217,119,6,0.35) !important;
+  transition: all 0.25s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
+}
+.btn-reine-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 32px rgba(217,119,6,0.48) !important;
+  filter: brightness(1.06) !important;
 }
 
 .offre-rank-badge {
@@ -474,29 +498,29 @@
 
 <!-- ═══ PROGRESSION VISUELLE DU PARCOURS ═══ -->
 <div class="progression-banner">
-  <div class="prog-step">
-    <div class="prog-num">01 — DÉCOUVRIR</div>
-    <div class="prog-name">La Butineuse · Gratuit</div>
-    <div class="prog-quote">« Je veux comprendre ce qui se passe chez moi. »</div>
+  <div class="prog-step active">
+    <div class="prog-num">01 — RECOMMANDÉ</div>
+    <div class="prog-name">Reine · 49 €/mois</div>
+    <div class="prog-quote">« Je veux aller plus loin avec un regard humain personnalisé. »</div>
   </div>
   <div class="prog-sep">→</div>
-  <div class="prog-step active">
+  <div class="prog-step">
     <div class="prog-num">02 — S'ENTRAÎNER</div>
     <div class="prog-name">L'Ouvrière · 9 €/mois</div>
-    <div class="prog-quote">« Je veux apprendre à répondre autrement. »</div>
+    <div class="prog-quote">« Je veux apprendre à répondre autrement en autonomie. »</div>
   </div>
   <div class="prog-sep">→</div>
   <div class="prog-step">
-    <div class="prog-num">03 — ÊTRE ACCOMPAGNÉ</div>
-    <div class="prog-name">La Souveraine · 19 €/mois</div>
-    <div class="prog-quote">« Je veux aller plus loin avec un regard humain. »</div>
+    <div class="prog-num">03 — DÉCOUVRIR</div>
+    <div class="prog-name">La Butineuse · Gratuit</div>
+    <div class="prog-quote">« Je commence avec mon 1er scénario offert. »</div>
   </div>
 </div>
 
 <!-- ═══ SOFT ENTRY ═══ -->
 <div class="unsure-banner">
   <span>🧭 Pas encore sûr(e) de votre profil relationnel ?</span>
-  <a href="index.html?diag=1">Identifiez vos automatismes en 3 minutes →</a>
+  <a href="questionnaire.html">Identifiez vos automatismes en 7 minutes →</a>
 </div>
 
 <!-- ═══ TOGGLE MENSUEL / ANNUEL ═══ -->
@@ -512,9 +536,74 @@
 <!-- ═══ PRICING CARDS D'ENTRAÎNEMENT ═══ -->
 <div class="offres-grid">
 
-  <!-- 01 — DÉCOUVRIR (La Butineuse - Gratuit) -->
+  <!-- 01 — REINE (À GAUCHE — VISUELLEMENT PRIORITAIRE — 49€/MOIS) -->
+  <div class="offre-card featured reine-priority">
+    <div class="badge-recommande">👑 Recommandée · Le meilleur accompagnement</div>
+    <div class="offre-rank-badge" style="color:var(--orange);">01 — ACCOMPAGNEMENT COMPLET</div>
+    <h3>Reine</h3>
+    <div class="offre-promise">« Transformer durablement avec un regard humain personnalisé. »</div>
+    <span class="offre-price" style="color:var(--orange-dark, #B45309);">49€ <small style="font-size:16px;font-family:'Nunito',sans-serif;color:var(--brown-mid);">/mois</small></span>
+
+    <p class="offre-descr">
+      L'expérience la plus transformatrice : combinez l'accès illimité aux scénarios interactifs BEE et un accompagnement individuel bienveillant. Identifiez les schémas qui se répètent et construisez de nouvelles réponses avec un spécialiste.
+    </p>
+
+    <div class="offre-section-title">Ce que vous allez vivre</div>
+    <ul class="offre-features">
+      <li><span class="check">✓</span> <strong>Accès illimité à tous les scénarios d'entraînement</strong></li>
+      <li><span class="check">✓</span> <strong>Points d'étape personnalisés avec un spécialiste relationnel</strong></li>
+      <li><span class="check">✓</span> Analyse approfondie de vos schémas et blocages récurrents</li>
+      <li><span class="check">✓</span> Définition d'un axe de travail et objectifs sur-mesure</li>
+      <li><span class="check">✓</span> Bilan de progression complet (rapport PDF personnalisé)</li>
+      <li><span class="check">✓</span> Exercices ciblés adaptés à vos situations de vie</li>
+      <li><span class="check">✓</span> Comptes famille / enfants inclus</li>
+      <li><span class="check">✓</span> Support d'échange prioritaire continu</li>
+    </ul>
+
+    <a href="paiement.html?offer=reine&pm=cb" class="btn-cta btn-full btn-reine-primary">
+      Rejoindre l'accompagnement Reine →
+    </a>
+    <div class="offre-reassurance">Sans engagement · Résiliable en 1 clic à tout moment</div>
+    <a href="#accompagnement" class="offre-learn-more" style="text-align:center;margin-top:12px;display:block;">→ Découvrir le détail de l'accompagnement Reine</a>
+  </div>
+
+  <!-- 02 — S'ENTRAÎNER (AU CENTRE — L'Ouvrière — 9€/mois) -->
   <div class="offre-card">
-    <div class="offre-rank-badge">01 — DÉCOUVRIR</div>
+    <div class="offre-rank-badge">02 — ENTRAÎNEMENT AUTONOME</div>
+    <h3>L'Ouvrière</h3>
+    <div class="offre-promise">« Expérimenter de nouvelles façons de répondre. »</div>
+
+    <!-- Prix mensuel / annuel -->
+    <span class="offre-price price-monthly">9€ <small style="font-size:16px;color:var(--brown-mid);font-family:'Nunito',sans-serif;">/mois</small></span>
+    <span class="offre-price price-annual" style="color:var(--green);">79€ <small style="font-size:16px;color:var(--brown-mid);font-family:'Nunito',sans-serif;">/an</small></span>
+    <div class="price-annual" style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--green);font-weight:600;margin:-10px 0 10px;">= 6,58€/mois · Économisez 29€</div>
+
+    <p class="offre-descr">
+      Transformez la prise de conscience en nouvelles réponses. Explorez toutes les situations relationnelles, identifiez vos automatismes récurrents et entraînez-vous progressivement à votre rythme.
+    </p>
+
+    <div class="offre-section-title">Ce que vous allez explorer</div>
+    <ul class="offre-features">
+      <li><span class="check">✓</span> <strong>Accès illimité à tous les scénarios d'entraînement</strong></li>
+      <li><span class="check">✓</span> Exploration de toutes les situations relationnelles</li>
+      <li><span class="check">✓</span> Identification des automatismes récurrents</li>
+      <li><span class="check">✓</span> Expérimentation concrète de différentes réponses</li>
+      <li><span class="check">✓</span> Feedback immédiat après chaque entraînement</li>
+      <li><span class="check">✓</span> Visualisation de votre profil radar et progression</li>
+      <li><span class="check">✓</span> Suivi des compétences entraînées au fil des scénarios</li>
+      <li class="price-annual"><span class="check">✓</span> Accès aux nouveaux scénarios en avant-première</li>
+      <li class="unavail"><span class="check">○</span> Accompagnement individuel avec un spécialiste</li>
+    </ul>
+
+    <!-- CTA dynamique -->
+    <a href="paiement.html?offer=monthly&pm=cb" class="btn-outline btn-full price-monthly" id="ctaMonthly">Choisir l'Ouvrière (9€/mois) →</a>
+    <a href="paiement.html?offer=yearly&pm=cb" class="btn-outline btn-full price-annual" id="ctaAnnual" style="color:var(--green);border-color:var(--green);">Choisir l'annuel (79€/an) →</a>
+    <div class="offre-reassurance">Sans engagement · Résiliable en un clic à tout moment</div>
+  </div>
+
+  <!-- 03 — DÉCOUVRIR (À DROITE — La Butineuse — Gratuit) -->
+  <div class="offre-card">
+    <div class="offre-rank-badge">03 — DÉCOUVERTE</div>
     <h3>La Butineuse</h3>
     <div class="offre-promise">« Comprendre une réaction qui vous échappe. »</div>
     <span class="offre-price">Gratuit</span>
@@ -529,78 +618,14 @@
       <li><span class="check-green">✓</span> Exploration guidée d'une situation relationnelle</li>
       <li><span class="check-green">✓</span> Identification des réactions automatiques</li>
       <li><span class="check-green">✓</span> Exploration du ressenti émotionnel et corporel</li>
-      <li><span class="check-green">✓</span> Profil relationnel personnalisé</li>
+      <li><span class="check-green">✓</span> Profil relationnel personnalisé initial</li>
       <li><span class="check-green">✓</span> Première expérience de la méthode BEE</li>
-      <li class="unavail"><span class="check">○</span> Entraînement continu sur d'autres situations</li>
-      <li class="unavail"><span class="check">○</span> Suivi de l'évolution des compétences</li>
+      <li class="unavail"><span class="check">○</span> Accès aux autres scénarios d'entraînement</li>
+      <li class="unavail"><span class="check">○</span> Suivi d'évolution et compétences entraînées</li>
     </ul>
 
-    <a href="inscription.html" class="btn-green btn-full">Commencer gratuitement</a>
+    <a href="questionnaire.html" class="btn-outline btn-full" style="border-color:var(--border);">Commencer gratuitement (1er scénario offert)</a>
     <div class="offre-reassurance">Sans engagement · Aucune carte bancaire requise</div>
-  </div>
-
-  <!-- 02 — S'ENTRAÎNER (L'Ouvrière - 9€/mois) — Featured -->
-  <div class="offre-card featured">
-    <div class="badge-recommande">⭐ Recommandé</div>
-    <div class="offre-rank-badge">02 — S'ENTRAÎNER</div>
-    <h3>L'Ouvrière</h3>
-    <div class="offre-promise">« Expérimenter de nouvelles façons de répondre. »</div>
-
-    <!-- Prix mensuel / annuel -->
-    <span class="offre-price price-monthly">9€ <small style="font-size:16px;color:var(--brown-mid);font-family:'Nunito',sans-serif;">/mois</small></span>
-    <span class="offre-price price-annual" style="color:var(--green);">79€ <small style="font-size:16px;color:var(--brown-mid);font-family:'Nunito',sans-serif;">/an</small></span>
-    <div class="price-annual" style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--green);font-weight:600;margin:-10px 0 10px;">= 6,58€/mois · Économisez 29€</div>
-
-    <p class="offre-descr">
-      Transformez la prise de conscience en nouvelles réponses. Explorez différentes situations relationnelles, identifiez vos automatismes récurrents et entraînez-vous progressivement à répondre autrement.
-    </p>
-
-    <div class="offre-section-title">Ce que vous allez explorer</div>
-    <ul class="offre-features">
-      <li><span class="check">✓</span> <strong>Accès à tous les scénarios d'entraînement</strong></li>
-      <li><span class="check">✓</span> Exploration de différentes situations relationnelles</li>
-      <li><span class="check">✓</span> Identification des automatismes récurrents</li>
-      <li><span class="check">✓</span> Expérimentation concrète de différentes réponses</li>
-      <li><span class="check">✓</span> Feedback après chaque entraînement</li>
-      <li><span class="check">✓</span> Visualisation de votre profil et de votre progression</li>
-      <li><span class="check">✓</span> Suivi des compétences entraînées au fil des scénarios</li>
-      <li><span class="check">✓</span> Exploration guidée de chaque situation, étape par étape</li>
-      <li class="price-annual"><span class="check">✓</span> Accès aux nouveaux scénarios en avant-première</li>
-      <li class="unavail"><span class="check">○</span> Accompagnement individuel personnalisé</li>
-    </ul>
-
-    <!-- CTA dynamique -->
-    <a href="paiement.html?pm=cb" class="btn-cta btn-full price-monthly" id="ctaMonthly">Commencer à m'entraîner →</a>
-    <a href="paiement.html?pm=cb" class="btn-cta btn-full price-annual" id="ctaAnnual" style="background:var(--green);border-color:var(--green);">Commencer à m'entraîner — Meilleur prix →</a>
-    <div class="offre-reassurance">Sans engagement · Résiliable en un clic à tout moment</div>
-  </div>
-
-  <!-- 03 — ÊTRE ACCOMPAGNÉ (La Souveraine - 19€/mois) -->
-  <div class="offre-card reine">
-    <div class="offre-rank-badge" style="color:#8B5E52;">03 — ÊTRE ACCOMPAGNÉ</div>
-    <h3>La Souveraine</h3>
-    <div class="offre-promise">« Aller plus loin avec un regard humain. »</div>
-    <span class="offre-price">19€ <small style="font-size:16px;font-family:'Nunito',sans-serif;color:var(--brown-mid);">/mois</small></span>
-
-    <p class="offre-descr">
-      Lorsque vous souhaitez approfondir votre parcours, bénéficiez d'un accompagnement personnalisé à partir de vos expériences et de votre progression dans BEE. L'objectif est de vous aider à identifier les situations qui se répètent, choisir un axe de travail et construire de nouvelles réponses.
-    </p>
-
-    <div class="offre-section-title">Ce que vous allez explorer</div>
-    <ul class="offre-features">
-      <li><span class="check">✓</span> <strong>Tout l'entraînement de l'Ouvrière inclus</strong></li>
-      <li><span class="check">✓</span> Analyse personnalisée de votre parcours BEE</li>
-      <li><span class="check">✓</span> Identification des situations et automatismes récurrents</li>
-      <li><span class="check">✓</span> Définition d'un objectif d'entraînement personnel</li>
-      <li><span class="check">✓</span> Exercices adaptés aux situations rencontrées</li>
-      <li><span class="check">✓</span> Points d'étape avec un spécialiste relationnel</li>
-      <li><span class="check">✓</span> Suivi personnalisé de l'évolution (bilan PDF)</li>
-      <li><span class="check">✓</span> Comptes famille / enfants inclus</li>
-    </ul>
-
-    <a href="inscription.html" class="btn-primary btn-full">Être accompagné →</a>
-    <div class="offre-reassurance">Sans engagement · Résiliable à tout moment</div>
-    <a href="#accompagnement" class="offre-learn-more" style="text-align:center;margin-top:12px;display:block;">→ En savoir plus sur l'accompagnement</a>
   </div>
 
 </div>
@@ -633,7 +658,7 @@
 <div class="reine-section" id="accompagnement">
   <div class="reine-box">
     <span class="reine-icon">♛</span>
-    <h2>L'accompagnement personnalisé Souveraine</h2>
+    <h2>L'accompagnement personnalisé Reine</h2>
     <p>Allez plus loin qu'un entraînement autonome : bénéficiez d'un regard extérieur bienveillant et structuré pour vous aider à transformer durablement vos schémas relationnels.</p>
     <div class="reine-cards">
       <div class="reine-card">

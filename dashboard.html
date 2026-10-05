@@ -38,6 +38,158 @@
 .plan-free    { background: var(--cream-dark); color: var(--brown-light); }
 .plan-monthly { background: rgba(232,160,32,0.15); color: var(--amber); }
 .plan-yearly  { background: rgba(61,31,0,0.08); color: var(--brown-dark); }
+.plan-reine   { background: rgba(195,101,27,0.18); color: #C3651B; border: 1.5px solid #C3651B; font-weight: 800; }
+
+/* ── Bannière invité ── */
+.guest-banner {
+  background: linear-gradient(135deg, rgba(232,160,32,0.12), rgba(195,101,27,0.06));
+  border: 1.5px solid var(--orange);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.guest-banner-icon { font-size: 28px; flex-shrink: 0; }
+.guest-banner-text {
+  flex: 1;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  color: var(--brown-dark);
+  line-height: 1.5;
+}
+.guest-banner-text strong { display: block; font-size: 14px; margin-bottom: 2px; }
+.guest-banner-cta {
+  background: var(--orange);
+  color: white;
+  padding: 9px 18px;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.guest-banner-cta:hover { background: var(--orange-dark); }
+
+/* ── Carte Mon Profil ── */
+.dash-profile-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 4px 20px var(--shadow);
+  margin-top: 48px;
+  margin-bottom: 48px;
+}
+.dash-form-label {
+  display: block;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brown-mid);
+  margin-bottom: 8px;
+}
+.dash-form-input, .dash-form-select {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--warm-white);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: var(--brown-dark);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+.dash-form-input:focus, .dash-form-select:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(232,160,32,0.15);
+}
+.radio-pill-group {
+  display: flex;
+  gap: 10px;
+}
+.radio-pill-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--warm-white);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brown-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.radio-pill-label.active {
+  border-color: var(--orange);
+  background: rgba(232,160,32,0.12);
+  color: var(--orange);
+}
+.radio-pill-label input[type="radio"] { display: none; }
+.children-section {
+  padding: 16px;
+  background: rgba(232,160,32,0.04);
+  border: 1.5px dashed rgba(232,160,32,0.35);
+  border-radius: 14px;
+}
+.child-item-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.child-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.child-item-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+.btn-remove-child {
+  background: none;
+  border: none;
+  color: #d9534f;
+  font-size: 16px;
+  cursor: pointer;
+}
+.btn-add-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: white;
+  border: 1.5px dashed var(--orange);
+  color: var(--orange);
+  padding: 9px 16px;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+}
+.btn-add-child:hover { background: rgba(232,160,32,0.06); }
 
 .dash-logout {
   background: transparent; border: 1.5px solid var(--border);
@@ -523,6 +675,16 @@
       </div>
     </div>
 
+    <!-- ── Bannière de sauvegarde pour profil invité ── -->
+    <div id="guest-save-banner" class="guest-banner" style="display:none;">
+      <div class="guest-banner-icon">💡</div>
+      <div class="guest-banner-text">
+        <strong>Votre profil diagnostique est prêt et affiché ci-dessous !</strong>
+        Pour conserver vos résultats, enrichir votre analyse et accéder à vos entraînements sur tous vos appareils, enregistrez votre profil.
+      </div>
+      <a href="#section-user-profile" class="guest-banner-cta">Enregistrer mon profil ↓</a>
+    </div>
+
     <!-- ── Résultats du diagnostic ── -->
     <div id="section-results">
       <div class="dash-section-title">🧭 Résultats de mon diagnostic</div>
@@ -608,6 +770,84 @@
       <a href="articles.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--orange);text-decoration:none;padding:12px 24px;border:1.5px solid var(--orange);border-radius:50px;transition:all 0.2s;">
         Voir toute la Guilde pratique →
       </a>
+    </div>
+
+    <!-- ── Mon Profil & Informations Personnelles ── -->
+    <div id="section-user-profile" class="dash-profile-card">
+      <div class="dash-section-title" style="margin-bottom:12px;">👤 Mon profil &amp; informations personnelles</div>
+      <p style="font-size:14px;color:var(--brown-mid);margin-bottom:24px;line-height:1.6;">
+        Ces informations permettent d'enrichir votre profil relationnel et de personnaliser vos prochains entraînements.
+      </p>
+
+      <form id="dashProfileForm" onsubmit="handleDashProfileSave(event)">
+        <!-- Prénom & Deuxième prénom -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:16px;">
+          <div>
+            <label class="dash-form-label">Prénom <span style="color:var(--orange);">*</span></label>
+            <input type="text" id="dashPrenom" class="dash-form-input" placeholder="Votre prénom" required>
+          </div>
+          <div>
+            <label class="dash-form-label">Deuxième prénom <span style="font-weight:400;color:var(--brown-light);">(optionnel)</span></label>
+            <input type="text" id="dashDeuxiemePrenom" class="dash-form-input" placeholder="Deuxième prénom">
+          </div>
+        </div>
+
+        <!-- Date de naissance & Situation familiale -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:16px;">
+          <div>
+            <label class="dash-form-label">Date de naissance <span style="color:var(--orange);">*</span></label>
+            <input type="date" id="dashDateNaissance" class="dash-form-input" required>
+          </div>
+          <div>
+            <label class="dash-form-label">Situation familiale <span style="font-weight:400;color:var(--brown-light);">(statut marital)</span></label>
+            <select id="dashSituationFamiliale" class="dash-form-select">
+              <option value="">Sélectionnez votre situation</option>
+              <option value="celibataire">Célibataire</option>
+              <option value="en_couple">En couple</option>
+              <option value="marie">Marié(e)</option>
+              <option value="pacse">Pacsé(e)</option>
+              <option value="separe">Séparé(e)</option>
+              <option value="divorce">Divorcé(e)</option>
+              <option value="veuf">Veuf / Veuve</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Enfants -->
+        <div style="margin-bottom:20px;">
+          <label class="dash-form-label">Avez-vous des enfants ?</label>
+          <div class="radio-pill-group" style="max-width:260px;">
+            <label class="radio-pill-label active" id="dashLabelEnfantsNon">
+              <input type="radio" name="dash_has_children" value="non" checked onchange="toggleDashEnfants(false)">
+              <span>Non</span>
+            </label>
+            <label class="radio-pill-label" id="dashLabelEnfantsOui">
+              <input type="radio" name="dash_has_children" value="oui" onchange="toggleDashEnfants(true)">
+              <span>Oui</span>
+            </label>
+          </div>
+
+          <div id="dashEnfantsSection" class="children-section" style="display:none; margin-top:14px;">
+            <div id="dashEnfantsList"></div>
+            <button type="button" class="btn-add-child" onclick="ajouterDashEnfant()">
+              <span>+ Ajouter un enfant</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Email & Bouton de sauvegarde -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-top:24px; padding-top:18px; border-top:1px solid var(--border);">
+          <div style="font-size:13px; color:var(--brown-light);" id="dashEmailHint">
+            Compte : <strong id="dashProfileEmailDisplay" style="color:var(--brown-dark);">-</strong>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span id="dashProfileStatus" style="font-size:13px; font-weight:700; color:var(--green); display:none;">✓ Profil sauvegardé</span>
+            <button type="submit" class="btn-primary" style="padding:11px 26px;">
+              Enregistrer mon profil
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
 
     <!-- Empty state -->
@@ -786,10 +1026,19 @@ async function init() {
     if (localEmail) user = { id: 'demo_user', email: localEmail };
   }
 
+  // Vérifier si des résultats de diagnostic existent en local
+  const hasLocalDiag = localStorage.getItem('bee_diagnostic_results') || localStorage.getItem('bee_latest_diag');
+  let isGuest = false;
+
   if (!user) {
-    document.getElementById('dash-loading').style.display = 'none';
-    document.getElementById('dash-nologin').style.display = 'block';
-    return;
+    if (hasLocalDiag) {
+      user = { id: 'guest_user', email: 'Profil Invité (non sauvegardé)' };
+      isGuest = true;
+    } else {
+      document.getElementById('dash-loading').style.display = 'none';
+      document.getElementById('dash-nologin').style.display = 'block';
+      return;
+    }
   }
 
   globalUser = user;
@@ -820,10 +1069,17 @@ async function init() {
     document.getElementById('section-evolution').style.display = 'none';
     document.getElementById('section-empty').style.display = 'block';
     renderGuildeSection();
+    loadDashboardProfile(user.id);
     return;
   }
 
   document.getElementById('dash-content').style.display = 'block';
+
+  // Afficher la bannière invité si profil non encore rattaché à un compte
+  if (isGuest) {
+    const guestBanner = document.getElementById('guest-save-banner');
+    if (guestBanner) guestBanner.style.display = 'flex';
+  }
 
   // Badge plan
   renderPlanBadge(access);
@@ -840,6 +1096,7 @@ async function init() {
   const labelVals = [];
 
   const axesContainer = document.getElementById('results-axes');
+  axesContainer.innerHTML = '';
   Object.entries(scores).forEach(([key, pct], i) => {
     const label = labels[i] || key;
     scoreVals.push(pct);
@@ -881,6 +1138,9 @@ async function init() {
 
   // ── Guilde pratique ──
   renderGuildeSection();
+
+  // ── Charger profil enrichi ──
+  loadDashboardProfile(user.id);
 }
 
 // ════════════════════════════════════════════════════════
@@ -891,14 +1151,211 @@ function renderPlanBadge(access) {
   if (!badgeEl) return;
   const plan = access ? access.plan : 'free';
   const config = {
-    free:    { cls: 'plan-free',    text: '🐝 Basique' },
-    monthly: { cls: 'plan-monthly', text: '⭐ Premium Mensuel' },
-    yearly:  { cls: 'plan-yearly',  text: '♛ Premium Annuel' },
+    free:       { cls: 'plan-free',    text: '🐝 La Butineuse (Gratuit)' },
+    monthly:    { cls: 'plan-monthly', text: "⭐ L'Ouvrière (Mensuel)" },
+    yearly:     { cls: 'plan-yearly',  text: "⭐ L'Ouvrière (Annuel)" },
+    reine:      { cls: 'plan-reine',   text: '👑 Reine (VIP)' },
+    souveraine: { cls: 'plan-reine',   text: '👑 Reine (VIP)' },
   };
   const c = config[plan] || config.free;
   badgeEl.innerHTML = `<span class="dash-plan-badge ${c.cls}">${c.text}</span>`;
   if (plan === 'free') {
-    badgeEl.innerHTML += `&nbsp;<a href="paiement.html" style="font-family:'Nunito',sans-serif;font-size:12px;color:var(--orange);text-decoration:none;">→ Passer Premium</a>`;
+    badgeEl.innerHTML += `&nbsp;<a href="offres.html" style="font-family:'Nunito',sans-serif;font-size:12px;color:var(--orange);font-weight:700;text-decoration:none;">→ Découvrir les offres</a>`;
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  Gestion du profil utilisateur (Item 5)
+// ════════════════════════════════════════════════════════
+
+function toggleDashEnfants(hasChildren) {
+  const sec = document.getElementById('dashEnfantsSection');
+  const labelNon = document.getElementById('dashLabelEnfantsNon');
+  const labelOui = document.getElementById('dashLabelEnfantsOui');
+
+  if (hasChildren) {
+    if (labelOui) labelOui.classList.add('active');
+    if (labelNon) labelNon.classList.remove('active');
+    if (sec) sec.style.display = 'block';
+    if (document.querySelectorAll('#dashEnfantsList .child-item-card').length === 0) {
+      ajouterDashEnfant();
+    }
+  } else {
+    if (labelNon) labelNon.classList.add('active');
+    if (labelOui) labelOui.classList.remove('active');
+    if (sec) sec.style.display = 'none';
+  }
+}
+
+function ajouterDashEnfant(prenom = '', dateNaissance = '') {
+  const container = document.getElementById('dashEnfantsList');
+  if (!container) return;
+  const childId = 'dash_child_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+
+  const card = document.createElement('div');
+  card.className = 'child-item-card';
+  card.id = childId;
+  card.innerHTML = `
+    <div class="child-item-header">
+      <span class="child-item-title">Enfant <span class="dash-child-num"></span></span>
+      <button type="button" class="btn-remove-child" onclick="supprimerDashEnfant('${childId}')" title="Supprimer cet enfant">&times;</button>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div>
+        <label class="dash-form-label" style="font-size:11px;">Prénom</label>
+        <input type="text" class="dash-form-input dash-child-prenom" placeholder="Prénom" value="${prenom.replace(/"/g, '&quot;')}" style="padding:9px 12px;font-size:13px;">
+      </div>
+      <div>
+        <label class="dash-form-label" style="font-size:11px;">Date de naissance</label>
+        <input type="date" class="dash-form-input dash-child-dob" value="${dateNaissance}" style="padding:9px 12px;font-size:13px;">
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+  updateDashChildrenNumbers();
+}
+
+function supprimerDashEnfant(childId) {
+  const el = document.getElementById(childId);
+  if (el) {
+    el.remove();
+    updateDashChildrenNumbers();
+  }
+  if (document.querySelectorAll('#dashEnfantsList .child-item-card').length === 0) {
+    const radioNon = document.querySelector('input[name="dash_has_children"][value="non"]');
+    if (radioNon) {
+      radioNon.checked = true;
+      toggleDashEnfants(false);
+    }
+  }
+}
+
+function updateDashChildrenNumbers() {
+  const cards = document.querySelectorAll('#dashEnfantsList .child-item-card');
+  cards.forEach((c, idx) => {
+    const numEl = c.querySelector('.dash-child-num');
+    if (numEl) numEl.textContent = '#' + (idx + 1);
+  });
+}
+
+function collectDashEnfantsData() {
+  const radioOui = document.querySelector('input[name="dash_has_children"][value="oui"]');
+  if (!radioOui || !radioOui.checked) return [];
+
+  const enfants = [];
+  document.querySelectorAll('#dashEnfantsList .child-item-card').forEach(card => {
+    const prenom = card.querySelector('.dash-child-prenom')?.value.trim() || '';
+    const date_naissance = card.querySelector('.dash-child-dob')?.value || '';
+    if (prenom || date_naissance) {
+      enfants.push({ prenom, date_naissance });
+    }
+  });
+  return enfants;
+}
+
+async function loadDashboardProfile(userId) {
+  let profile = {};
+  if (typeof getUserProfile === 'function') {
+    try {
+      profile = await getUserProfile(userId);
+    } catch(e) {}
+  }
+  if (!profile || Object.keys(profile).length === 0) {
+    try {
+      const local = localStorage.getItem('bee_user_profile');
+      if (local) profile = JSON.parse(local);
+    } catch(e) {}
+  }
+
+  if (!profile) profile = {};
+
+  const prenomEl = document.getElementById('dashPrenom');
+  const deuxiemePrenomEl = document.getElementById('dashDeuxiemePrenom');
+  const dateNaissanceEl = document.getElementById('dashDateNaissance');
+  const situationFamilialeEl = document.getElementById('dashSituationFamiliale');
+  const emailDisplayEl = document.getElementById('dashProfileEmailDisplay');
+
+  if (prenomEl && profile.prenom) prenomEl.value = profile.prenom;
+  if (deuxiemePrenomEl && profile.deuxieme_prenom) deuxiemePrenomEl.value = profile.deuxieme_prenom;
+  if (dateNaissanceEl && profile.date_naissance) dateNaissanceEl.value = profile.date_naissance;
+  if (situationFamilialeEl && profile.situation_familiale) situationFamilialeEl.value = profile.situation_familiale;
+
+  const currentEmail = (globalUser && globalUser.email && !globalUser.email.includes('non sauvegardé'))
+    ? globalUser.email
+    : (profile.email || localStorage.getItem('bee_user_email') || 'Invité (non enregistré)');
+  if (emailDisplayEl) emailDisplayEl.textContent = currentEmail;
+
+  // Enfants
+  const hasEnfants = (Array.isArray(profile.enfants) && profile.enfants.length > 0) || profile.has_enfants === true;
+  if (hasEnfants) {
+    const radioOui = document.querySelector('input[name="dash_has_children"][value="oui"]');
+    if (radioOui) {
+      radioOui.checked = true;
+      toggleDashEnfants(true);
+      const listEl = document.getElementById('dashEnfantsList');
+      if (listEl) listEl.innerHTML = '';
+      profile.enfants.forEach(enf => ajouterDashEnfant(enf.prenom || '', enf.date_naissance || ''));
+    }
+  } else {
+    const radioNon = document.querySelector('input[name="dash_has_children"][value="non"]');
+    if (radioNon) {
+      radioNon.checked = true;
+      toggleDashEnfants(false);
+    }
+  }
+}
+
+async function handleDashProfileSave(event) {
+  event.preventDefault();
+  const prenom            = document.getElementById('dashPrenom').value.trim();
+  const deuxieme_prenom   = document.getElementById('dashDeuxiemePrenom').value.trim();
+  const date_naissance    = document.getElementById('dashDateNaissance').value;
+  const situation_familiale = document.getElementById('dashSituationFamiliale').value;
+  const enfants           = collectDashEnfantsData();
+
+  if (!prenom) {
+    if (typeof showToast === 'function') showToast('Veuillez renseigner votre prénom.', 'warning');
+    return;
+  }
+  if (!date_naissance) {
+    if (typeof showToast === 'function') showToast('Veuillez renseigner votre date de naissance.', 'warning');
+    return;
+  }
+
+  const userId = (globalUser && globalUser.id) ? globalUser.id : ('user_' + Date.now());
+  const email = (globalUser && globalUser.email && !globalUser.email.includes('non sauvegardé'))
+    ? globalUser.email
+    : (localStorage.getItem('bee_user_email') || null);
+
+  const payload = {
+    prenom,
+    deuxieme_prenom: deuxieme_prenom || null,
+    date_naissance,
+    situation_familiale: situation_familiale || null,
+    enfants,
+    has_enfants: enfants.length > 0,
+    email,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (typeof saveUserProfile === 'function') {
+    await saveUserProfile(userId, payload);
+  } else {
+    localStorage.setItem('bee_user_profile', JSON.stringify(payload));
+  }
+
+  // Masquer la bannière invité si elle était affichée
+  const guestBanner = document.getElementById('guest-save-banner');
+  if (guestBanner) guestBanner.style.display = 'none';
+
+  const statusEl = document.getElementById('dashProfileStatus');
+  if (statusEl) {
+    statusEl.style.display = 'inline';
+    setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+  }
+
+  if (typeof showToast === 'function') {
+    showToast('✓ Votre profil a été mis à jour avec succès !', 'success');
   }
 }
 
