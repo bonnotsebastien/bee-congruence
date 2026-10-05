@@ -22,8 +22,12 @@
     { "source": "/contact", "destination": "/contact.html" },
     { "source": "/paiement", "destination": "/paiement.html" },
     { "source": "/experience", "destination": "/experience.html" },
+    { "source": "/articles/est-ce-vraiment-ma-reaction-histoire-familiale-relations", "destination": "/est-ce-vraiment-ma-reaction-histoire-familiale-relations.html" },
     { "source": "/articles/pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite", "destination": "/pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite.html" },
     { "source": "/articles", "destination": "/articles.html" },
+    { "source": "/conferences", "destination": "/conferences.html" },
+    { "source": "/profil", "destination": "/profil.html" },
+    { "source": "/enfant", "destination": "/enfant.html" },
     { "source": "/introspection", "destination": "/introspection.html" },
     { "source": "/scenario/:id", "destination": "/scenario-detail.html" },
     { "source": "/admin", "destination": "/admin.html" }

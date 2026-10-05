@@ -21,9 +21,19 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.beecongruence.com/articles/est-ce-vraiment-ma-reaction-histoire-familiale-relations</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://www.beecongruence.com/articles/pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.beecongruence.com/conferences</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.beecongruence.com/offres</loc>

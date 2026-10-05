@@ -549,6 +549,7 @@ body {
         <div style="margin-bottom:16px;">
           <label style="display:block;font-family:'Nunito';font-size:11px;font-weight:700;color:var(--admin-gold);text-transform:uppercase;margin-bottom:6px;">Article détecté</label>
           <select id="nlArticleSelect" class="auth-gate-input" style="text-align:left;margin-bottom:8px;" onchange="updateNlPreview(this.value)">
+            <option value="est-ce-vraiment-ma-reaction-histoire-familiale-relations">Est-ce vraiment ma réaction ? Quand notre histoire familiale continue d’agir dans nos relations (5 oct. 2026)</option>
             <option value="pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite">Pourquoi je réagis plus fort que la situation ne le mérite ? (30 sept. 2026)</option>
             <option value="piliers-dev-perso">Les 7 piliers du développement personnel : la clé d’une vie alignée (28 sept. 2026)</option>
           </select>
@@ -872,6 +873,13 @@ function toggleReportModal() {
 
 // ── Newsletter Automation Logic ──
 const NL_ARTICLES = {
+  'est-ce-vraiment-ma-reaction-histoire-familiale-relations': {
+    title: 'Est-ce vraiment ma réaction ? Quand notre histoire familiale continue d’agir dans nos relations',
+    excerpt: 'Quelqu’un vous reproche quelque chose et, en quelques secondes, votre réaction s\'enflamme. Découvrez comment les schémas et habitudes relationnelles apprises dans l\'enfance influencent nos automatismes, et comment retrouver votre liberté de choix.',
+    image: 'histoire-familiale-relations.jpg',
+    url: 'https://www.beecongruence.com/articles/est-ce-vraiment-ma-reaction-histoire-familiale-relations',
+    readTime: '4 min'
+  },
   'pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite': {
     title: 'Pourquoi je réagis plus fort que la situation ne le mérite ?',
     excerpt: 'Une remarque banale, un message qui tarde, un ton différent… et soudain tout s’allume. Découvrez comment distinguer le fait de l’interprétation et retrouver l’espace du choix avant de réagir.',
@@ -892,11 +900,11 @@ function initNewsletterAutomation() {
   const isAuto = localStorage.getItem('bee_newsletter_auto_send') === '1';
   const toggle = document.getElementById('nlAutoSendToggle');
   if (toggle) toggle.checked = isAuto;
-  updateNlPreview('pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite');
+  updateNlPreview('est-ce-vraiment-ma-reaction-histoire-familiale-relations');
 }
 
 function updateNlPreview(id) {
-  const art = NL_ARTICLES[id] || NL_ARTICLES['pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite'];
+  const art = NL_ARTICLES[id] || NL_ARTICLES['est-ce-vraiment-ma-reaction-histoire-familiale-relations'];
   const box = document.getElementById('nlEmailPreviewBox');
   if (!box) return;
 
