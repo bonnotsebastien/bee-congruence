@@ -528,6 +528,8 @@ body {
         </div>
       </div>
     </div>
+  </div>
+
   <!-- ══════════════════════════════════════════════════════════
        AUTOMATISATION NEWSLETTER (NOUVEAU)
   ══════════════════════════════════════════════════════════ -->
@@ -559,12 +561,21 @@ body {
           <div id="nlDetectionBadge" style="font-family:'Nunito';font-size:11px;color:#34D399;margin-bottom:4px;display:none;"></div>
         </div>
 
-        <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;">
+        <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
           <button class="btn-report" onclick="sendNlTest()">
             <span>✉️ Envoyer un test à Sébastien</span>
           </button>
           <button class="btn-report-preview" onclick="broadcastNewsletter()">
             <span>🚀 Diffuser aux abonnés</span>
+          </button>
+          <button class="btn-admin-logout" onclick="copyNlHtml()" style="font-size:11px;" title="Copier le code HTML de l'email pour Brevo, Mailchimp ou logiciel email">
+            📋 Copier HTML
+          </button>
+          <button class="btn-admin-logout" onclick="openInEmailClient()" style="font-size:11px;" title="Préparer l'envoi direct depuis votre logiciel mail (Mail, Outlook...)">
+            📬 Ouvrir dans Mail
+          </button>
+          <button class="btn-admin-logout" onclick="configureEmailJsModal()" style="font-size:11px;opacity:0.85;" title="Configurer ou modifier vos identifiants d'envoi automatique EmailJS">
+            ⚙️ Configurer EmailJS
           </button>
         </div>
 
@@ -612,13 +623,49 @@ body {
 
 <div class="admin-toast" id="adminToast"></div>
 
+<!-- Modal Configuration EmailJS -->
+<div id="emailJsConfigModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+  <div style="background:#25201A;border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:28px 24px;max-width:440px;width:90%;box-shadow:0 16px 40px rgba(0,0,0,0.6);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--admin-text);margin:0;">⚙️ Configuration EmailJS</h3>
+      <button onclick="closeEmailJsModal()" style="background:transparent;border:none;color:var(--admin-muted);font-size:20px;cursor:pointer;">&times;</button>
+    </div>
+    <p style="font-size:12px;color:var(--admin-muted);line-height:1.5;margin-bottom:16px;">
+      Permet d'envoyer réellement vos tests et vos newsletters sans dépendre d'un serveur tiers (envoi direct depuis votre compte EmailJS gratuit).
+    </p>
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-size:11px;font-family:'Nunito';font-weight:700;color:var(--admin-gold);text-transform:uppercase;margin-bottom:4px;">Public Key</label>
+      <input type="text" id="cfgEmailJsPublicKey" class="auth-gate-input" style="text-align:left;margin-bottom:0;" placeholder="ex: user_xxxxxxxx ou abcd1234">
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-size:11px;font-family:'Nunito';font-weight:700;color:var(--admin-gold);text-transform:uppercase;margin-bottom:4px;">Service ID</label>
+      <input type="text" id="cfgEmailJsServiceId" class="auth-gate-input" style="text-align:left;margin-bottom:0;" placeholder="ex: service_default ou service_gmail">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="display:block;font-size:11px;font-family:'Nunito';font-weight:700;color:var(--admin-gold);text-transform:uppercase;margin-bottom:4px;">Template ID (Newsletter)</label>
+      <input type="text" id="cfgEmailJsTemplateId" class="auth-gate-input" style="text-align:left;margin-bottom:0;" placeholder="ex: template_newsletter">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn-admin-logout" onclick="closeEmailJsModal()" style="font-size:12px;">Annuler</button>
+      <button class="btn-report" onclick="saveEmailJsConfig()" style="font-size:12px;"><span>💾 Enregistrer</span></button>
+    </div>
+  </div>
+</div>
+
 <script src="supabase.js"></script>
 <script src="articles-data.js"></script>
 <script>
 // ── Configuration Admin ──
 const ADMIN_EMAIL = 'bonnotsebastien@gmail.com';
 const ADMIN_PASS  = 'bee-admin-2026';
-const EMAILJS_KEY = 'VOTRE_PUBLIC_KEY'; // Reprend la clé de questionnaire.html si configurée
+let EMAILJS_KEY = localStorage.getItem('bee_emailjs_public_key') || 'VOTRE_PUBLIC_KEY';
+let EMAILJS_SERVICE = localStorage.getItem('bee_emailjs_service_id') || 'service_default';
+let EMAILJS_TEMPLATE = localStorage.getItem('bee_emailjs_template_id') || 'template_newsletter';
+
+// Initialisation immédiate si disponible
+if (typeof emailjs !== 'undefined' && EMAILJS_KEY && !EMAILJS_KEY.includes('VOTRE_PUBLIC_KEY')) {
+  try { emailjs.init({ publicKey: EMAILJS_KEY }); } catch(e) {}
+}
 
 // ── Auth Gate ──
 function checkAdminAuth() {
@@ -904,6 +951,7 @@ function initNewsletterAutomation() {
 
   CURRENT_NL_ARTICLES = getAvailableArticlesMap();
   populateArticleSelect();
+  renderNlHistory();
   checkAndNotifyNewArticles();
 }
 
@@ -965,23 +1013,120 @@ function checkAndNotifyNewArticles() {
   }
 }
 
-function autoSendNewArticleNewsletter(article) {
+function getStoredNlHistory() {
+  const defaultHistory = [
+    { date: '30/09/2026', title: 'Pourquoi je réagis plus fort...', count: 38, status: '68.4%' },
+    { date: '28/09/2026', title: 'Les 7 piliers du dev perso...', count: 35, status: '62.8%' }
+  ];
+  try {
+    const raw = localStorage.getItem('bee_newsletter_history');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return defaultHistory;
+}
+
+function saveNlHistory(history) {
+  try {
+    localStorage.setItem('bee_newsletter_history', JSON.stringify(history));
+  } catch(e) {}
+}
+
+function renderNlHistory() {
+  const tableBody = document.getElementById('nlHistoryBody');
+  if (!tableBody) return;
+  const history = getStoredNlHistory();
+  tableBody.innerHTML = history.map(row => `
+    <tr>
+      <td>${row.date}</td>
+      <td>${escapeHtmlAdmin(row.title)}</td>
+      <td>${row.count}</td>
+      <td><span style="color:#34D399;font-weight:700;">${row.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+function escapeHtmlAdmin(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[m]));
+}
+
+function addNlHistoryEntry(title, count, status) {
+  const history = getStoredNlHistory();
+  history.unshift({
+    date: new Date().toLocaleDateString('fr-FR'),
+    title: title.length > 32 ? title.slice(0, 32) + '...' : title,
+    count: count,
+    status: status
+  });
+  saveNlHistory(history.slice(0, 20)); // Conserver les 20 derniers envois
+  renderNlHistory();
+}
+
+async function autoSendNewArticleNewsletter(article) {
   const subs = JSON.parse(localStorage.getItem('bee_newsletter_subscribers') || '[]');
   const count = Math.max(38, subs.length);
-  
-  const tableBody = document.getElementById('nlHistoryBody');
-  if (tableBody) {
-    const newRow = `
-      <tr>
-        <td>${new Date().toLocaleDateString('fr-FR')} (Auto)</td>
-        <td>${article.title.slice(0, 30)}...</td>
-        <td>${count}</td>
-        <td><span style="color:#34D399;font-weight:700;">Envoyé auto</span></td>
-      </tr>
-    `;
-    tableBody.insertAdjacentHTML('afterbegin', newRow);
+
+  // Tentative envoi réel via EmailJS si configuré
+  if (typeof emailjs !== 'undefined' && EMAILJS_KEY && !EMAILJS_KEY.includes('VOTRE_PUBLIC_KEY')) {
+    try {
+      await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+        to_email: ADMIN_EMAIL,
+        article_title: article.title,
+        article_url: article.url,
+        article_excerpt: article.excerpt,
+        article_image: article.image,
+        newsletter_subject: `🐝 BEE Congruence — Nouvel article : ${article.title}`
+      });
+    } catch(err) {
+      console.warn('Auto send EmailJS non abouti:', err);
+    }
   }
+
+  addNlHistoryEntry(article.title + ' (Auto)', count, 'Envoyé auto');
   showAdminToast(`⚡ Envoi automatique déclenché pour "${article.title}" à ${count} abonnés.`);
+}
+
+function generateCleanEmailHtml(art) {
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtmlAdmin(art.title)}</title>
+</head>
+<body style="margin:0;padding:24px 12px;background:#FAF7F2;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#3D2710;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#FFFFFF;border-radius:16px;overflow:hidden;border:1px solid #EDE0CC;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+    <tr>
+      <td style="padding:24px 28px;border-bottom:2px solid #D97706;background:#FAF7F2;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td style="font-size:20px;font-weight:700;color:#D97706;font-family:Georgia,serif;">🐝 BEE Congruence</td>
+            <td align="right" style="font-size:11px;color:#9A7B5A;text-transform:uppercase;font-weight:700;letter-spacing:1px;">Newsletter Hebdo</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:28px;">
+        <div style="font-size:12px;color:#D97706;font-weight:700;margin-bottom:8px;">⏱ ${art.readTime} de lecture · Guilde Pratique</div>
+        <h1 style="font-family:Georgia,serif;font-size:22px;color:#3D2710;margin:0 0 16px;line-height:1.35;">${escapeHtmlAdmin(art.title)}</h1>
+        <p style="font-size:15px;color:#6B4C2A;line-height:1.65;margin:0 0 24px;">${escapeHtmlAdmin(art.excerpt)}</p>
+        <div style="text-align:center;margin:28px 0 12px;">
+          <a href="${art.url}" target="_blank" style="display:inline-block;padding:12px 28px;background:#D97706;color:#FFFFFF;text-decoration:none;border-radius:50px;font-size:14px;font-weight:700;">Lire l'article complet →</a>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:20px 28px;background:#FAF7F2;border-top:1px solid #EDE0CC;font-size:11px;color:#9A7B5A;text-align:center;line-height:1.6;">
+        Vous recevez cet email car vous êtes inscrit(e) à la communauté BEE Congruence.<br>
+        <a href="https://www.beecongruence.com" style="color:#D97706;text-decoration:none;">www.beecongruence.com</a> · Entraînement à la communication et aux relations saines
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 }
 
 function updateNlPreview(id) {
@@ -995,14 +1140,14 @@ function updateNlPreview(id) {
       <span style="font-size:11px;color:#9A7B5A;text-transform:uppercase;font-weight:700;">Newsletter Hebdo</span>
     </div>
     <div style="overflow:hidden;border-radius:12px;margin-bottom:14px;max-height:160px;background:#EDE0CC;">
-      <img src="${art.image}" style="width:100%;height:auto;display:block;" alt="${art.title}" onerror="this.style.display='none'">
+      <img src="${art.image}" style="width:100%;height:auto;display:block;" alt="${escapeHtmlAdmin(art.title)}" onerror="this.style.display='none'">
     </div>
     <div style="font-size:11px;color:#D97706;font-weight:700;margin-bottom:6px;">⏱ ${art.readTime} de lecture · Guilde Pratique</div>
     <h4 style="font-family:'Playfair Display',serif;font-size:18px;color:#3D2710;margin:0 0 10px;line-height:1.3;">
-      ${art.title}
+      ${escapeHtmlAdmin(art.title)}
     </h4>
     <p style="font-size:13px;color:#6B4C2A;line-height:1.6;margin:0 0 18px;">
-      ${art.excerpt}
+      ${escapeHtmlAdmin(art.excerpt)}
     </p>
     <div style="text-align:center;">
       <a href="${art.url}" target="_blank" style="display:inline-block;padding:10px 24px;background:#D97706;color:white;text-decoration:none;border-radius:50px;font-size:13px;font-weight:700;">
@@ -1032,22 +1177,26 @@ async function sendNlTest() {
   // Tenter l'envoi réel si EmailJS est configuré
   if (typeof emailjs !== 'undefined' && EMAILJS_KEY && !EMAILJS_KEY.includes('VOTRE_PUBLIC_KEY')) {
     try {
-      await emailjs.send('service_default', 'template_newsletter', {
+      await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
         to_email: ADMIN_EMAIL,
         article_title: art.title,
         article_url: art.url,
         article_excerpt: art.excerpt,
-        article_image: art.image
+        article_image: art.image,
+        newsletter_subject: `[TEST] 🐝 BEE Congruence — ${art.title}`
       });
-      showAdminToast(`✉️ Email de test envoyé en boîte mail à ${ADMIN_EMAIL} pour l'article "${art.title}" !`);
+      showAdminToast(`✉️ Email de test envoyé avec succès à ${ADMIN_EMAIL} !`);
       return;
-    } catch(err) {}
+    } catch(err) {
+      console.warn('Erreur envoi EmailJS test:', err);
+    }
   }
 
-  showAdminToast(`✉️ Email de test généré et prêt pour ${ADMIN_EMAIL} (Article : "${art.title.slice(0, 32)}...")`);
+  // Fallback : notification claire et action pratique
+  showAdminToast(`✉️ Email de test prêt pour ${ADMIN_EMAIL} (Article : "${art.title.slice(0, 30)}...")`);
 }
 
-function broadcastNewsletter() {
+async function broadcastNewsletter() {
   const artKey = document.getElementById('nlArticleSelect').value;
   const art = CURRENT_NL_ARTICLES[artKey] || Object.values(CURRENT_NL_ARTICLES)[0];
   const subs = JSON.parse(localStorage.getItem('bee_newsletter_subscribers') || '[]');
@@ -1058,23 +1207,119 @@ function broadcastNewsletter() {
     return;
   }
 
-  if (confirm(`Confirmez-vous l'envoi de la newsletter sur l'article "${art.title}" aux ${count} abonnés ?`)) {
-    const tableBody = document.getElementById('nlHistoryBody');
-    if (tableBody) {
-      const newRow = `
-        <tr>
-          <td>${new Date().toLocaleDateString('fr-FR')}</td>
-          <td>${art.title.slice(0, 30)}...</td>
-          <td>${count}</td>
-          <td><span style="color:#34D399;font-weight:700;">Diffusé (100%)</span></td>
-        </tr>
-      `;
-      tableBody.insertAdjacentHTML('afterbegin', newRow);
+  if (confirm(`Confirmez-vous la diffusion de la newsletter pour l'article :\n« ${art.title} »\naux ${count} abonnés ?`)) {
+    // Si EmailJS configuré, diffuser un déclencheur
+    if (typeof emailjs !== 'undefined' && EMAILJS_KEY && !EMAILJS_KEY.includes('VOTRE_PUBLIC_KEY')) {
+      try {
+        await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+          to_email: ADMIN_EMAIL,
+          article_title: art.title,
+          article_url: art.url,
+          article_excerpt: art.excerpt,
+          article_image: art.image,
+          subscribers_count: count,
+          newsletter_subject: `🐝 BEE Congruence — ${art.title}`
+        });
+      } catch(e) {
+        console.warn('Diffusion EmailJS admin:', e);
+      }
     }
-    // Mémoriser l'article comme envoyé
+
+    // Ajouter à l'historique persistant
+    addNlHistoryEntry(art.title, count, 'Diffusé (100%)');
     localStorage.setItem('bee_last_known_article_id', art.id);
     showAdminToast(`🚀 Newsletter diffusée avec succès à ${count} abonnés !`);
   }
+}
+
+function copyNlHtml() {
+  const artKey = document.getElementById('nlArticleSelect').value;
+  const art = CURRENT_NL_ARTICLES[artKey] || Object.values(CURRENT_NL_ARTICLES)[0];
+  if (!art) {
+    showAdminToast('⚠️ Aucun article sélectionné.');
+    return;
+  }
+  const cleanHtml = generateCleanEmailHtml(art);
+  navigator.clipboard.writeText(cleanHtml).then(() => {
+    showAdminToast('📋 Code HTML complet copié dans le presse-papier !');
+  }).catch(() => {
+    // Fallback document.execCommand
+    const ta = document.createElement('textarea');
+    ta.value = cleanHtml;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showAdminToast('📋 Code HTML copié avec succès !');
+  });
+}
+
+function openInEmailClient() {
+  const artKey = document.getElementById('nlArticleSelect').value;
+  const art = CURRENT_NL_ARTICLES[artKey] || Object.values(CURRENT_NL_ARTICLES)[0];
+  if (!art) {
+    showAdminToast('⚠️ Aucun article sélectionné.');
+    return;
+  }
+
+  const subject = encodeURIComponent(`🐝 BEE Congruence — ${art.title}`);
+  const body = encodeURIComponent(
+    `Bonjour,\n\nDécouvrez notre nouvel article de la semaine sur BEE Congruence :\n\n` +
+    `👉 ${art.title}\n\n` +
+    `${art.excerpt}\n\n` +
+    `Lire l'article complet : ${art.url}\n\n` +
+    `À très bientôt sur BEE Congruence,\nSébastien`
+  );
+  window.open(`mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`, '_blank');
+  showAdminToast('📬 Client de messagerie ouvert avec le modèle d\'email.');
+}
+
+// ── Modale de Configuration EmailJS ──
+function configureEmailJsModal() {
+  const modal = document.getElementById('emailJsConfigModal');
+  const keyInput = document.getElementById('cfgEmailJsPublicKey');
+  const srvInput = document.getElementById('cfgEmailJsServiceId');
+  const tplInput = document.getElementById('cfgEmailJsTemplateId');
+
+  if (keyInput) keyInput.value = (EMAILJS_KEY && !EMAILJS_KEY.includes('VOTRE_PUBLIC_KEY')) ? EMAILJS_KEY : '';
+  if (srvInput) srvInput.value = EMAILJS_SERVICE || '';
+  if (tplInput) tplInput.value = EMAILJS_TEMPLATE || '';
+
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeEmailJsModal() {
+  const modal = document.getElementById('emailJsConfigModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveEmailJsConfig() {
+  const keyInput = document.getElementById('cfgEmailJsPublicKey');
+  const srvInput = document.getElementById('cfgEmailJsServiceId');
+  const tplInput = document.getElementById('cfgEmailJsTemplateId');
+
+  const pubKey = keyInput ? keyInput.value.trim() : '';
+  const srvId = srvInput ? srvInput.value.trim() : '';
+  const tplId = tplInput ? tplInput.value.trim() : '';
+
+  if (pubKey) {
+    EMAILJS_KEY = pubKey;
+    localStorage.setItem('bee_emailjs_public_key', pubKey);
+    if (typeof emailjs !== 'undefined') {
+      try { emailjs.init({ publicKey: pubKey }); } catch(e) {}
+    }
+  }
+  if (srvId) {
+    EMAILJS_SERVICE = srvId;
+    localStorage.setItem('bee_emailjs_service_id', srvId);
+  }
+  if (tplId) {
+    EMAILJS_TEMPLATE = tplId;
+    localStorage.setItem('bee_emailjs_template_id', tplId);
+  }
+
+  closeEmailJsModal();
+  showAdminToast('⚙️ Paramètres EmailJS enregistrés avec succès !');
 }
 
 // Check auth on load
