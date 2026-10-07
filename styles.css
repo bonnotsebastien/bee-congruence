@@ -2368,4 +2368,41 @@ input[type="range"].intro-range::-webkit-slider-thumb:hover { transform: scale(1
   box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
 }
 
+/* ── Navbar Entête Connecté / Non Connecté Unifié ── */
+.nav-email-badge {
+  font-family: 'DM Sans', 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brown-mid, #6B4C2A);
+  background: rgba(217,119,6,0.08);
+  border: 1px solid rgba(217,119,6,0.2);
+  padding: 5px 12px;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nav-btn-logout {
+  background: transparent;
+  border: 1px solid var(--border, #EDE0CC);
+  color: var(--brown-mid, #6B4C2A);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.nav-btn-logout:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: #EF4444;
+  color: #EF4444;
+}
+
+
 

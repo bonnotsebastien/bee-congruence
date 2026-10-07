@@ -409,13 +409,16 @@
   </a>
   <ul class="nav-links">
     <li><a href="index.html" class="nav-link">Accueil</a></li>
-    <li><a href="dashboard.html" class="nav-link">Scénarios &amp; Pratique</a></li>
-    <li><a href="profil.html" class="nav-link active">Mon Profil</a></li>
-    <li><a href="offres.html" class="nav-link">Offres</a></li>
+    <li><a href="experience.html" class="nav-link">Expérience 7 min</a></li>
+    <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+    <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
+    <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
+    <li><a href="dashboard.html" class="nav-link" style="font-weight:700;color:var(--orange,#D97706);">Espace d’entraînement</a></li>
+    <li><a href="profil.html" class="nav-link active">Profil</a></li>
   </ul>
   <div class="nav-actions">
-    <a href="dashboard.html" class="btn-outline">Mes entraînements</a>
-    <button onclick="handleLogout()" class="btn-outline" style="border-color:#EDE0CC;">Déconnexion</button>
+    <span class="nav-email-badge" id="nav-user-email"></span>
+    <button class="nav-btn-logout" onclick="handleLogout()">Se déconnecter</button>
   </div>
 </nav>
 
@@ -829,6 +832,8 @@ async function initProfilePage() {
   } catch(e) {}
 
   document.getElementById('profileEmail').value = email;
+  const navEmail = document.getElementById('nav-user-email');
+  if (navEmail) navEmail.textContent = `🐝 ${email}`;
 
   // Charger profil depuis localStorage ou Supabase
   const savedProfile = JSON.parse(localStorage.getItem('bee_user_profile') || '{}');

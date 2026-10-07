@@ -46,7 +46,7 @@ function initNavbar() {
   });
 }
 
-// Check local storage or Supabase user + Auto Cloud Sync + Mobile CTA alignment
+// Check local storage or Supabase user + Auto Cloud Sync + Entête unifié 2 états
 async function checkUserSession() {
   let userEmail = localStorage.getItem('bee_user_email');
   
@@ -62,55 +62,94 @@ async function checkUserSession() {
     }
   }
 
+  // Ne pas considérer comme utilisateur connecté si c'est un profil invité temporaire
+  const isRealUser = userEmail && userEmail.includes('@') && !userEmail.includes('non sauvegardé');
+
   // Auto-sync mobile <-> desktop progression if user is identified
-  if (userEmail && typeof autoSyncCloud === 'function') {
+  if (isRealUser && typeof autoSyncCloud === 'function') {
     try {
       await autoSyncCloud(userEmail);
     } catch(e) {}
   }
 
   const hasDiagnostic = localStorage.getItem('bee_latest_diag') || localStorage.getItem('bee_diagnostic_results');
-  const isProfileOrDash = window.location.pathname.includes('dashboard') || window.location.pathname.includes('profil');
 
-  // Alignement Mobile CTA (ne jamais reproposer de faire le test s'il est déjà fait ou si utilisateur connecté)
+  // Alignement Mobile Sticky CTA au bas de l'écran
   const stickyLink = document.querySelector('.mobile-sticky-cta a');
-  if (stickyLink && (userEmail || hasDiagnostic)) {
+  if (stickyLink && (isRealUser || hasDiagnostic)) {
     stickyLink.href = 'dashboard.html';
     stickyLink.innerHTML = '🐝 Reprendre mes entraînements (Mes résultats) →';
   }
 
-  // Header desktop actions
+  // ── Harmonisation des 2 types d'entête (Connecté vs Non connecté) ──
+  applyUnifiedNavbar(isRealUser ? userEmail : null);
+}
+
+function applyUnifiedNavbar(userEmail) {
+  const navbar = document.querySelector('.navbar');
+  if (!navbar) return;
+
+  const navLinks = navbar.querySelector('.nav-links');
+  const navActions = navbar.querySelector('.nav-actions');
+
   if (userEmail) {
-    const navActions = document.querySelector('.nav-actions');
-    if (navActions && !isProfileOrDash) {
-      navActions.innerHTML = `
-        <span class="nav-email-badge" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--brown-mid,#6B4C2A);margin-right:8px;display:inline-flex;align-items:center;gap:4px;">🐝 ${userEmail}</span>
-        <a href="dashboard.html" class="btn-outline" style="margin-right:6px;font-size:13px;padding:8px 16px;">Mes Scénarios</a>
-        <a href="profil.html" class="btn-primary" style="font-size:13px;padding:8px 18px;">Mon Profil</a>
+    // ══════════════════════════════════════════════════════════
+    // ÉTAT 2 : UTILISATEUR CONNECTÉ
+    // Liens : Accueil | Expérience 7 min | Notre approche | Guilde pratique | Offres & Tarifs | Espace d’entraînement | Profil
+    // Actions : 🐝 email | Se déconnecter
+    // ══════════════════════════════════════════════════════════
+    if (navLinks) {
+      navLinks.innerHTML = `
+        <li><a href="index.html" class="nav-link">Accueil</a></li>
+        <li><a href="experience.html" class="nav-link">Expérience 7 min</a></li>
+        <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+        <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
+        <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
+        <li><a href="dashboard.html" class="nav-link nav-link-training" style="font-weight:700;color:var(--orange,#D97706);">Espace d’entraînement</a></li>
+        <li><a href="profil.html" class="nav-link nav-link-profile">Profil</a></li>
       `;
     }
 
-    // Header mobile menu (garantit que l'utilisateur mobile a accès à ses scénarios et son profil)
-    const navLinks = document.querySelector('.nav-links');
-    if (navLinks && !navLinks.querySelector('.nav-link-mobile-account')) {
-      const divider = document.createElement('li');
-      divider.className = 'nav-link-mobile-account';
-      divider.style.borderTop = '1px solid var(--border, #EDE0CC)';
-      divider.style.marginTop = '10px';
-      divider.style.paddingTop = '10px';
-      divider.innerHTML = `
-        <a href="dashboard.html" class="nav-link" style="color:var(--orange,#D97706);font-weight:700;">📊 Mes Scénarios &amp; Progrès</a>
+    if (navActions) {
+      navActions.innerHTML = `
+        <span class="nav-email-badge">🐝 ${userEmail}</span>
+        <button class="nav-btn-logout" onclick="handleLogout()">Se déconnecter</button>
       `;
-      navLinks.appendChild(divider);
+    }
+  } else {
+    // ══════════════════════════════════════════════════════════
+    // ÉTAT 1 : VISITEUR SANS COMPTE
+    // Liens : Accueil | Expérience 7 min | Notre approche | Guilde pratique | Offres & Tarifs
+    // Actions : Se connecter | Rejoins la ruche
+    // ══════════════════════════════════════════════════════════
+    if (navLinks) {
+      navLinks.innerHTML = `
+        <li><a href="index.html" class="nav-link">Accueil</a></li>
+        <li><a href="experience.html" class="nav-link">Expérience 7 min</a></li>
+        <li><a href="approche.html" class="nav-link">Notre approche</a></li>
+        <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
+        <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
+      `;
+    }
 
-      const profileLi = document.createElement('li');
-      profileLi.className = 'nav-link-mobile-account';
-      profileLi.innerHTML = `
-        <a href="profil.html" class="nav-link">👤 Mon Profil &amp; Rappels</a>
+    if (navActions) {
+      navActions.innerHTML = `
+        <a href="connexion.html" class="btn-outline">Se connecter</a>
+        <a href="inscription.html" class="btn-primary">Rejoins la ruche</a>
       `;
-      navLinks.appendChild(profileLi);
     }
   }
+
+  // Réassigner la classe active
+  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const href = link.getAttribute('href');
+    if (href === currentPath || (currentPath === '' && href === 'index.html') || (href === '/' && currentPath === 'index.html')) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
 }
 
 // ── Sync Helper Injector (pour synchro multi-écrans sur toutes les pages) ──
