@@ -2344,4 +2344,28 @@ input[type="range"].intro-range::-webkit-slider-thumb:hover { transform: scale(1
   gap: 4px;
 }
 
+/* ── Filtres de domaine (Espace d'entraînement) ── */
+.domain-filter-btn {
+  background: white;
+  border: 1.5px solid #EDE0CC;
+  color: var(--brown-mid, #6B4C2A);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.domain-filter-btn:hover {
+  border-color: var(--orange, #D97706);
+  color: var(--brown-dark, #3D2710);
+}
+.domain-filter-btn.active {
+  background: var(--orange, #D97706);
+  border-color: var(--orange, #D97706);
+  color: white;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
+}
+
 

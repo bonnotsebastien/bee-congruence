@@ -495,6 +495,9 @@
   </a>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase.js"></script>
+<script src="sync-helper.js"></script>
 <script src="nav.js"></script>
 <script>
 /* ── Captation rapide Hero (Tunnel AIDA) ── */
@@ -518,7 +521,28 @@ function handleHeroQuickStart(e) {
     localStorage.setItem('bee_user_profile', JSON.stringify(profile));
   } catch(err) {}
 
-  window.location.href = 'questionnaire.html';
+  // Si diagnostic déjà existant sur l'appareil ou déjà complété, rediriger directement vers le tableau de bord
+  const hasDiag = localStorage.getItem('bee_latest_diag') || localStorage.getItem('bee_diagnostic_results');
+  if (hasDiag) {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+
+  // Tenter une synchronisation cloud pour cet email avant de forcer le test
+  if (typeof autoSyncCloud === 'function') {
+    autoSyncCloud(email).then(() => {
+      const syncedDiag = localStorage.getItem('bee_latest_diag') || localStorage.getItem('bee_diagnostic_results');
+      if (syncedDiag) {
+        window.location.href = 'dashboard.html';
+      } else {
+        window.location.href = 'questionnaire.html';
+      }
+    }).catch(() => {
+      window.location.href = 'questionnaire.html';
+    });
+  } else {
+    window.location.href = 'questionnaire.html';
+  }
 }
 
 /* ── Scroll reveal ── */

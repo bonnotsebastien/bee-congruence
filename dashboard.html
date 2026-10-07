@@ -673,8 +673,8 @@
         <a href="profil.html" class="btn-sync-mobile" style="background:#FAF7F2;color:var(--orange);border:1.5px solid var(--orange);text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
           <span>👤</span> Mon Profil &amp; Rappels
         </a>
-        <button class="btn-sync-mobile" id="btnSyncMobile" onclick="openSyncModal()" title="Transférer mon profil sur mon smartphone">
-          📱 Relier mon mobile
+        <button class="btn-sync-mobile" id="btnSyncMobile" onclick="openSyncModal()" title="Transférer mon profil sur mon smartphone ou un autre écran">
+          📱 ⇄ 💻 Synchroniser mes appareils
         </button>
         <button class="dash-logout" onclick="handleLogout()">Se déconnecter</button>
       </div>
@@ -770,13 +770,44 @@
       </div>
     </div>
 
-    <!-- ── Scénarios personnalisés ── -->
+    <!-- ── Espace d'entraînement ── -->
     <div id="section-scenarios" style="margin-top: 40px;">
-      <div class="dash-section-title">⚡ Mes scénarios personnalisés</div>
-      <p style="font-size:14px;color:var(--brown-mid);margin-bottom:24px;max-width:600px;line-height:1.7;">
-        Ces scénarios ont été sélectionnés en fonction de vos résultats.
-        Le <strong>1er scénario est offert</strong>. Les suivants sont accessibles via abonnement ou achat unitaire.
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
+        <div class="dash-section-title" style="margin-bottom:0;">⚡ Espace d'entraînement</div>
+        <div id="training-subscription-status"></div>
+      </div>
+      <p style="font-size:14px;color:var(--brown-mid);margin-bottom:20px;max-width:680px;line-height:1.7;">
+        Pratiquez vos réponses et renforcez votre musculature relationnelle.
+        <span id="training-access-expl">Le <strong>1er scénario est offert</strong>. Les abonnés bénéficient d'un <strong>accès illimité à l'intégralité des scénarios</strong>.</span>
       </p>
+
+      <!-- Sélecteur de domaine à entraîner -->
+      <div class="domain-filter-wrapper" style="margin-bottom:24px;">
+        <div style="font-size:12.5px;font-weight:700;color:var(--brown-mid);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">
+          🎯 Choisissez le domaine que vous souhaitez entraîner :
+        </div>
+        <div class="domain-filters" id="domain-filters" style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="domain-filter-btn active" data-domain="all" onclick="filterScenariosByDomain('all', this)">
+            Tous les domaines (<span id="count-all">8</span>)
+          </button>
+          <button type="button" class="domain-filter-btn" data-domain="validation_emotionnelle" onclick="filterScenariosByDomain('validation_emotionnelle', this)">
+            Validation émotionnelle (<span id="count-validation_emotionnelle">2</span>)
+          </button>
+          <button type="button" class="domain-filter-btn" data-domain="limites" onclick="filterScenariosByDomain('limites', this)">
+            Pose de limites (<span id="count-limites">2</span>)
+          </button>
+          <button type="button" class="domain-filter-btn" data-domain="communication" onclick="filterScenariosByDomain('communication', this)">
+            Communication &amp; Désaccord (<span id="count-communication">2</span>)
+          </button>
+          <button type="button" class="domain-filter-btn" data-domain="attachement" onclick="filterScenariosByDomain('attachement', this)">
+            Attachement &amp; Attentes (<span id="count-attachement">1</span>)
+          </button>
+          <button type="button" class="domain-filter-btn" data-domain="empathie" onclick="filterScenariosByDomain('empathie', this)">
+            Empathie &amp; Écoute (<span id="count-empathie">1</span>)
+          </button>
+        </div>
+      </div>
+
       <div class="scenarios-grid" id="scenarios-grid"></div>
     </div>
 
@@ -1738,63 +1769,143 @@ function switchChart(type, btn) {
 }
 
 // ════════════════════════════════════════════════════════
-//  SCÉNARIOS — Rendu
+//  SCÉNARIOS — Rendu & Filtres de domaine
 // ════════════════════════════════════════════════════════
+
+let currentDomainFilter = 'all';
+
+function filterScenariosByDomain(domain, btn) {
+  currentDomainFilter = domain;
+  document.querySelectorAll('.domain-filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderScenarios(globalScenarios, globalAccess);
+}
 
 function renderScenarios(scenarios, access) {
   const grid = document.getElementById('scenarios-grid');
-  if (!scenarios || scenarios.length === 0) {
-    grid.innerHTML = '<p style="color:var(--brown-light);font-family:\'Nunito\',sans-serif;font-size:14px;">Aucun scénario encore assigné.</p>';
+  if (!grid) return;
+
+  // Si l'utilisateur est abonné, il a accès à TOUS les scénarios de la ruche
+  const isSubscriber = access && ['monthly', 'yearly', 'reine', 'souveraine', 'pack_famille'].includes(access.plan);
+  
+  // Mettre à jour l'indicateur d'accès dans le titre
+  const statusEl = document.getElementById('training-subscription-status');
+  const explEl = document.getElementById('training-access-expl');
+  if (statusEl) {
+    if (isSubscriber) {
+      statusEl.innerHTML = `<span style="font-size:12px;font-weight:700;color:var(--green);background:rgba(61,107,39,0.12);padding:4px 12px;border-radius:20px;">✓ Accès Illimité Actif</span>`;
+      if (explEl) explEl.innerHTML = `Votre abonnement vous donne un <strong>accès illimité à l'intégralité des 8 scénarios d'entraînement</strong>. Choisissez librement le domaine à travailler.`;
+    } else {
+      statusEl.innerHTML = `<span style="font-size:12px;font-weight:700;color:var(--orange);background:rgba(217,119,6,0.1);padding:4px 12px;border-radius:20px;">1 scénario offert · Débloquez la suite</span>`;
+    }
+  }
+
+  // Si l'utilisateur est abonné, charger l'ensemble des 8 scénarios de la bibliothèque pour qu'il puisse tous les pratiquer
+  let scenariosToRender = scenarios || [];
+  if (isSubscriber && typeof SCENARIOS_LIBRARY !== 'undefined') {
+    const userScenMap = new Map((scenarios || []).map(s => [s.scenario_id || s.id, s]));
+    scenariosToRender = SCENARIOS_LIBRARY.map((libScen, idx) => {
+      const existing = userScenMap.get(libScen.id);
+      return existing || {
+        id: libScen.id,
+        scenario_id: libScen.id,
+        titre: libScen.titre,
+        theme: libScen.theme,
+        difficulte: libScen.difficulte,
+        description: libScen.description,
+        statut: 'disponible',
+        ordre: idx
+      };
+    });
+  }
+
+  // Mettre à jour les compteurs de domaines
+  if (typeof SCENARIOS_LIBRARY !== 'undefined') {
+    const listForCounts = isSubscriber ? SCENARIOS_LIBRARY : (scenariosToRender.length > 0 ? scenariosToRender : SCENARIOS_LIBRARY);
+    const countAll = listForCounts.length;
+    const elAll = document.getElementById('count-all');
+    if (elAll) elAll.textContent = countAll;
+
+    ['validation_emotionnelle', 'limites', 'communication', 'attachement', 'empathie'].forEach(dom => {
+      const c = listForCounts.filter(s => s.theme === dom).length;
+      const el = document.getElementById(`count-${dom}`);
+      if (el) el.textContent = c;
+    });
+  }
+
+  // Filtrer selon le domaine choisi
+  const filtered = currentDomainFilter === 'all'
+    ? scenariosToRender
+    : scenariosToRender.filter(s => s.theme === currentDomainFilter);
+
+  if (!filtered || filtered.length === 0) {
+    grid.innerHTML = '<p style="color:var(--brown-light);font-family:\'Nunito\',sans-serif;font-size:14px;padding:24px 0;">Aucun scénario dans ce domaine pour le moment.</p>';
     return;
   }
 
-  scenarios.forEach((s, idx) => {
-    const cfg        = STATUT_CONFIG[s.statut] || STATUT_CONFIG.verrouille;
-    const isLocked   = s.statut === 'verrouille';
+  grid.innerHTML = '';
+
+  filtered.forEach((s, idx) => {
+    const cfg        = STATUT_CONFIG[s.statut] || STATUT_CONFIG.disponible;
     const isTermine  = s.statut === 'termine';
     const scenIdx    = s.ordre !== undefined ? s.ordre : idx;
-    const libScen    = SCENARIOS_LIBRARY.find(l => l.id === (s.scenario_id || s.id));
+    const libScen    = (typeof SCENARIOS_LIBRARY !== 'undefined') ? SCENARIOS_LIBRARY.find(l => l.id === (s.scenario_id || s.id)) : null;
     const isFree     = scenIdx === 0;
-    const accesDroit = access ? checkScenarioAccess(s.scenario_id || s.id, access, scenIdx) : (isFree ? { allowed: true } : { allowed: false });
-    const isPaidLocked = !accesDroit.allowed && !isTermine;
+
+    // Abonné payant = ACCÈS TOTAL DÉVERROUILLÉ
+    let isAllowed = false;
+    let reason = 'locked';
+    if (isSubscriber) {
+      isAllowed = true;
+      reason = 'subscription';
+    } else if (isFree) {
+      isAllowed = true;
+      reason = 'free';
+    } else if (access && checkScenarioAccess) {
+      const check = checkScenarioAccess(s.scenario_id || s.id, access, scenIdx);
+      isAllowed = check.allowed;
+      reason = check.reason;
+    }
+
+    const isPaidLocked = !isAllowed && !isTermine;
+    const isLocked     = !isSubscriber && !isPaidLocked && s.statut === 'verrouille';
 
     // Compétences
     const competences = s.competences || (libScen ? libScen.competences : []) || [];
     const skillChips  = competences.slice(0, 3).map(cid => {
-      const sk = (SKILLS_REFERENCE || []).find(sk => sk.id === cid);
+      const sk = (typeof SKILLS_REFERENCE !== 'undefined' ? SKILLS_REFERENCE : []).find(sk => sk.id === cid);
       return sk ? `<span class="skill-chip-sm">${sk.icon} ${sk.label}</span>` : '';
     }).join('');
 
     // Dots de difficulté
     const diffDots = [1,2,3].map(d =>
-      `<div class="diff-dot ${d > s.difficulte ? 'empty' : ''}"></div>`
+      `<div class="diff-dot ${d > (s.difficulte || 1) ? 'empty' : ''}"></div>`
     ).join('');
 
     // URL du scénario détaillé
     const detailUrl = `scenario-detail.html?id=${s.scenario_id || s.id}`;
     const encodedTitle = encodeURIComponent(s.titre || '');
-    const payUrl    = `paiement.html?scenario=${s.scenario_id || s.id}&title=${encodedTitle}&pm=apple`;
 
     const card = document.createElement('div');
     card.className = `scenario-card-dash ${isPaidLocked ? 'locked' : ''}`;
     card.id = `scard-${s.id}`;
 
     card.innerHTML = `
-      ${isFree ? '<div class="scenario-free-badge">🆓 Gratuit</div>' : ''}
-      <span class="scenario-badge ${cfg.cls}">${cfg.icon} ${cfg.label}</span>
+      ${isSubscriber ? '<div class="scenario-free-badge" style="background:rgba(61,107,39,0.12);color:var(--green);border-color:rgba(61,107,39,0.2);">👑 Inclus Abonnement</div>' : (isFree ? '<div class="scenario-free-badge">🆓 Gratuit</div>' : '')}
+      <span class="scenario-badge ${isSubscriber && !isTermine ? 'badge-dispo' : cfg.cls}">${isSubscriber && !isTermine ? '▶ DISPONIBLE' : `${cfg.icon} ${cfg.label}`}</span>
       <div class="scenario-theme">${(s.theme || '').replace(/_/g, ' ')}</div>
       <div class="scenario-card-title">${s.titre}</div>
-      <div class="scenario-card-desc">${s.description}</div>
+      <div class="scenario-card-desc">${s.description || (libScen ? libScen.description : '')}</div>
       ${skillChips ? `<div class="scenario-skills">${skillChips}</div>` : ''}
       <div class="scenario-diff">${diffDots}</div>
 
       ${isPaidLocked ? `
         <!-- Scénario payant verrouillé -->
         <button class="scenario-locked-msg" disabled>
-          🔒 ${accesDroit.reason === 'subscription_expired' ? 'Abonnement expiré' : 'Scénario premium'}
+          🔒 ${reason === 'subscription_expired' ? 'Abonnement expiré' : 'Scénario premium'}
         </button>
         <div class="scenario-locked-overlay">
-          <button class="scenario-locked-cta" onclick="openPayModal('${s.scenario_id || s.id}', '${s.titre.replace(/'/g, '\\')}', '${encodedTitle}')">
+          <button class="scenario-locked-cta" onclick="openPayModal('${s.scenario_id || s.id}', '${(s.titre || '').replace(/'/g, '\\')}', '${encodedTitle}')">
             🔓 Débloquer ce scénario
           </button>
         </div>
@@ -1806,8 +1917,8 @@ function renderScenarios(scenarios, access) {
         <a href="${detailUrl}" class="scenario-btn-detail">Revoir le scénario →</a>
       ` : `
         <!-- Disponible ou en cours -->
-        <button class="scenario-expand" onclick="startScenario('${s.id}', '${s.scenario_id || s.id}')">Commencer →</button>
-        <a href="${detailUrl}" class="scenario-btn-detail" style="margin-top:8px;">Voir le scénario complet →</a>
+        <button class="scenario-expand" onclick="startScenario('${s.id}', '${s.scenario_id || s.id}')">Commencer l'entraînement →</button>
+        <a href="${detailUrl}" class="scenario-btn-detail" style="margin-top:8px;">Voir la fiche complète →</a>
       `}
     `;
 
