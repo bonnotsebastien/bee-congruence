@@ -2222,3 +2222,126 @@ input[type="range"].intro-range::-webkit-slider-thumb:hover { transform: scale(1
   line-height: 1.65;
 }
 
+/* ══════════════════════════════════════════════
+   UnveilSEO-Inspired Contextual Internal Linking
+   ══════════════════════════════════════════════ */
+.seo-context-link {
+  color: var(--orange, #D97706);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(217, 119, 6, 0.45);
+  text-underline-offset: 3px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  display: inline;
+}
+.seo-context-link:hover {
+  color: var(--brown-dark, #78350F);
+  text-decoration-color: var(--orange, #D97706);
+  background: rgba(217, 119, 6, 0.08);
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.08);
+}
+
+/* Tooltip / Preview Card UnveilSEO */
+.seo-context-link[data-seo-tooltip] {
+  cursor: pointer;
+}
+.seo-link-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7em;
+  line-height: 1;
+  vertical-align: super;
+  margin-left: 2px;
+  opacity: 0.75;
+}
+
+/* Section "Sur le même thème / Maillage sémantique" */
+.seo-cluster-box {
+  background: linear-gradient(135deg, rgba(253, 250, 246, 0.95) 0%, rgba(250, 246, 238, 0.9) 100%);
+  border: 1.5px solid #EDE0CC;
+  border-radius: 20px;
+  padding: 26px 28px;
+  margin: 40px 0;
+  box-shadow: 0 8px 24px rgba(61, 39, 16, 0.04);
+}
+.seo-cluster-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.seo-cluster-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--brown-dark, #3D2710);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.seo-cluster-badge {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--orange, #D97706);
+  background: rgba(217, 119, 6, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.seo-cluster-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.seo-cluster-item {
+  background: white;
+  border: 1.2px solid #EDE0CC;
+  border-radius: 14px;
+  padding: 16px 18px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.seo-cluster-item:hover {
+  border-color: var(--orange, #D97706);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.12);
+}
+.seo-cluster-item-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--brown-dark, #3D2710);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+.seo-cluster-item-desc {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12.5px;
+  color: var(--brown-mid, #6B4C2A);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.seo-cluster-item-meta {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--orange, #D97706);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+
