@@ -952,61 +952,164 @@ img {
   height: 75vh;
 }
 
-/* ── RGPD Banner ── */
+/* ── RGPD Banner & Privacy Center ── */
 .rgpd-banner {
+  display: none;
   position: fixed;
   bottom: 24px;
   right: 24px;
-  max-width: 420px;
-  background: var(--ink);
-  color: var(--warm-white);
+  max-width: 440px;
+  background: var(--ink, #1A1612);
+  color: var(--warm-white, #FDFAF6);
   padding: 20px 24px;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  z-index: 999;
-  display: flex;
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  z-index: 10001;
   flex-direction: column;
   gap: 14px;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.rgpd-banner.show {
+  display: flex;
+}
+@media (max-width: 600px) {
+  .rgpd-banner {
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
+    right: 12px;
+    left: 12px;
+    max-width: none;
+    padding: 16px;
+    border-radius: 16px;
+    gap: 12px;
+    /* Empêche de masquer le CTA ou d'être masqué par lui */
+    z-index: 10002;
+  }
 }
 
 .rgpd-title {
   font-weight: 700;
   font-size: 14px;
-  color: var(--gold);
+  color: var(--gold, #C3651B);
 }
 
 .rgpd-desc {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.5;
+}
+.rgpd-desc a {
+  color: var(--gold, #C3651B);
+  text-decoration: underline;
 }
 
 .rgpd-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
   justify-content: flex-end;
+  align-items: center;
+}
+@media (max-width: 420px) {
+  .rgpd-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .rgpd-actions .rgpd-accept {
+    grid-column: span 2;
+    order: -1;
+  }
 }
 
 .rgpd-refuse {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.7);
-  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 8px 14px;
   border-radius: 20px;
   font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
+  text-align: center;
+  transition: background 0.2s, color 0.2s;
+}
+.rgpd-refuse:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rgpd-customize {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+}
+.rgpd-customize:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .rgpd-accept {
-  background: var(--gold);
+  background: var(--orange, #C3651B);
   border: none;
-  color: var(--ink);
-  font-weight: 600;
-  padding: 6px 18px;
+  color: white;
+  font-weight: 700;
+  padding: 8px 18px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 12.5px;
   cursor: pointer;
+  text-align: center;
+  transition: transform 0.15s, opacity 0.2s;
+}
+.rgpd-accept:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+/* ── Modal RGPD Mobile Responsive ── */
+.rgpd-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.75);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 10005;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.rgpd-modal-content {
+  background: white;
+  border-radius: 22px;
+  padding: 24px;
+  max-width: 520px;
+  width: 100%;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  font-family: 'Nunito', sans-serif;
+  color: var(--brown-dark, #1A1612);
+  box-sizing: border-box;
+}
+@media (max-width: 480px) {
+  .rgpd-modal-overlay {
+    padding: 10px;
+    align-items: flex-end;
+  }
+  .rgpd-modal-content {
+    padding: 20px 16px;
+    border-radius: 20px 20px 12px 12px;
+    max-height: 88vh;
+  }
 }
 
 /* ── Scroll Reveal Animation ── */

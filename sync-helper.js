@@ -6,13 +6,21 @@
 
 const SYNC_STORAGE_KEYS = [
   'bee_user_email',
+  'bee_user_name',
+  'bee_user_lastname',
   'bee_latest_diag',
   'bee_diagnostic_results',
   'bee_user_profile',
   'bee_user_access',
   'bee_user_scenarios',
+  'bee_skill_scores',
   'bee_skill_history',
   'bee_unlocked_scenarios',
+  'bee_family_profiles',
+  'bee_7min_history',
+  'bee_cookie_consent',
+  'bee_user_reminders',
+  'bee_audio_prefs',
 ];
 
 /**
@@ -30,6 +38,17 @@ function buildSyncPayload() {
       }
     }
   });
+
+  // Ajouter dynamiquement les réflexions d'étapes et intros de scénarios
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k.startsWith('bee_step_reflections_') || k.startsWith('bee_intro_') || k.startsWith('bee_family_profiles_'))) {
+        try { data[k] = JSON.parse(localStorage.getItem(k)); } catch(e) { data[k] = localStorage.getItem(k); }
+      }
+    }
+  } catch (e) {}
+
   return data;
 }
 
@@ -88,17 +107,25 @@ function checkAutoSync() {
   if (syncToken) {
     const ok = applySyncToken(syncToken);
     if (ok) {
-      // Nettoyer l'URL sans recharger
       const cleanUrl = window.location.pathname.replace(/\/[^/]*$/, '/dashboard.html');
       history.replaceState({}, '', cleanUrl);
       if (typeof showToast === 'function') {
         showToast('🎉 Mobile relié avec succès ! Tous vos résultats sont synchronisés.', 'success', 6000);
       }
+      setTimeout(() => {
+        if (!window.location.pathname.includes('dashboard.html')) {
+          window.location.href = 'dashboard.html';
+        }
+      }, 500);
       return true;
     }
   }
   return false;
 }
+
+window.checkAutoSync = checkAutoSync;
+window.applySyncToken = applySyncToken;
+window.generateSyncUrl = generateSyncUrl;
 
 // ── Modale QR Code (ordinateur) ──
 let qrInstance = null;

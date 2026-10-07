@@ -5,6 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
   checkUserSession();
+  ensureSyncHelperLoaded();
   ensureCookieConsentLoaded();
   ensureFooterCookieLink();
 });
@@ -21,13 +22,13 @@ function initNavbar() {
     const toggleBtn = document.createElement('button');
     toggleBtn.className = 'nav-toggle';
     toggleBtn.innerHTML = '☰';
-    toggleBtn.setAttribute('aria-label', 'Toggle Menu');
+    toggleBtn.setAttribute('aria-label', 'Menu de navigation');
     toggleBtn.style.minWidth = '44px';
     toggleBtn.style.minHeight = '44px';
     
     toggleBtn.addEventListener('click', () => {
-      navLinks.classList.toggle('mobile-open');
-      toggleBtn.innerHTML = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+      const isOpen = navLinks.classList.toggle('mobile-open');
+      toggleBtn.innerHTML = isOpen ? '✕' : '☰';
     });
 
     navbar.insertBefore(toggleBtn, navActions);
@@ -37,7 +38,7 @@ function initNavbar() {
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.nav-link').forEach(link => {
     const href = link.getAttribute('href');
-    if (href === currentPath || (currentPath === '' && href === 'index.html')) {
+    if (href === currentPath || (currentPath === '' && href === 'index.html') || (href === '/' && currentPath === 'index.html')) {
       link.classList.add('active');
     } else {
       link.classList.remove('active');
@@ -45,7 +46,7 @@ function initNavbar() {
   });
 }
 
-// Check local storage or Supabase user + Auto Cloud Sync
+// Check local storage or Supabase user + Auto Cloud Sync + Mobile CTA alignment
 async function checkUserSession() {
   let userEmail = localStorage.getItem('bee_user_email');
   
@@ -57,21 +58,30 @@ async function checkUserSession() {
         localStorage.setItem('bee_user_email', userEmail);
       }
     } catch (e) {
-      // Supabase credentials placeholder error fallback
+      // Fallback local
     }
   }
 
-  // Auto-sync mobile <-> desktop progression if user is logged in
+  // Auto-sync mobile <-> desktop progression if user is identified
   if (userEmail && typeof autoSyncCloud === 'function') {
     try {
       await autoSyncCloud(userEmail);
     } catch(e) {}
   }
 
+  const hasDiagnostic = localStorage.getItem('bee_latest_diag') || localStorage.getItem('bee_diagnostic_results');
+  const isProfileOrDash = window.location.pathname.includes('dashboard') || window.location.pathname.includes('profil');
+
+  // Alignement Mobile CTA (ne jamais reproposer de faire le test s'il est déjà fait ou si utilisateur connecté)
+  const stickyLink = document.querySelector('.mobile-sticky-cta a');
+  if (stickyLink && (userEmail || hasDiagnostic)) {
+    stickyLink.href = 'dashboard.html';
+    stickyLink.innerHTML = '🐝 Reprendre mes entraînements (Mes résultats) →';
+  }
+
+  // Header desktop actions
   if (userEmail) {
     const navActions = document.querySelector('.nav-actions');
-    const isProfileOrDash = window.location.pathname.includes('dashboard') || window.location.pathname.includes('profil');
-    
     if (navActions && !isProfileOrDash) {
       navActions.innerHTML = `
         <span class="nav-email-badge" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--brown-mid,#6B4C2A);margin-right:8px;display:inline-flex;align-items:center;gap:4px;">🐝 ${userEmail}</span>
@@ -79,6 +89,44 @@ async function checkUserSession() {
         <a href="profil.html" class="btn-primary" style="font-size:13px;padding:8px 18px;">Mon Profil</a>
       `;
     }
+
+    // Header mobile menu (garantit que l'utilisateur mobile a accès à ses scénarios et son profil)
+    const navLinks = document.querySelector('.nav-links');
+    if (navLinks && !navLinks.querySelector('.nav-link-mobile-account')) {
+      const divider = document.createElement('li');
+      divider.className = 'nav-link-mobile-account';
+      divider.style.borderTop = '1px solid var(--border, #EDE0CC)';
+      divider.style.marginTop = '10px';
+      divider.style.paddingTop = '10px';
+      divider.innerHTML = `
+        <a href="dashboard.html" class="nav-link" style="color:var(--orange,#D97706);font-weight:700;">📊 Mes Scénarios &amp; Progrès</a>
+      `;
+      navLinks.appendChild(divider);
+
+      const profileLi = document.createElement('li');
+      profileLi.className = 'nav-link-mobile-account';
+      profileLi.innerHTML = `
+        <a href="profil.html" class="nav-link">👤 Mon Profil &amp; Rappels</a>
+      `;
+      navLinks.appendChild(profileLi);
+    }
+  }
+}
+
+// ── Sync Helper Injector (pour synchro multi-écrans sur toutes les pages) ──
+function ensureSyncHelperLoaded() {
+  if (typeof window.checkAutoSync === 'undefined') {
+    const s = document.createElement('script');
+    s.src = 'sync-helper.js';
+    s.async = true;
+    s.onload = () => {
+      if (typeof window.checkAutoSync === 'function') {
+        window.checkAutoSync();
+      }
+    };
+    document.head.appendChild(s);
+  } else {
+    window.checkAutoSync();
   }
 }
 
@@ -104,6 +152,8 @@ function ensureFooterCookieLink() {
       e.preventDefault();
       if (window.BeeCookieConsent && typeof window.BeeCookieConsent.showModal === 'function') {
         window.BeeCookieConsent.showModal();
+      } else if (typeof window.openCookiePreferences === 'function') {
+        window.openCookiePreferences();
       }
     };
     footerNav.appendChild(cookieLink);
@@ -148,3 +198,11 @@ function showToast(message, type = 'info', duration = 4000) {
     }, duration);
   }
 }
+
+window.handleLogout = function() {
+  if (typeof signOut === 'function') {
+    try { signOut(); } catch(e) {}
+  }
+  localStorage.removeItem('bee_user_email');
+  window.location.href = 'index.html';
+};

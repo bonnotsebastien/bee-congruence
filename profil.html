@@ -200,8 +200,8 @@
   box-shadow: 0 6px 20px rgba(217,119,6,0.25);
 }
 
-/* ── FITBIT WEEKLY REPORT STYLES ── */
-.fitbit-hero {
+/* ── WEEKLY TRAINING REPORT STYLES ── */
+.training-hero {
   background: linear-gradient(135deg, #2D1F0E 0%, #1A1612 100%);
   border-radius: 24px;
   padding: 32px 28px;
@@ -210,7 +210,7 @@
   box-shadow: 0 10px 30px rgba(45,31,14,0.3);
   border: 1px solid rgba(217,119,6,0.3);
 }
-.fitbit-header {
+.training-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -218,7 +218,7 @@
   gap: 16px;
   margin-bottom: 24px;
 }
-.fitbit-badge {
+.training-badge {
   background: rgba(217,119,6,0.2);
   border: 1px solid rgba(217,119,6,0.4);
   color: #F59E0B;
@@ -230,13 +230,13 @@
   padding: 4px 12px;
   border-radius: 50px;
 }
-.fitbit-stats-grid {
+.training-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
-.fitbit-stat-box {
+.training-stat-box {
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 18px;
@@ -245,32 +245,32 @@
   flex-direction: column;
   gap: 4px;
 }
-.fitbit-stat-num {
+.training-stat-num {
   font-family: 'Playfair Display', serif;
   font-size: 32px;
   font-weight: 700;
   color: #F59E0B;
 }
-.fitbit-stat-label {
+.training-stat-label {
   font-family: 'Nunito', sans-serif;
   font-size: 12px;
   color: rgba(253,250,246,0.7);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-.fitbit-progress-wrap {
+.training-progress-wrap {
   background: rgba(255,255,255,0.1);
   height: 8px;
   border-radius: 4px;
   overflow: hidden;
   margin-top: 8px;
 }
-.fitbit-progress-bar {
+.training-progress-bar {
   background: linear-gradient(90deg, #F59E0B, #10B981);
   height: 100%;
   border-radius: 4px;
 }
-.fitbit-badges-row {
+.training-badges-row {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -278,7 +278,7 @@
   padding-top: 18px;
   border-top: 1px solid rgba(255,255,255,0.1);
 }
-.fitbit-badge-item {
+.training-badge-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -411,7 +411,6 @@
     <li><a href="index.html" class="nav-link">Accueil</a></li>
     <li><a href="dashboard.html" class="nav-link">Scénarios &amp; Pratique</a></li>
     <li><a href="profil.html" class="nav-link active">Mon Profil</a></li>
-    <li><a href="conferences.html" class="nav-link">Conférences</a></li>
     <li><a href="offres.html" class="nav-link">Offres</a></li>
   </ul>
   <div class="nav-actions">
@@ -441,7 +440,7 @@
       <span>👤</span> Informations personnelles
     </button>
     <button class="profile-tab-btn" onclick="switchProfileTab('rappels')">
-      <span>⏰</span> Mes rappels &amp; Bilan Fitbit
+      <span>⏰</span> Mes rappels &amp; Bilan d'entraînement
     </button>
     <button class="profile-tab-btn" onclick="switchProfileTab('abonnements')">
       <span>👑</span> Abonnements &amp; Espace Famille
@@ -499,7 +498,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Nombre d'enfants à charge</label>
+            <label class="form-label">Nombre d'enfants</label>
             <select class="form-select" id="profileChildrenCount">
               <option value="0">Aucun enfant</option>
               <option value="1">1 enfant</option>
@@ -520,52 +519,52 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
-       ONGLET 2 : RAPPELS & BILAN FITBIT
+       ONGLET 2 : RAPPELS & BILAN D'ENTRAÎNEMENT
   ══════════════════════════════════════════════════════════ -->
   <div class="profile-tab-pane" id="pane-rappels">
 
-    <!-- FITBIT REPORT -->
-    <div class="fitbit-hero">
-      <div class="fitbit-header">
+    <!-- WEEKLY TRAINING REPORT -->
+    <div class="training-hero">
+      <div class="training-header">
         <div>
-          <div class="fitbit-badge">📊 Votre Bilan d'entraînement hebdomadaire</div>
+          <div class="training-badge">📊 Votre Bilan d'entraînement hebdomadaire</div>
           <h2 style="font-family:'Playfair Display',serif;font-size:26px;color:#FDE68A;margin:8px 0 4px;">Progression &amp; Régularité Relationnelle</h2>
           <p style="font-family:'Nunito',sans-serif;font-size:13.5px;color:rgba(253,250,246,0.8);margin:0;">
             Chaque séance renforce votre musculature émotionnelle et remplace la réaction automatique par le choix conscient.
           </p>
         </div>
-        <button class="btn-outline" style="border-color:#F59E0B;color:#F59E0B;" onclick="exportFitbitSummary()">
+        <button class="btn-outline" style="border-color:#F59E0B;color:#F59E0B;" onclick="exportWeeklySummary()">
           📥 Exporter mon rapport
         </button>
       </div>
 
-      <div class="fitbit-stats-grid">
-        <div class="fitbit-stat-box">
-          <div class="fitbit-stat-num" id="fbSessions">3</div>
-          <div class="fitbit-stat-label">Séances cette semaine</div>
-          <div class="fitbit-progress-wrap">
-            <div class="fitbit-progress-bar" style="width:75%;"></div>
+      <div class="training-stats-grid">
+        <div class="training-stat-box">
+          <div class="training-stat-num" id="fbSessions">3</div>
+          <div class="training-stat-label">Séances cette semaine</div>
+          <div class="training-progress-wrap">
+            <div class="training-progress-bar" style="width:75%;"></div>
           </div>
         </div>
-        <div class="fitbit-stat-box">
-          <div class="fitbit-stat-num" id="fbMinutes">42m</div>
-          <div class="fitbit-stat-label">Temps d'entraînement</div>
-          <div class="fitbit-progress-wrap">
-            <div class="fitbit-progress-bar" style="width:84%;"></div>
+        <div class="training-stat-box">
+          <div class="training-stat-num" id="fbMinutes">42m</div>
+          <div class="training-stat-label">Temps d'entraînement</div>
+          <div class="training-progress-wrap">
+            <div class="training-progress-bar" style="width:84%;"></div>
           </div>
         </div>
-        <div class="fitbit-stat-box">
-          <div class="fitbit-stat-num" id="fbStreak">5 j 🔥</div>
-          <div class="fitbit-stat-label">Série en cours (Streak)</div>
-          <div class="fitbit-progress-wrap">
-            <div class="fitbit-progress-bar" style="width:100%;"></div>
+        <div class="training-stat-box">
+          <div class="training-stat-num" id="fbStreak">5 j 🔥</div>
+          <div class="training-stat-label">Série en cours (Streak)</div>
+          <div class="training-progress-wrap">
+            <div class="training-progress-bar" style="width:100%;"></div>
           </div>
         </div>
-        <div class="fitbit-stat-box">
-          <div class="fitbit-stat-num" style="color:#34D399;" id="fbEvolution">+18%</div>
-          <div class="fitbit-stat-label">Régularité vs S-1</div>
-          <div class="fitbit-progress-wrap">
-            <div class="fitbit-progress-bar" style="width:90%;"></div>
+        <div class="training-stat-box">
+          <div class="training-stat-num" style="color:#34D399;" id="fbEvolution">+18%</div>
+          <div class="training-stat-label">Régularité vs S-1</div>
+          <div class="training-progress-wrap">
+            <div class="training-progress-bar" style="width:90%;"></div>
           </div>
         </div>
       </div>
@@ -574,10 +573,10 @@
         « Excellente régularité cette semaine ! Vous observez plus rapidement la montée de réactivité et choisissez la pause avant d'interagir. »
       </div>
 
-      <div class="fitbit-badges-row">
-        <div class="fitbit-badge-item"><span>🐝</span> Abeille Assidue (3 séances/sem)</div>
-        <div class="fitbit-badge-item"><span>🔥</span> Série de 5 jours consécutifs</div>
-        <div class="fitbit-badge-item"><span>🛡️</span> Gardien du Lien (Affirmation de soi)</div>
+      <div class="training-badges-row">
+        <div class="training-badge-item"><span>🐝</span> Abeille Assidue (3 séances/sem)</div>
+        <div class="training-badge-item"><span>🔥</span> Série de 5 jours consécutifs</div>
+        <div class="training-badge-item"><span>🛡️</span> Gardien du Lien (Affirmation de soi)</div>
       </div>
     </div>
 
@@ -734,9 +733,6 @@
       </div>
 
       <div style="display:flex;gap:14px;flex-wrap:wrap;">
-        <button class="btn-outline" onclick="exportUserData()">
-          📥 Exporter l'intégralité de mes données (JSON)
-        </button>
         <button class="btn-outline" style="border-color:#EF4444;color:#EF4444;" onclick="handleDeleteAccount()">
           🗑️ Supprimer définitivement mon compte et mes tests
         </button>
@@ -760,8 +756,9 @@
         <input type="text" class="form-input" id="newChildName" placeholder="Ex: Lucas" required>
       </div>
       <div class="form-group">
-        <label class="form-label">Âge</label>
-        <input type="number" class="form-input" id="newChildAge" placeholder="Ex: 10" min="4" max="18" required>
+        <label class="form-label" for="newChildBirthdate">Date de naissance de l'enfant</label>
+        <input type="date" class="form-input" id="newChildBirthdate" required onchange="handleChildBirthdateChange()" oninput="handleChildBirthdateChange()" style="cursor:pointer;" placeholder="JJ/MM/AAAA">
+        <div id="newChildAgePreview" style="font-size:12.5px;color:var(--orange,#D97706);font-weight:700;margin-top:6px;min-height:18px;"></div>
       </div>
       <div class="form-group">
         <label class="form-label">Avatar</label>
@@ -851,18 +848,54 @@ async function initProfilePage() {
     }
   }
 
-  // Charger rapport Fitbit
-  if (typeof getWeeklyFitbitReport === 'function') {
-    const report = await getWeeklyFitbitReport(email);
-    document.getElementById('fbSessions').textContent = report.sessions_completed;
-    document.getElementById('fbMinutes').textContent = report.minutes_trained + 'm';
-    document.getElementById('fbStreak').textContent = report.streak_days + ' j 🔥';
-    document.getElementById('fbEvolution').textContent = (report.evolution_pct >= 0 ? '+' : '') + report.evolution_pct + '%';
+  // Charger rapport hebdomadaire d'entraînement
+  const getReportFn = typeof getWeeklyTrainingReport === 'function' ? getWeeklyTrainingReport : (null);
+  if (getReportFn) {
+    const report = await getReportFn(email);
+    document.getElementById('fbSessions').textContent = report.sessions_completed || report.sessionsThisWeek || 3;
+    document.getElementById('fbMinutes').textContent = (report.minutes_trained || report.minutesSpent || 42) + 'm';
+    document.getElementById('fbStreak').textContent = (report.streak_days || report.streakDays || 5) + ' j 🔥';
+    const evol = typeof report.evolution_pct !== 'undefined' ? report.evolution_pct : (report.regularityIncrease || 18);
+    document.getElementById('fbEvolution').textContent = (evol >= 0 ? '+' : '') + evol + '%';
     document.getElementById('fbEncouragement').textContent = `« ${report.encouragement} »`;
   }
 
   // Charger enfants de la famille
   loadFamilyChildren();
+}
+
+// ── Calcul ergonomique dynamique de l'âge de l'enfant ──
+function calculateChildAge(birthDateString) {
+  if (!birthDateString) return null;
+  const birth = new Date(birthDateString);
+  if (isNaN(birth.getTime())) return null;
+  const today = new Date();
+  if (birth > today) return null;
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age >= 0 ? age : 0;
+}
+
+function handleChildBirthdateChange() {
+  const input = document.getElementById('newChildBirthdate');
+  const preview = document.getElementById('newChildAgePreview');
+  if (!input || !preview) return;
+  const val = input.value;
+  if (!val) {
+    preview.textContent = '';
+    return;
+  }
+  const age = calculateChildAge(val);
+  if (age === null) {
+    preview.textContent = '⚠️ La date de naissance ne peut pas être dans le futur.';
+    preview.style.color = '#EF4444';
+  } else {
+    preview.textContent = `👶 Âge calculé automatiquement : ${age} an${age > 1 ? 's' : ''}`;
+    preview.style.color = 'var(--orange, #D97706)';
+  }
 }
 
 // ── Sauvegarde des infos personnelles ──
@@ -924,28 +957,43 @@ async function loadFamilyChildren() {
   }
 
   if (children.length === 0) {
-    // Profils par défaut de démonstration
+    // Profils par défaut de démonstration avec date de naissance
     children = [
-      { id: 'c1', name: 'Lucas', age: 10, avatar: '🧒' },
-      { id: 'c2', name: 'Emma', age: 14, avatar: '👧' }
+      { id: 'c1', name: 'Lucas', date_naissance: '2016-04-12', age: 10, avatar: '🧒' },
+      { id: 'c2', name: 'Emma', date_naissance: '2012-09-25', age: 14, avatar: '👧' }
     ];
   }
 
-  container.innerHTML = children.map(c => `
+  container.innerHTML = children.map(c => {
+    const rawBirth = c.date_naissance || c.birthdate;
+    const computedAge = rawBirth ? calculateChildAge(rawBirth) : (c.age || 0);
+    const birthDisplay = rawBirth ? `<div style="font-size:11px;color:var(--brown-light,#8C8275);margin-top:2px;">Né(e) le ${new Date(rawBirth).toLocaleDateString('fr-FR')}</div>` : '';
+    return `
     <div class="child-card">
       <button class="btn-child-delete" onclick="handleDeleteChild('${c.id}')" title="Supprimer ce profil">✕</button>
       <div class="child-avatar">${c.avatar || '🧒'}</div>
-      <div class="child-name">${c.name}</div>
-      <div class="child-age">${c.age} ans · Profil Junior Actif</div>
-      <a href="enfant.html" class="btn-child-switch" onclick="localStorage.setItem('bee_current_child_name', '${c.name}');">
+      <div class="child-name">${c.name || c.prenom}</div>
+      <div class="child-age">${computedAge} ans · Profil Junior Actif</div>
+      ${birthDisplay}
+      <a href="enfant.html" class="btn-child-switch" onclick="localStorage.setItem('bee_current_child_name', '${c.name || c.prenom}');">
         Bascule en Espace Junior →
       </a>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function openAddChildModal() {
-  document.getElementById('addChildModal').style.display = 'flex';
+  const modal = document.getElementById('addChildModal');
+  const dateInput = document.getElementById('newChildBirthdate');
+  if (dateInput) {
+    const todayStr = new Date().toISOString().split('T')[0];
+    dateInput.max = todayStr;
+    dateInput.value = '';
+    const preview = document.getElementById('newChildAgePreview');
+    if (preview) preview.textContent = '';
+  }
+  if (modal) modal.style.display = 'flex';
 }
 function closeAddChildModal() {
   document.getElementById('addChildModal').style.display = 'none';
@@ -954,18 +1002,32 @@ function closeAddChildModal() {
 async function handleCreateChild(e) {
   e.preventDefault();
   const name = document.getElementById('newChildName').value.trim();
-  const age = document.getElementById('newChildAge').value;
+  const birthdate = document.getElementById('newChildBirthdate').value;
+  const age = calculateChildAge(birthdate);
+  if (age === null) {
+    alert('Veuillez sélectionner une date de naissance valide (non située dans le futur).');
+    return;
+  }
   const avatar = document.getElementById('newChildAvatar').value;
   const email = document.getElementById('profileEmail').value;
 
+  const childPayload = {
+    name,
+    prenom: name,
+    date_naissance: birthdate,
+    birthdate,
+    age,
+    avatar
+  };
+
   if (typeof saveFamilyChild === 'function') {
-    await saveFamilyChild(email, { name, age, avatar });
+    await saveFamilyChild(email, childPayload);
   }
 
   closeAddChildModal();
   loadFamilyChildren();
   if (typeof showToast === 'function') {
-    showToast(`🎉 Profil de ${name} créé avec succès !`, 'success');
+    showToast(`🎉 Profil de ${name} (${age} ans) créé avec succès !`, 'success');
   }
 }
 
@@ -997,22 +1059,6 @@ async function handlePasswordChange(e) {
   }
 }
 
-function exportUserData() {
-  const data = {
-    profile: JSON.parse(localStorage.getItem('bee_user_profile') || '{}'),
-    email: localStorage.getItem('bee_user_email'),
-    diag: JSON.parse(localStorage.getItem('bee_answers') || '{}'),
-    scores: JSON.parse(localStorage.getItem('bee_scores') || '{}'),
-    exported_at: new Date().toISOString()
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `bee-congruence-donnees-${Date.now()}.json`;
-  a.click();
-}
-
 function handleDeleteAccount() {
   if (confirm('Attention : cette action est irréversible. Toutes vos données seront définitivement effacées.')) {
     localStorage.clear();
@@ -1022,8 +1068,8 @@ function handleDeleteAccount() {
   }
 }
 
-function exportFitbitSummary() {
-  alert('Génération de votre synthèse PDF hebdomadaire Fitbit en cours...\nVotre rapport complet est prêt pour le téléchargement.');
+function exportWeeklySummary() {
+  alert("Génération de votre synthèse PDF hebdomadaire d'entraînement en cours...\nVotre rapport complet est prêt pour le téléchargement.");
 }
 
 function handleLogout() {

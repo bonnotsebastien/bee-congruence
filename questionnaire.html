@@ -1208,9 +1208,10 @@ async function showResultsAndSend() {
   localStorage.setItem('bee_latest_diag', JSON.stringify(diagnosticData));
   localStorage.setItem('bee_just_completed_diagnostic', '1');
 
-  // Sauvegarde Supabase si disponible
+  const userEmail = localStorage.getItem('bee_user_email');
+  const targetUserId = userEmail || 'demo_user';
   if (typeof saveDiagnosticResults === 'function') {
-    saveDiagnosticResults('demo_user', scores, axeLabels).catch(() => {});
+    saveDiagnosticResults(targetUserId, scores, axeLabels).catch(() => {});
   }
 
   // Notifier iframe parent si applicable
@@ -1266,9 +1267,10 @@ async function showResultsAndSend() {
     if (typeof getUser === 'function') user = await getUser();
   } catch(e) {}
 
-  if (user && user.id && typeof saveDiagnosticResults === 'function') {
+  const finalUserId = (user && user.id) ? user.id : (userEmail || 'demo_user');
+  if (typeof saveDiagnosticResults === 'function') {
     try {
-      await saveDiagnosticResults(user.id, scores, axeLabels);
+      await saveDiagnosticResults(finalUserId, scores, axeLabels);
     } catch(e) {}
   }
 
@@ -1292,12 +1294,59 @@ async function showResultsAndSend() {
   }
 }
 
+// ── Détection profil déjà complété pour éviter les repasses involontaires ──
+function checkExistingDiagnostic() {
+  const stored = localStorage.getItem('bee_latest_diag');
+  const storedList = localStorage.getItem('bee_diagnostic_results');
+  let diagDate = null;
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed && parsed.completed_at) diagDate = new Date(parsed.completed_at).toLocaleDateString('fr-FR');
+    } catch(e) {}
+  } else if (storedList) {
+    try {
+      const parsedList = JSON.parse(storedList);
+      if (Array.isArray(parsedList) && parsedList[0]?.completed_at) {
+        diagDate = new Date(parsedList[0].completed_at).toLocaleDateString('fr-FR');
+      }
+    } catch(e) {}
+  }
+
+  if (diagDate || stored || storedList) {
+    const notice = document.createElement('div');
+    notice.className = 'existing-diag-notice';
+    notice.style.cssText = 'background:#FEF3C7;border:2px solid #F59E0B;border-radius:18px;padding:22px 20px;margin:20px auto 30px;max-width:680px;text-align:center;box-shadow:0 6px 20px rgba(245,158,11,0.15);';
+    notice.innerHTML = `
+      <div style="font-size:32px;margin-bottom:8px;">🧭</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:#78350F;margin:0 0 8px;">
+        Votre profil relationnel est déjà complété !
+      </h3>
+      <p style="font-family:'Nunito',sans-serif;font-size:14px;color:#92400E;margin:0 0 18px;line-height:1.5;">
+        Vos résultats${diagDate ? ` du <strong>${diagDate}</strong>` : ''} et vos scénarios d'entraînement sont déjà prêts dans votre espace.
+      </p>
+      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+        <a href="dashboard.html" class="btn-primary" style="background:#D97706;padding:11px 24px;font-size:14px;border-radius:50px;text-decoration:none;color:white;font-weight:700;">
+          📊 Consulter mes résultats & mes scénarios →
+        </a>
+        <button type="button" onclick="this.closest('.existing-diag-notice').remove()" style="background:transparent;border:1.5px solid #D97706;color:#B45309;padding:10px 18px;font-size:13px;border-radius:50px;cursor:pointer;font-weight:700;">
+          Refaire un nouveau test
+        </button>
+      </div>
+    `;
+    const introSection = document.getElementById('questionnaireSection');
+    if (introSection) introSection.parentNode.insertBefore(notice, introSection);
+  }
+}
 
 // Init
 buildQuestionnaire();
+checkExistingDiagnostic();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase.js"></script>
+<script src="sync-helper.js"></script>
+<script src="nav.js"></script>
 <script src="auth-modal.js"></script>
 </body>
 </html>

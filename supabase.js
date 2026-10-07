@@ -54,15 +54,15 @@ async function signOut() {
 async function getUser() {
   if (!_supabase) {
     const email = localStorage.getItem('bee_user_email');
-    return email ? { id: 'demo_user', email } : null;
+    return email ? { id: email, email } : null;
   }
   try {
     const { data: { user } } = await _supabase.auth.getUser();
-    return user;
-  } catch (e) {
-    const email = localStorage.getItem('bee_user_email');
-    return email ? { id: 'demo_user', email } : null;
-  }
+    if (user && user.id) return user;
+  } catch (e) {}
+
+  const email = localStorage.getItem('bee_user_email');
+  return email ? { id: email, email } : null;
 }
 
 // ════════════════════════════════════════════════════════
@@ -744,15 +744,24 @@ async function updateScenarioStatus(scenarioRowId, statut) {
 // ── Diagnostic results ────────────────────────────────────────────
 
 async function saveDiagnosticResults(userId, scores, axisLabels) {
+  const email = localStorage.getItem('bee_user_email');
+  const effectiveUserId = (userId && !userId.startsWith('demo')) ? userId : (email || 'demo_user');
+
   const payload = {
     id:          'diag_' + Date.now(),
-    user_id:     userId || 'demo_user',
+    user_id:     effectiveUserId,
     scores:      scores,
     axis_labels: axisLabels,
     completed_at: new Date().toISOString(),
   };
 
   localStorage.setItem('bee_latest_diag', JSON.stringify(payload));
+
+  try {
+    const existing = JSON.parse(localStorage.getItem('bee_diagnostic_results') || '[]');
+    existing.unshift(payload);
+    localStorage.setItem('bee_diagnostic_results', JSON.stringify(existing.slice(0, 10)));
+  } catch(e) {}
 
   if (_supabase) {
     try {
@@ -761,22 +770,29 @@ async function saveDiagnosticResults(userId, scores, axisLabels) {
         .insert(payload)
         .select()
         .single();
-      if (!error && data) return data;
+      if (!error && data) {
+        if (email) pushCloudSyncPayload(email);
+        return data;
+      }
     } catch (err) {
       console.warn('Supabase non joignable, enregistrement en local uniquement.', err);
     }
   }
 
+  if (email) pushCloudSyncPayload(email);
   return payload;
 }
 
 async function getDiagnosticResults(userId) {
-  if (_supabase) {
+  const email = localStorage.getItem('bee_user_email');
+  const targetId = userId || email;
+
+  if (_supabase && targetId) {
     try {
       const { data, error } = await _supabase
         .from('diagnostic_results')
         .select('*')
-        .eq('user_id', userId)
+        .or(`user_id.eq.${targetId}${email ? `,user_id.eq.${email}` : ''}`)
         .order('completed_at', { ascending: false });
       if (!error && data && data.length > 0) return data;
     } catch (err) {
@@ -1054,7 +1070,7 @@ const DEFAULT_REMINDERS = {
   frequency: '2days',      // daily, 2days, weekly, custom
   channels: 'both',        // email, mobile, both
   preferred_time: '19:00', // 08:00, 12:30, 19:00
-  fitbit_report_optin: true,
+  weekly_report_optin: true,
   newsletter_optin: true,
   sound_enabled: true,
 };
@@ -1081,10 +1097,10 @@ async function getReminderPreferences(userId) {
 }
 
 // ════════════════════════════════════════════════════════
-//  v1.04 — RAPPORT HEBDOMADAIRE TYPE FITBIT
+//  v1.04 — RAPPORT HEBDOMADAIRE D'ENTRAÎNEMENT
 // ════════════════════════════════════════════════════════
 
-function getWeeklyFitbitReport(userId) {
+function getWeeklyTrainingReport(userId) {
   let scenariosCompleted = 0;
   try {
     const sc = localStorage.getItem('bee_user_scenarios');
@@ -1120,9 +1136,13 @@ function getWeeklyFitbitReport(userId) {
 
   return {
     sessionsThisWeek,
+    sessions_completed: sessionsThisWeek,
     minutesSpent,
+    minutes_trained: minutesSpent,
     streakDays,
+    streak_days: streakDays,
     regularityIncrease,
+    evolution_pct: regularityIncrease,
     globalScore: 78,
     daysActive,
     badges,
@@ -1135,8 +1155,42 @@ function getWeeklyFitbitReport(userId) {
 }
 
 // ════════════════════════════════════════════════════════
-//  v1.04 — SYNCHRONISATION TRANSPARENTE
+//  v1.04 — SYNCHRONISATION TRANSPARENTE MULTI-APPAREILS
 // ════════════════════════════════════════════════════════
+
+async function pushCloudSyncPayload(email) {
+  if (!_supabase || !email || !email.includes('@')) return false;
+  try {
+    const syncPayload = {
+      bee_user_email: email,
+      bee_latest_diag: JSON.parse(localStorage.getItem('bee_latest_diag') || 'null'),
+      bee_diagnostic_results: JSON.parse(localStorage.getItem('bee_diagnostic_results') || '[]'),
+      bee_user_profile: JSON.parse(localStorage.getItem('bee_user_profile') || '{}'),
+      bee_user_access: JSON.parse(localStorage.getItem('bee_user_access') || 'null'),
+      bee_user_scenarios: JSON.parse(localStorage.getItem('bee_user_scenarios') || '[]'),
+      bee_skill_scores: JSON.parse(localStorage.getItem('bee_skill_scores') || '{}'),
+      bee_skill_history: JSON.parse(localStorage.getItem('bee_skill_history') || '[]'),
+      bee_family_profiles: JSON.parse(localStorage.getItem('bee_family_profiles') || '[]'),
+      bee_user_name: localStorage.getItem('bee_user_name') || '',
+      bee_user_lastname: localStorage.getItem('bee_user_lastname') || '',
+    };
+
+    const row = {
+      user_id: email,
+      user_email: email,
+      sync_payload: syncPayload,
+      scenarios: syncPayload.bee_user_scenarios,
+      user_profile: syncPayload.bee_user_profile,
+      skill_scores: syncPayload.bee_skill_scores,
+      synced_at: new Date().toISOString(),
+    };
+
+    await _supabase.from('user_sync_state').upsert(row, { onConflict: 'user_id' });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 
 async function autoSyncCloud(email) {
   if (!email || !email.includes('@')) return false;
@@ -1153,16 +1207,36 @@ async function autoSyncCloud(email) {
         .limit(1)
         .single();
 
-      if (!error && data && data.sync_payload) {
-        const payload = data.sync_payload;
-        Object.entries(payload).forEach(([k, v]) => {
-          if (typeof v === 'object' && v !== null) {
-            localStorage.setItem(k, JSON.stringify(v));
-          } else if (typeof v === 'string') {
-            localStorage.setItem(k, v);
-          }
-        });
-        return true;
+      if (!error && data) {
+        let restoredAny = false;
+
+        if (data.sync_payload && typeof data.sync_payload === 'object') {
+          Object.entries(data.sync_payload).forEach(([k, v]) => {
+            if (v !== null && v !== undefined) {
+              if (typeof v === 'object') {
+                localStorage.setItem(k, JSON.stringify(v));
+              } else if (typeof v === 'string') {
+                localStorage.setItem(k, v);
+              }
+              restoredAny = true;
+            }
+          });
+        }
+
+        if (data.scenarios && Array.isArray(data.scenarios) && data.scenarios.length > 0) {
+          localStorage.setItem('bee_user_scenarios', JSON.stringify(data.scenarios));
+          restoredAny = true;
+        }
+        if (data.user_profile && typeof data.user_profile === 'object') {
+          localStorage.setItem('bee_user_profile', JSON.stringify(data.user_profile));
+          restoredAny = true;
+        }
+        if (data.skill_scores && typeof data.skill_scores === 'object') {
+          localStorage.setItem('bee_skill_scores', JSON.stringify(data.skill_scores));
+          restoredAny = true;
+        }
+
+        return restoredAny;
       }
     } catch (e) {}
   }

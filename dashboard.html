@@ -640,7 +640,6 @@
     <li><a href="experience.html" class="nav-link">Expérience 7 min</a></li>
     <li><a href="approche.html" class="nav-link">Notre approche</a></li>
     <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
-    <li><a href="conferences.html" class="nav-link">Conférences</a></li>
     <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
     <li><a href="profil.html" class="nav-link">Mon Profil</a></li>
   </ul>
@@ -691,7 +690,7 @@
       <a href="#section-user-profile" class="guest-banner-cta">Enregistrer mon profil ↓</a>
     </div>
 
-    <!-- ── Bilan Hebdomadaire Fitbit ── -->
+    <!-- ── Bilan Hebdomadaire d'Entraînement ── -->
     <div style="background:linear-gradient(135deg,#2D1F0E 0%,#1A1612 100%);border-radius:20px;padding:22px 24px;margin-bottom:32px;border:1px solid rgba(217,119,6,0.3);color:white;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;">
       <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
         <div style="font-size:36px;">🔥</div>
@@ -894,7 +893,14 @@
           <li>Cliquez sur <strong>« 📱 Relier mon mobile »</strong> en haut</li>
           <li>Scannez le QR Code affiché avec ce téléphone</li>
         </ol>
-        <button class="btn-outline btn-sm" style="width:100%; font-size:12px;" onclick="openPasteSyncModal()">Ou coller un lien de synchronisation</button>
+        <button class="btn-outline btn-sm" style="width:100%; font-size:12px; margin-bottom:12px;" onclick="openPasteSyncModal()">Ou coller un lien de synchronisation</button>
+        <div style="padding-top:12px; border-top:1px dashed var(--border);">
+          <div style="font-size:12px; font-weight:700; color:var(--brown-dark); margin-bottom:6px;">Ou restaurez directement avec votre email :</div>
+          <div style="display:flex; gap:6px;">
+            <input type="email" id="quickSyncEmailInput" placeholder="votre.email@exemple.com" style="flex:1; padding:8px 10px; font-size:12px; border:1px solid var(--border); border-radius:8px; background:white;">
+            <button class="btn-primary btn-sm" onclick="handleQuickEmailSync()" style="font-size:12px; padding:8px 14px; white-space:nowrap;">Restaurer</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1044,14 +1050,21 @@ async function init() {
   }
 
   let user = await getUser();
-  if (!user) {
-    const localEmail = localStorage.getItem('bee_user_email');
-    if (localEmail) user = { id: 'demo_user', email: localEmail };
+  const localEmail = localStorage.getItem('bee_user_email');
+  if (!user && localEmail) {
+    user = { id: localEmail, email: localEmail };
   }
 
   // Vérifier si des résultats de diagnostic existent en local
-  const hasLocalDiag = localStorage.getItem('bee_diagnostic_results') || localStorage.getItem('bee_latest_diag');
+  let hasLocalDiag = localStorage.getItem('bee_diagnostic_results') || localStorage.getItem('bee_latest_diag');
   let isGuest = false;
+
+  // Si l'utilisateur est identifié mais n'a pas encore de résultats locaux (ex. premier accès sur smartphone),
+  // tenter immédiatement la synchronisation transparente Cloud avant de décider
+  if (user && user.email && !hasLocalDiag && typeof autoSyncCloud === 'function') {
+    await autoSyncCloud(user.email);
+    hasLocalDiag = localStorage.getItem('bee_diagnostic_results') || localStorage.getItem('bee_latest_diag');
+  }
 
   if (!user) {
     if (hasLocalDiag) {
@@ -1079,6 +1092,16 @@ async function init() {
     getUserAccess(user.id),
     getSkillHistory(user.id),
   ]);
+
+  // Si des résultats ont été récupérés depuis Supabase, les mettre en cache local
+  if (results && results.length > 0) {
+    if (!localStorage.getItem('bee_latest_diag')) {
+      localStorage.setItem('bee_latest_diag', JSON.stringify(results[0]));
+    }
+    if (!localStorage.getItem('bee_diagnostic_results')) {
+      localStorage.setItem('bee_diagnostic_results', JSON.stringify(results));
+    }
+  }
 
   globalAccess    = access;
   globalScenarios = scenarios || [];
@@ -1905,13 +1928,59 @@ function renderGuildeSection() {
 // ── Start ──
 init();
 
+async function handleQuickEmailSync() {
+  const input = document.getElementById('quickSyncEmailInput');
+  if (!input) return;
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) {
+    alert('Veuillez saisir une adresse email valide.');
+    return;
+  }
+  localStorage.setItem('bee_user_email', email);
+  if (typeof autoSyncCloud === 'function') {
+    const ok = await autoSyncCloud(email);
+    if (ok) {
+      if (typeof showToast === 'function') {
+        showToast('🎉 Profil restauré avec succès ! Chargement…', 'success');
+      }
+      setTimeout(() => { window.location.reload(); }, 600);
+      return;
+    }
+  }
+  window.location.reload();
+}
+
+function acceptRgpd() {
+  if (window.BeeCookieConsent && typeof window.BeeCookieConsent.saveConsent === 'function') {
+    window.BeeCookieConsent.saveConsent({ necessary: true, analytics: true, personalization: true });
+  } else {
+    localStorage.setItem('rgpd_done', '1');
+    localStorage.setItem('bee_cookie_consent', JSON.stringify({ necessary: true, analytics: true, personalization: true, savedAt: new Date().toISOString() }));
+    const b = document.getElementById('rgpdBanner');
+    if (b) b.style.display = 'none';
+  }
+}
+function dismissRgpd() {
+  if (window.BeeCookieConsent && typeof window.BeeCookieConsent.saveConsent === 'function') {
+    window.BeeCookieConsent.saveConsent({ necessary: true, analytics: false, personalization: false });
+  } else {
+    localStorage.setItem('rgpd_done', '1');
+    localStorage.setItem('bee_cookie_consent', JSON.stringify({ necessary: true, analytics: false, personalization: false, savedAt: new Date().toISOString() }));
+    const b = document.getElementById('rgpdBanner');
+    if (b) b.style.display = 'none';
+  }
+}
+if (localStorage.getItem('bee_cookie_consent') || localStorage.getItem('rgpd_done')) {
+  const b = document.getElementById('rgpdBanner');
+  if (b) b.style.display = 'none';
+}
 </script>
 
 <!-- ═══ RGPD BANNER ═══ -->
-<div id="rgpdBanner" class="rgpd-banner">
+<div id="rgpdBanner" class="rgpd-banner" style="display:none;">
   <div class="rgpd-text">
     <div class="rgpd-title">🍪 Cookies &amp; confidentialité</div>
-    <div class="rgpd-desc">BEE Congruence utilise des cookies pour améliorer votre expérience et analyser l'audience. Vos données ne sont jamais revendues. Conformément au <strong>RGPD</strong>, vous pouvez accepter ou refuser. <a href="#">Politique de confidentialité</a></div>
+    <div class="rgpd-desc">BEE Congruence utilise des cookies pour améliorer votre expérience et analyser l'audience. Vos données ne sont jamais revendues. Conformément au <strong>RGPD</strong>, vous pouvez accepter ou refuser. <a href="confidentialite.html">Politique de confidentialité</a></div>
   </div>
   <div class="rgpd-actions">
     <button class="rgpd-refuse" onclick="dismissRgpd()">Refuser</button>

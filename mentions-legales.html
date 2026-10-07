@@ -352,25 +352,28 @@
 </div>
 
 <script src="nav.js"></script>
+<script>
 /* ── RGPD & Consentement Cookies géré par cookie-consent.js ── */
 if (localStorage.getItem('bee_cookie_consent') || localStorage.getItem('rgpd_done')) {
   const b = document.getElementById('rgpdBanner');
   if (b) b.style.display = 'none';
 }
 function acceptRgpd() {
-  if (window.BeeCookieConsent) {
+  if (window.BeeCookieConsent && typeof window.BeeCookieConsent.saveConsent === 'function') {
     window.BeeCookieConsent.saveConsent({ necessary: true, analytics: true, personalization: true });
   } else {
     localStorage.setItem('rgpd_done', '1');
+    localStorage.setItem('bee_cookie_consent', JSON.stringify({ necessary: true, analytics: true, personalization: true, savedAt: new Date().toISOString() }));
     const b = document.getElementById('rgpdBanner');
     if (b) b.style.display = 'none';
   }
 }
 function dismissRgpd() {
-  if (window.BeeCookieConsent) {
+  if (window.BeeCookieConsent && typeof window.BeeCookieConsent.saveConsent === 'function') {
     window.BeeCookieConsent.saveConsent({ necessary: true, analytics: false, personalization: false });
   } else {
     localStorage.setItem('rgpd_done', '1');
+    localStorage.setItem('bee_cookie_consent', JSON.stringify({ necessary: true, analytics: false, personalization: false, savedAt: new Date().toISOString() }));
     const b = document.getElementById('rgpdBanner');
     if (b) b.style.display = 'none';
   }

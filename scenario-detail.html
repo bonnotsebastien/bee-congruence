@@ -597,11 +597,13 @@ async function init() {
   if (!currentScenario) { window.location.href = 'dashboard.html'; return; }
 
   currentUser = await getUser();
-  if (currentUser) {
-    userAccess = await getUserAccess(currentUser.id);
-    const scenarios = await getUserScenarios(currentUser.id);
-    scenarioRow = scenarios.find(s => s.scenario_id === scenarioId || s.id === scenarioId);
+  if (!currentUser) {
+    const localEmail = localStorage.getItem('bee_user_email');
+    currentUser = { id: localEmail || 'demo_user', email: localEmail || 'demo@beecongruence.com' };
   }
+  userAccess = await getUserAccess(currentUser.id);
+  const scenarios = await getUserScenarios(currentUser.id);
+  scenarioRow = scenarios.find(s => s.scenario_id === scenarioId || s.id === scenarioId);
 
   // Age adaptation
   applyAgeAdaptation();
@@ -1088,27 +1090,51 @@ async function markDoneAndContinue() {
   btn.textContent = '⏳ Enregistrement…';
   btn.disabled = true;
 
-  if (currentUser && scenarioRow) {
-    await updateScenarioStatus(scenarioRow.id, 'termine');
+  const targetId = scenarioRow ? scenarioRow.id : scenarioId;
+  await updateScenarioStatus(targetId, 'termine');
 
+  // S'assurer que le localStorage local enregistre le statut terminé
+  try {
+    let localSc = JSON.parse(localStorage.getItem('bee_user_scenarios') || '[]');
+    let found = false;
+    localSc = localSc.map(s => {
+      if (s.id === scenarioId || s.scenario_id === scenarioId || (scenarioRow && s.id === scenarioRow.id)) {
+        found = true;
+        return { ...s, statut: 'termine', updated_at: new Date().toISOString() };
+      }
+      return s;
+    });
+    if (!found) {
+      localSc.push({ id: scenarioId, scenario_id: scenarioId, statut: 'termine', updated_at: new Date().toISOString() });
+    }
+    localStorage.setItem('bee_user_scenarios', JSON.stringify(localSc));
+  } catch(e) {}
+
+  if (currentUser) {
     const userId = currentUser.id;
     const scenarios = await getUserScenarios(userId);
-    const idx = scenarios.findIndex(s => s.id === scenarioRow.id);
+    const idx = scenarios.findIndex(s => s.id === targetId || s.scenario_id === scenarioId);
     if (idx !== -1 && idx + 1 < scenarios.length) {
       const next = scenarios[idx + 1];
       const nextAccess = userAccess
         ? checkScenarioAccess(next.scenario_id, userAccess, next.ordre)
-        : { allowed: false };
+        : { allowed: true };
       if (next.statut === 'verrouille' && nextAccess.allowed) {
         await updateScenarioStatus(next.id, 'disponible');
       }
     }
 
     const completed = scenarios
-      .filter(s => s.statut === 'termine' || s.id === scenarioRow.id)
+      .filter(s => s.statut === 'termine' || s.id === targetId || s.scenario_id === scenarioId)
       .map(s => s.scenario_id || s.id);
     const skillScores = computeSkillScores(completed);
     await saveSkillSnapshot(userId, skillScores, currentScenario.id);
+
+    // Auto-synchronisation Cloud multi-appareils
+    const email = localStorage.getItem('bee_user_email');
+    if (email && typeof pushCloudSyncPayload === 'function') {
+      await pushCloudSyncPayload(email);
+    }
   }
 
   btn.textContent = '✓ Pratiqué !';
@@ -1118,7 +1144,8 @@ async function markDoneAndContinue() {
 // ── Start ───────────────────────────────────────────────────────────
 init();
 
-
 </script>
+<script src="sync-helper.js"></script>
+<script src="nav.js"></script>
 </body>
 </html>
