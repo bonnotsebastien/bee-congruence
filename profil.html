@@ -440,13 +440,10 @@
   <!-- TABS NAV -->
   <div class="profile-tabs-nav">
     <button class="profile-tab-btn active" onclick="switchProfileTab('infos')">
-      <span>👤</span> Informations personnelles
+      <span>👤</span> Information
     </button>
     <button class="profile-tab-btn" onclick="switchProfileTab('rappels')">
-      <span>⏰</span> Mes rappels &amp; Bilan d'entraînement
-    </button>
-    <button class="profile-tab-btn" onclick="switchProfileTab('abonnements')">
-      <span>👑</span> Abonnements &amp; Espace Famille
+      <span>⏰</span> Bilan et rappel
     </button>
     <button class="profile-tab-btn" onclick="switchProfileTab('compte')">
       <span>⚙️</span> Paramètres du compte &amp; RGPD
@@ -454,9 +451,10 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
-       ONGLET 1 : INFORMATIONS PERSONNELLES
+       ONGLET 1 : INFORMATION (Identité + Espace Famille + Abonnement)
   ══════════════════════════════════════════════════════════ -->
   <div class="profile-tab-pane active" id="pane-infos">
+    <!-- DONNÉES D'IDENTITÉ -->
     <div class="profile-card">
       <div class="profile-card-header">
         <div>
@@ -525,15 +523,62 @@
 
         <div style="margin-top:20px;">
           <button type="submit" class="btn-save-profile">
-            <span>💾</span> Enregistrer mes informations personnelles
+            <span>💾</span> Enregistrer mes informations
           </button>
         </div>
       </form>
     </div>
+
+    <!-- ESPACE FAMILLE — COMPTE PARENT (EN PREMIER) -->
+    <div class="profile-card">
+      <div class="family-banner-top">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <img src="pack-famille.jpg" alt="Pack Famille" style="width:72px;height:72px;border-radius:16px;object-fit:cover;border:2px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+          <div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:#78350F;margin:0 0 4px;">Espace Famille — Compte Parent</h3>
+            <p style="font-family:'Nunito',sans-serif;font-size:13px;color:#92400E;margin:0;">
+              Partagez la ruche avec vos enfants et adolescents (jusqu'à 5 profils juniors inclus).
+            </p>
+          </div>
+        </div>
+        <button class="btn-primary" style="background:#78350F;border-color:#78350F;" onclick="openAddChildModal()">
+          + Ajouter un profil enfant
+        </button>
+      </div>
+
+      <div class="family-children-grid" id="familyChildrenList">
+        <!-- Rempli par JavaScript -->
+      </div>
+    </div>
+
+    <!-- TYPOLOGIE D'ABONNEMENT (DESSOUS) -->
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div>
+          <h2 class="profile-card-title"><span>👑</span> Votre Formule BEE Congruence</h2>
+          <p class="profile-card-desc">Gérez votre niveau d'entraînement et vos avantages actifs.</p>
+        </div>
+        <div id="currentPlanBadge" style="font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;padding:6px 16px;border-radius:50px;text-transform:uppercase;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;">
+          Plan Actif : L'Ouvrière
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+        <div style="max-width:540px;">
+          <p style="font-family:'Nunito',sans-serif;font-size:14px;color:var(--brown-mid,#6B4C2A);line-height:1.7;margin:0;">
+            Vous bénéficiez d'un accès illimité à l'ensemble des scénarios interactifs, aux masterclasses exclusives et à la synchronisation instantanée mobile et ordinateur.
+          </p>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="offres.html" class="btn-primary" style="font-size:13px;padding:10px 22px;">Changer de formule</a>
+          <button class="btn-outline" style="font-size:13px;padding:10px 18px;" onclick="alert('Votre abonnement est sans engagement. Vous pouvez le suspendre ou le modifier depuis ce menu.')">Gérer la facturation</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
-       ONGLET 2 : RAPPELS & BILAN D'ENTRAÎNEMENT
+       ONGLET 2 : BILAN ET RAPPEL
   ══════════════════════════════════════════════════════════ -->
   <div class="profile-tab-pane" id="pane-rappels">
 
@@ -656,61 +701,6 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
-       ONGLET 3 : ABONNEMENTS & ESPACE FAMILLE
-  ══════════════════════════════════════════════════════════ -->
-  <div class="profile-tab-pane" id="pane-abonnements">
-
-    <!-- CURRENT SUBSCRIPTION CARD -->
-    <div class="profile-card">
-      <div class="profile-card-header">
-        <div>
-          <h2 class="profile-card-title"><span>👑</span> Votre Formule BEE Congruence</h2>
-          <p class="profile-card-desc">Gérez votre niveau d'entraînement et vos avantages actifs.</p>
-        </div>
-        <div id="currentPlanBadge" style="font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;padding:6px 16px;border-radius:50px;text-transform:uppercase;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;">
-          Plan Actif : L'Ouvrière
-        </div>
-      </div>
-
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
-        <div style="max-width:540px;">
-          <p style="font-family:'Nunito',sans-serif;font-size:14px;color:var(--brown-mid,#6B4C2A);line-height:1.7;margin:0;">
-            Vous bénéficiez d'un accès illimité à l'ensemble des scénarios interactifs, aux masterclasses exclusives et à la synchronisation instantanée mobile et ordinateur.
-          </p>
-        </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <a href="offres.html" class="btn-primary" style="font-size:13px;padding:10px 22px;">Changer de formule</a>
-          <button class="btn-outline" style="font-size:13px;padding:10px 18px;" onclick="alert('Votre abonnement est sans engagement. Vous pouvez le suspendre ou le modifier depuis ce menu.')">Gérer la facturation</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PACK FAMILLE & COMPTE PARENT -->
-    <div class="profile-card">
-      <div class="family-banner-top">
-        <div style="display:flex;align-items:center;gap:16px;">
-          <img src="pack-famille.jpg" alt="Pack Famille" style="width:72px;height:72px;border-radius:16px;object-fit:cover;border:2px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-          <div>
-            <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:#78350F;margin:0 0 4px;">Espace Famille — Compte Parent</h3>
-            <p style="font-family:'Nunito',sans-serif;font-size:13px;color:#92400E;margin:0;">
-              Partagez la ruche avec vos enfants et adolescents (jusqu'à 5 profils juniors inclus).
-            </p>
-          </div>
-        </div>
-        <button class="btn-primary" style="background:#78350F;border-color:#78350F;" onclick="openAddChildModal()">
-          + Ajouter un profil enfant
-        </button>
-      </div>
-
-      <div class="family-children-grid" id="familyChildrenList">
-        <!-- Rempli par JavaScript -->
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════════
        ONGLET 4 : PARAMÈTRES DU COMPTE & RGPD
   ══════════════════════════════════════════════════════════ -->
   <div class="profile-tab-pane" id="pane-compte">
@@ -824,8 +814,12 @@ function switchProfileTab(tabId) {
 async function initProfilePage() {
   // Vérifier URL query params pour basculer sur un onglet spécifique
   const urlTab = new URLSearchParams(window.location.search).get('tab');
-  if (urlTab && ['infos', 'rappels', 'abonnements', 'compte', 'famille'].includes(urlTab)) {
-    switchProfileTab(urlTab === 'famille' ? 'abonnements' : urlTab);
+  if (urlTab) {
+    if (urlTab === 'famille' || urlTab === 'abonnements') {
+      switchProfileTab('infos');
+    } else if (['infos', 'rappels', 'compte'].includes(urlTab)) {
+      switchProfileTab(urlTab);
+    }
   }
 
   let email = localStorage.getItem('bee_user_email') || 'bonnotsebastien@gmail.com';
