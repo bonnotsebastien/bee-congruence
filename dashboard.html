@@ -812,20 +812,6 @@
       <div class="scenarios-grid" id="scenarios-grid"></div>
     </div>
 
-    <!-- ── Guilde pratique ── -->
-    <div id="section-guilde" style="margin-top: 56px; margin-bottom: 40px; display:none;">
-      <div class="dash-section-title">🛡️ Guilde pratique</div>
-      <p style="font-size:14px;color:var(--brown-mid);margin-bottom:24px;max-width:640px;line-height:1.7;">
-        Des ressources concrètes pour mieux comprendre tes automatismes relationnels et expérimenter de nouvelles réponses.
-      </p>
-      <div id="guilde-articles-preview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:24px;">
-        <!-- Généré en JS -->
-      </div>
-      <a href="articles.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--orange);text-decoration:none;padding:12px 24px;border:1.5px solid var(--orange);border-radius:50px;transition:all 0.2s;">
-        Voir toute la Guilde pratique →
-      </a>
-    </div>
-
     <!-- ── Mon Profil & Informations Personnelles ── -->
     <div id="section-user-profile" class="dash-profile-card">
       <div class="dash-section-title" style="margin-bottom:12px;">👤 Mon profil &amp; informations personnelles</div>
@@ -843,6 +829,18 @@
           <div>
             <label class="dash-form-label">Deuxième prénom <span style="font-weight:400;color:var(--brown-light);">(optionnel)</span></label>
             <input type="text" id="dashDeuxiemePrenom" class="dash-form-input" placeholder="Deuxième prénom">
+          </div>
+        </div>
+
+        <!-- Nom de famille & Nom de jeune fille -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:16px;">
+          <div>
+            <label class="dash-form-label">Nom de famille <span style="color:var(--orange);">*</span></label>
+            <input type="text" id="dashNom" class="dash-form-input" placeholder="Votre nom de famille">
+          </div>
+          <div>
+            <label class="dash-form-label">Nom de jeune fille <span style="font-weight:400;color:var(--brown-light);">(optionnel)</span></label>
+            <input type="text" id="dashNomJeuneFille" class="dash-form-input" placeholder="Nom de jeune fille">
           </div>
         </div>
 
@@ -1146,7 +1144,6 @@ async function init() {
     document.getElementById('section-scenarios').style.display = 'none';
     document.getElementById('section-evolution').style.display = 'none';
     document.getElementById('section-empty').style.display = 'block';
-    renderGuildeSection();
     loadDashboardProfile(user.id);
     return;
   }
@@ -1213,9 +1210,6 @@ async function init() {
 
   // ── Scénarios ──
   renderScenarios(globalScenarios, access);
-
-  // ── Guilde pratique ──
-  renderGuildeSection();
 
   // ── Charger profil enrichi ──
   loadDashboardProfile(user.id);
@@ -1349,14 +1343,28 @@ async function loadDashboardProfile(userId) {
 
   const prenomEl = document.getElementById('dashPrenom');
   const deuxiemePrenomEl = document.getElementById('dashDeuxiemePrenom');
+  const nomEl = document.getElementById('dashNom');
+  const nomJeuneFilleEl = document.getElementById('dashNomJeuneFille');
   const dateNaissanceEl = document.getElementById('dashDateNaissance');
   const situationFamilialeEl = document.getElementById('dashSituationFamiliale');
   const emailDisplayEl = document.getElementById('dashProfileEmailDisplay');
 
   if (prenomEl && profile.prenom) prenomEl.value = profile.prenom;
-  if (deuxiemePrenomEl && profile.deuxieme_prenom) deuxiemePrenomEl.value = profile.deuxieme_prenom;
-  if (dateNaissanceEl && profile.date_naissance) dateNaissanceEl.value = profile.date_naissance;
-  if (situationFamilialeEl && profile.situation_familiale) situationFamilialeEl.value = profile.situation_familiale;
+  if (deuxiemePrenomEl && (profile.deuxieme_prenom || profile.deuxiemePrenom)) {
+    deuxiemePrenomEl.value = profile.deuxieme_prenom || profile.deuxiemePrenom;
+  }
+  if (nomEl && (profile.nom || profile.last_name || localStorage.getItem('bee_user_lastname'))) {
+    nomEl.value = profile.nom || profile.last_name || localStorage.getItem('bee_user_lastname') || '';
+  }
+  if (nomJeuneFilleEl && (profile.nom_jeune_fille || profile.nomJeuneFille)) {
+    nomJeuneFilleEl.value = profile.nom_jeune_fille || profile.nomJeuneFille;
+  }
+  if (dateNaissanceEl && (profile.date_naissance || profile.birthdate)) {
+    dateNaissanceEl.value = profile.date_naissance || profile.birthdate;
+  }
+  if (situationFamilialeEl && (profile.situation_familiale || profile.familyStatus)) {
+    situationFamilialeEl.value = profile.situation_familiale || profile.familyStatus;
+  }
 
   const currentEmail = (globalUser && globalUser.email && !globalUser.email.includes('non sauvegardé'))
     ? globalUser.email
@@ -1386,7 +1394,9 @@ async function loadDashboardProfile(userId) {
 async function handleDashProfileSave(event) {
   event.preventDefault();
   const prenom            = document.getElementById('dashPrenom').value.trim();
-  const deuxieme_prenom   = document.getElementById('dashDeuxiemePrenom').value.trim();
+  const deuxieme_prenom   = document.getElementById('dashDeuxiemePrenom')?.value.trim() || '';
+  const nom               = document.getElementById('dashNom')?.value.trim() || '';
+  const nom_jeune_fille   = document.getElementById('dashNomJeuneFille')?.value.trim() || '';
   const date_naissance    = document.getElementById('dashDateNaissance').value;
   const situation_familiale = document.getElementById('dashSituationFamiliale').value;
   const enfants           = collectDashEnfantsData();
@@ -1408,6 +1418,8 @@ async function handleDashProfileSave(event) {
   const payload = {
     prenom,
     deuxieme_prenom: deuxieme_prenom || null,
+    nom: nom || null,
+    nom_jeune_fille: nom_jeune_fille || null,
     date_naissance,
     situation_familiale: situation_familiale || null,
     enfants,
@@ -1415,6 +1427,9 @@ async function handleDashProfileSave(event) {
     email,
     updated_at: new Date().toISOString(),
   };
+
+  if (nom) localStorage.setItem('bee_user_lastname', nom);
+  if (prenom) localStorage.setItem('bee_user_name', prenom);
 
   if (typeof saveUserProfile === 'function') {
     await saveUserProfile(userId, payload);
@@ -1997,45 +2012,6 @@ function showToast(msg, type = 'info') {
 async function handleLogout() { await signOut(); }
 
 // ── RGPD & Consentement Cookies géré par cookie-consent.js ──
-
-// ════════════════════════════════════════════════════════
-//  GUILDE PRATIQUE — Aperçu des ressources dans le profil
-// ════════════════════════════════════════════════════════
-
-function renderGuildeSection() {
-  const section = document.getElementById('section-guilde');
-  const container = document.getElementById('guilde-articles-preview');
-  if (!section || !container) return;
-
-  // Articles de la Guilde (sources connues)
-  const guildeArticles = [
-    {
-      title: 'Pourquoi je réagis plus fort que la situation ne le mérite ?',
-      desc: 'Distinguer le fait de l\'activation émotionnelle pour comprendre vos automatismes.',
-      url: 'articles/pourquoi-je-reagis-plus-fort-que-la-situation-ne-le-merite',
-      readTime: '2 min',
-      tag: 'Intelligence émotionnelle',
-    },
-    {
-      title: 'Les 7 piliers du développement personnel',
-      desc: 'La clé d\'une vie alignée — comprendre les fondations d\'un développement durable.',
-      url: 'articles',
-      readTime: '5 min',
-      tag: 'Développement personnel',
-    },
-  ];
-
-  container.innerHTML = guildeArticles.map(a => `
-    <a href="${a.url}" style="display:block;text-decoration:none;background:var(--warm-white);border:1.5px solid var(--border);border-radius:16px;padding:20px 18px;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 28px rgba(61,31,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-      <div style="font-family:'Nunito',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--orange);margin-bottom:8px;">${a.tag} · ${a.readTime}</div>
-      <div style="font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--brown-dark);margin-bottom:8px;line-height:1.4;">${a.title}</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--brown-mid);line-height:1.6;">${a.desc}</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--orange);margin-top:12px;">Lire →</div>
-    </a>
-  `).join('');
-
-  section.style.display = 'block';
-}
 
 // ── Start ──
 init();

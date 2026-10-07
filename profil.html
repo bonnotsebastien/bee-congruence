@@ -472,8 +472,19 @@
             <input type="text" class="form-input" id="profilePrenom" placeholder="Votre prénom" required>
           </div>
           <div class="form-group">
-            <label class="form-label">Nom de famille (Nouveau)</label>
-            <input type="text" class="form-input" id="profileNom" placeholder="Votre nom de famille" required>
+            <label class="form-label">Deuxième prénom <span style="font-weight:400;color:var(--brown-light,#8C8275);">(optionnel)</span></label>
+            <input type="text" class="form-input" id="profileDeuxiemePrenom" placeholder="Deuxième prénom">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Nom de famille</label>
+            <input type="text" class="form-input" id="profileNom" placeholder="Votre nom de famille">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nom de jeune fille <span style="font-weight:400;color:var(--brown-light,#8C8275);">(optionnel)</span></label>
+            <input type="text" class="form-input" id="profileNomJeuneFille" placeholder="Nom de jeune fille">
           </div>
         </div>
 
@@ -838,9 +849,21 @@ async function initProfilePage() {
   // Charger profil depuis localStorage ou Supabase
   const savedProfile = JSON.parse(localStorage.getItem('bee_user_profile') || '{}');
   if (savedProfile.prenom) document.getElementById('profilePrenom').value = savedProfile.prenom;
-  if (savedProfile.nom) document.getElementById('profileNom').value = savedProfile.nom;
-  if (savedProfile.birthdate) document.getElementById('profileBirthdate').value = savedProfile.birthdate;
-  if (savedProfile.familyStatus) document.getElementById('profileFamilyStatus').value = savedProfile.familyStatus;
+  if (savedProfile.deuxieme_prenom || savedProfile.deuxiemePrenom) {
+    document.getElementById('profileDeuxiemePrenom').value = savedProfile.deuxieme_prenom || savedProfile.deuxiemePrenom;
+  }
+  if (savedProfile.nom || savedProfile.last_name || localStorage.getItem('bee_user_lastname')) {
+    document.getElementById('profileNom').value = savedProfile.nom || savedProfile.last_name || localStorage.getItem('bee_user_lastname') || '';
+  }
+  if (savedProfile.nom_jeune_fille || savedProfile.nomJeuneFille) {
+    document.getElementById('profileNomJeuneFille').value = savedProfile.nom_jeune_fille || savedProfile.nomJeuneFille;
+  }
+  if (savedProfile.birthdate || savedProfile.date_naissance) {
+    document.getElementById('profileBirthdate').value = savedProfile.birthdate || savedProfile.date_naissance;
+  }
+  if (savedProfile.familyStatus || savedProfile.situation_familiale) {
+    document.getElementById('profileFamilyStatus').value = savedProfile.familyStatus || savedProfile.situation_familiale;
+  }
   if (savedProfile.childrenCount) document.getElementById('profileChildrenCount').value = savedProfile.childrenCount;
 
   // Charger préférences de rappels
@@ -907,21 +930,43 @@ function handleChildBirthdateChange() {
 async function savePersonalInfo(e) {
   e.preventDefault();
   const prenom = document.getElementById('profilePrenom').value.trim();
+  const deuxieme_prenom = document.getElementById('profileDeuxiemePrenom')?.value.trim() || '';
   const nom = document.getElementById('profileNom').value.trim();
+  const nom_jeune_fille = document.getElementById('profileNomJeuneFille')?.value.trim() || '';
   const birthdate = document.getElementById('profileBirthdate').value;
   const familyStatus = document.getElementById('profileFamilyStatus').value;
   const childrenCount = document.getElementById('profileChildrenCount').value;
 
-  const data = { prenom, nom, birthdate, familyStatus, childrenCount, updated_at: new Date().toISOString() };
+  const data = {
+    ...JSON.parse(localStorage.getItem('bee_user_profile') || '{}'),
+    prenom,
+    deuxieme_prenom: deuxieme_prenom || null,
+    nom: nom || null,
+    nom_jeune_fille: nom_jeune_fille || null,
+    birthdate,
+    date_naissance: birthdate,
+    familyStatus,
+    situation_familiale: familyStatus,
+    childrenCount,
+    updated_at: new Date().toISOString()
+  };
   localStorage.setItem('bee_user_profile', JSON.stringify(data));
   localStorage.setItem('bee_user_name', prenom);
-  localStorage.setItem('bee_user_lastname', nom);
+  if (nom) localStorage.setItem('bee_user_lastname', nom);
 
   // Sauvegarder dans Supabase si connecté
   try {
     const user = await getUser();
     if (user && typeof saveProfile === 'function') {
-      await saveProfile(user.id, { first_name: prenom, last_name: nom, birthdate, family_status: familyStatus, children_count: childrenCount });
+      await saveProfile(user.id, {
+        first_name: prenom,
+        last_name: nom,
+        deuxieme_prenom: deuxieme_prenom || null,
+        nom_jeune_fille: nom_jeune_fille || null,
+        birthdate,
+        family_status: familyStatus,
+        children_count: childrenCount
+      });
     }
   } catch(err) {}
 
