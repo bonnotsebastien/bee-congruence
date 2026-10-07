@@ -439,21 +439,21 @@
 
   <!-- TABS NAV -->
   <div class="profile-tabs-nav">
-    <button class="profile-tab-btn active" onclick="switchProfileTab('infos')">
-      <span>👤</span> Information
-    </button>
-    <button class="profile-tab-btn" onclick="switchProfileTab('rappels')">
+    <button class="profile-tab-btn active" onclick="switchProfileTab('rappels')">
       <span>⏰</span> Bilan et rappel
     </button>
+    <button class="profile-tab-btn" onclick="switchProfileTab('infos')">
+      <span>👤</span> Information
+    </button>
     <button class="profile-tab-btn" onclick="switchProfileTab('compte')">
-      <span>⚙️</span> Paramètres du compte &amp; RGPD
+      <span>⚙️</span> Paramètres
     </button>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
        ONGLET 1 : INFORMATION (Identité + Espace Famille + Abonnement)
   ══════════════════════════════════════════════════════════ -->
-  <div class="profile-tab-pane active" id="pane-infos">
+  <div class="profile-tab-pane" id="pane-infos">
     <!-- DONNÉES D'IDENTITÉ -->
     <div class="profile-card">
       <div class="profile-card-header">
@@ -578,9 +578,9 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
-       ONGLET 2 : BILAN ET RAPPEL
+       ONGLET 1 : BILAN ET RAPPEL
   ══════════════════════════════════════════════════════════ -->
-  <div class="profile-tab-pane" id="pane-rappels">
+  <div class="profile-tab-pane active" id="pane-rappels">
 
     <!-- WEEKLY TRAINING REPORT -->
     <div class="training-hero">
@@ -701,7 +701,7 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
-       ONGLET 4 : PARAMÈTRES DU COMPTE & RGPD
+       ONGLET 3 : PARAMÈTRES DU COMPTE
   ══════════════════════════════════════════════════════════ -->
   <div class="profile-tab-pane" id="pane-compte">
     <div class="profile-card">
