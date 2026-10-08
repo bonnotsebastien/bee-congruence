@@ -457,10 +457,11 @@ body.age-enfant .slider-name        { font-size: 15px; }
 
     <!-- Scénario cible -->
     <div class="scenario-target-box" id="scenarioBox">
-      <div class="sct-icon">🎯</div>
-      <div>
-        <div class="sct-label">Avant le scénario</div>
+      <div class="sct-icon" id="scenarioIcon">🎯</div>
+      <div style="flex:1;">
+        <div class="sct-label" id="scenarioCategory">Avant le scénario</div>
         <div class="sct-title" id="scenarioTitle">Chargement…</div>
+        <div class="sct-desc" id="scenarioDesc" style="font-family:'Nunito',sans-serif;font-size:13px;color:rgba(253,250,246,0.65);margin-top:4px;line-height:1.4;"></div>
       </div>
     </div>
 
@@ -763,10 +764,37 @@ function init() {
   // Récupérer les paramètres URL
   const params = new URLSearchParams(window.location.search);
   scenarioId    = params.get('scenario') || 's1';
-  scenarioTitle = params.get('title')    || 'Scénario de pratique';
+  const rawTitle = params.get('title');
+
+  let libScen = null;
+  if (typeof SCENARIOS_LIBRARY !== 'undefined' && Array.isArray(SCENARIOS_LIBRARY)) {
+    libScen = SCENARIOS_LIBRARY.find(s => s.id === scenarioId);
+  }
+
+  if (libScen) {
+    scenarioTitle = libScen.titre;
+    const catEl = document.getElementById('scenarioCategory');
+    const descEl = document.getElementById('scenarioDesc');
+    const iconEl = document.getElementById('scenarioIcon');
+    if (catEl) catEl.textContent = `Scénario · ${(libScen.theme || 'Entraînement').replace(/_/g, ' ')} · ⏱ ${libScen.duree_estimee || '10-15 min'}`;
+    if (descEl) descEl.textContent = libScen.description || '';
+    if (iconEl) iconEl.textContent = '🎯';
+  } else if (scenarioId === 'experience') {
+    scenarioTitle = "L'Expérience 7 Minutes — Réagir ou Répondre";
+    const catEl = document.getElementById('scenarioCategory');
+    const descEl = document.getElementById('scenarioDesc');
+    const iconEl = document.getElementById('scenarioIcon');
+    if (catEl) catEl.textContent = "Expérience interactive libre · ⏱ ≈ 7 min";
+    if (descEl) descEl.textContent = "Un temps d'arrêt pour identifier vos automatismes réflexes et choisir une réponse congruente.";
+    if (iconEl) iconEl.textContent = '✨';
+  } else if (rawTitle) {
+    scenarioTitle = decodeURIComponent(rawTitle);
+  } else {
+    scenarioTitle = 'Scénario ' + scenarioId.toUpperCase();
+  }
 
   // Afficher le titre du scénario
-  document.getElementById('scenarioTitle').textContent = decodeURIComponent(scenarioTitle);
+  document.getElementById('scenarioTitle').textContent = scenarioTitle;
 
   // Générer les émojis
   buildEmotionGrid();
@@ -1238,12 +1266,20 @@ async function saveAndLaunch() {
   }
 
   // Rediriger vers le scénario
-  window.location.href = `scenario-detail.html?id=${scenarioId}`;
+  if (scenarioId === 'experience') {
+    window.location.href = `experience.html?exp=practice`;
+  } else {
+    window.location.href = `scenario-detail.html?id=${scenarioId}`;
+  }
 }
 
 function skipIntro() {
   // Passer l'introspection et aller directement au scénario
-  window.location.href = `scenario-detail.html?id=${scenarioId}`;
+  if (scenarioId === 'experience') {
+    window.location.href = `experience.html?exp=practice`;
+  } else {
+    window.location.href = `scenario-detail.html?id=${scenarioId}`;
+  }
 }
 
 // ══════════════════════════════════════════════════════

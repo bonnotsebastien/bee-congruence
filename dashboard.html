@@ -970,12 +970,9 @@ async function startScenario(rowId, scenarioId) {
   if (typeof updateScenarioStatus === 'function') {
     try { await updateScenarioStatus(rowId, 'en_cours'); } catch(e) {}
   }
-  const intro = localStorage.getItem(`bee_intro_${scenarioId}`);
-  if (!intro) {
-    window.location.href = `introspection.html?scenario=${scenarioId}`;
-  } else {
-    window.location.href = `scenario-detail.html?id=${scenarioId}`;
-  }
+  const scen = (typeof SCENARIOS_LIBRARY !== 'undefined') ? SCENARIOS_LIBRARY.find(s => s.id === scenarioId) : null;
+  const titleParam = scen ? `&title=${encodeURIComponent(scen.titre)}` : '';
+  window.location.href = `introspection.html?scenario=${scenarioId}${titleParam}`;
 }
 
 // ════════════════════════════════════════════════════════

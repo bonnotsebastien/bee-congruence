@@ -15,560 +15,1032 @@
 <meta property="og:type" content="website">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <style>
-/* ── Layout homogène avec scenario-detail ── */
-.sd-wrapper {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 40px 24px 80px;
+/* ── Theme sombre immersif identique à introspection.html ── */
+body {
+  margin: 0;
+  padding: 0;
+  background: #1A1612;
+  color: #FDFAF6;
+  overflow-x: hidden;
+  font-family: 'Nunito', sans-serif;
 }
 
-.sd-back {
-  display: inline-flex;
+.intro-wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.intro-header {
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(26,22,18,0.96);
+  backdrop-filter: blur(10px);
+}
+.intro-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  color: #D97706;
+  font-style: italic;
+  text-decoration: none;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.intro-stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.intro-step-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  transition: background 0.35s, transform 0.2s;
+  cursor: pointer;
+}
+.intro-step-dot.active  { background: #D97706; transform: scale(1.35); }
+.intro-step-dot.done    { background: #4A7C59; }
+.intro-step-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(253,250,246,0.55);
+}
+
+/* TTS Floating Button */
+.tts-float {
+  position: fixed;
+  top: 68px;
+  right: 16px;
+  z-index: 200;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 50px;
+  padding: 8px 14px;
+  display: flex;
   align-items: center;
   gap: 8px;
   font-family: 'Nunito', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--brown-light);
-  text-decoration: none;
-  margin-bottom: 28px;
-  transition: color 0.2s;
+  font-size: 12px;
+  color: rgba(253,250,246,0.8);
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
 }
-.sd-back:hover { color: var(--orange); }
+.tts-float:hover { background: rgba(255,255,255,0.15); }
+.tts-float.speaking { border-color: #D97706; color: #D97706; background: rgba(217,119,6,0.15); }
 
-/* ── Header ── */
-.sd-header {
-  margin-bottom: 32px;
+/* Contenu */
+.intro-content {
+  flex: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 32px 20px 24px;
+  width: 100%;
+  box-sizing: border-box;
 }
-.sd-meta {
+
+/* Scénario cible info */
+.scenario-target-box {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 16px;
   align-items: center;
+  gap: 14px;
+  background: rgba(217,119,6,0.1);
+  border: 1px solid rgba(217,119,6,0.25);
+  border-radius: 18px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
 }
-.sd-tag {
+.sct-icon { font-size: 28px; flex-shrink: 0; }
+.sct-label {
   font-family: 'Nunito', sans-serif;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  padding: 5px 14px;
-  border-radius: 20px;
+  color: #D97706;
+  margin-bottom: 2px;
 }
-.sd-tag-theme { background: rgba(195,101,27,0.12); color: var(--orange); }
-.sd-tag-free  { background: rgba(90,138,58,0.15); color: var(--green); }
-.sd-tag-duration { background: rgba(30,95,173,0.1); color: var(--blue); }
-
-.sd-title {
+.sct-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(24px, 4vw, 34px);
-  color: var(--brown-dark);
+  font-size: 16px;
   font-style: italic;
-  margin-bottom: 12px;
-  line-height: 1.25;
-}
-.sd-desc {
-  font-family: 'Nunito', sans-serif;
-  font-size: 15px;
-  color: var(--brown-mid);
-  line-height: 1.7;
-  max-width: 680px;
+  color: #FDFAF6;
+  font-weight: 700;
 }
 
-/* ── Situation Tabs Switcher ── */
-.exp-situations-bar {
+/* Situation switcher */
+.situations-bar {
   display: flex;
   gap: 8px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   overflow-x: auto;
   scrollbar-width: none;
   padding-bottom: 4px;
 }
-.exp-situations-bar::-webkit-scrollbar { display: none; }
-.exp-situation-tab {
-  padding: 10px 18px;
-  background: white;
-  border: 1.5px solid var(--border);
+.situations-bar::-webkit-scrollbar { display: none; }
+.sit-tab {
+  padding: 8px 16px;
   border-radius: 50px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--brown-mid);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s;
-}
-.exp-situation-tab:hover {
-  border-color: var(--orange);
-  color: var(--orange);
-}
-.exp-situation-tab.active {
-  background: var(--orange);
-  color: white;
-  border-color: var(--orange);
-  box-shadow: 0 4px 12px rgba(195,101,27,0.3);
-}
-
-/* ── Phase Bar ── */
-.sd-phase-bar {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 24px;
-  background: var(--cream-dark);
-  border-radius: 50px;
-  padding: 6px 8px;
-  overflow: hidden;
-}
-.sd-phase-item {
-  flex: 1;
-  text-align: center;
-  padding: 8px 10px;
-  border-radius: 40px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--brown-light);
-  transition: all 0.3s;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.sd-phase-item.active {
-  background: var(--orange);
-  color: white;
-  box-shadow: 0 2px 8px rgba(195,101,27,0.4);
-}
-.sd-phase-item.done {
-  background: rgba(90,138,58,0.15);
-  color: var(--green);
-}
-@media (max-width: 600px) {
-  .sd-phase-item { font-size: 9px; padding: 6px 4px; }
-  .sd-wrapper { padding: 24px 16px 60px; }
-}
-
-/* ── Stepper ── */
-.sd-stepper {
-  display: flex;
-  gap: 0;
-  margin-bottom: 32px;
-  border-bottom: 2px solid var(--border);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.sd-stepper::-webkit-scrollbar { display: none; }
-.sd-step-btn {
-  flex: 0 0 auto;
-  padding: 12px 18px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: rgba(253,250,246,0.7);
   font-family: 'Nunito', sans-serif;
   font-size: 12px;
   font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.sit-tab:hover { border-color: rgba(217,119,6,0.5); color: #FDFAF6; }
+.sit-tab.active {
+  background: #D97706;
+  color: white;
+  border-color: #D97706;
+  box-shadow: 0 4px 14px rgba(217,119,6,0.35);
+}
+
+/* Étapes */
+.intro-step { display: none; }
+.intro-step.active {
+  display: block;
+  animation: stepIn 0.35s cubic-bezier(.16,1,.3,1);
+}
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.step-badge {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--brown-light);
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -2px;
+  letter-spacing: 0.12em;
+  color: #D97706;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+h2.intro-step-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(23px, 4.5vw, 32px);
+  font-style: italic;
+  color: #FDFAF6;
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+.intro-step-sub {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: rgba(253,250,246,0.6);
+  margin-bottom: 26px;
+  line-height: 1.6;
+}
+
+/* Émojis */
+.emotion-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.emotion-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px;
+  border-radius: 16px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
   cursor: pointer;
   transition: all 0.2s;
-  white-space: nowrap;
+  outline: none;
 }
-.sd-step-btn:hover { color: var(--orange); }
-.sd-step-btn.active {
-  color: var(--orange);
-  border-bottom-color: var(--orange);
-}
-.sd-step-btn.done { color: var(--green); }
-.sd-step-btn.done::after { content: ' ✓'; }
+.emotion-btn:hover { border-color: rgba(217,119,6,0.5); background: rgba(217,119,6,0.1); }
+.emotion-btn.sel   { border-color: #D97706; background: rgba(217,119,6,0.22); }
+.emotion-emoji     { font-size: 26px; line-height: 1; }
+.emotion-label     { font-size: 10px; color: rgba(253,250,246,0.7); text-align: center; }
 
-/* ── Cards & Elements ── */
-.sd-card {
-  background: white;
+/* Sliders */
+.slider-group { margin-bottom: 24px; }
+.slider-top   { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.slider-name  { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; color: rgba(253,250,246,0.85); }
+.slider-val   { font-family: 'Playfair Display', serif; font-size: 18px; color: #D97706; font-weight: 700; }
+.slider-poles { display: flex; justify-content: space-between; margin-top: 4px; font-size: 10px; color: rgba(253,250,246,0.35); }
+
+input[type="range"].irange {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  margin: 4px 0;
+  background: rgba(255,255,255,0.12);
+}
+input[type="range"].irange::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #D97706;
+  box-shadow: 0 2px 8px rgba(217,119,6,0.5);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+input[type="range"].irange::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+.intensity-desc {
+  font-size: 11px;
+  color: rgba(253,250,246,0.5);
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* Secondary emotions */
+.zone-section-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(253,250,246,0.45);
+  margin-bottom: 10px;
+}
+.body-zones { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.zone-btn {
+  padding: 8px 14px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  color: rgba(253,250,246,0.75);
+  transition: all 0.2s;
+  outline: none;
+}
+.zone-btn:hover { border-color: rgba(217,119,6,0.5); }
+.zone-btn.sel   { border-color: #D97706; background: rgba(217,119,6,0.2); color: #FDFAF6; }
+
+/* Silhouette corporelle interactive */
+.silhouette-container {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px;
-  border: 1.5px solid var(--border);
-  padding: 32px 28px;
-  box-shadow: 0 6px 24px rgba(61,39,16,0.04);
-  animation: fadeIn 0.35s ease;
+  padding: 20px 16px;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+}
+.silhouette-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.silhouette-tab {
+  padding: 7px 16px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: rgba(253,250,246,0.7);
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.silhouette-tab.active {
+  background: #D97706;
+  border-color: #D97706;
+  color: white;
+}
+.silhouette-viewport {
+  position: relative;
+  width: 140px;
+  height: 260px;
+  margin: 0 auto;
+}
+.body-svg { width: 100%; height: 100%; }
+.body-part {
+  fill: rgba(255,255,255,0.12);
+  stroke: rgba(255,255,255,0.25);
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.body-part:hover {
+  fill: rgba(217,119,6,0.4);
+  stroke: #D97706;
+}
+.body-part.selected-agreable {
+  fill: rgba(74,124,89,0.7) !important;
+  stroke: #52B788 !important;
+}
+.body-part.selected-tension {
+  fill: rgba(217,83,79,0.7) !important;
+  stroke: #E63946 !important;
+}
+
+.sensation-dialog {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #241D17;
+  border: 1.5px solid #D97706;
+  border-radius: 16px;
+  padding: 16px;
+  width: 260px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  z-index: 40;
+  text-align: left;
+}
+.sensation-dialog.active { display: block; animation: stepIn 0.2s ease; }
+.sensation-dialog-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  color: #FDFAF6;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+.sensation-dialog-sub {
+  font-size: 11px;
+  color: rgba(253,250,246,0.5);
+  margin-bottom: 12px;
+}
+.sensation-options { display: flex; flex-direction: column; gap: 8px; }
+.sensation-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+.btn-sens-agreable { background: rgba(74,124,89,0.25); color: #74C69D; border-color: rgba(74,124,89,0.4); }
+.btn-sens-agreable:hover { background: rgba(74,124,89,0.45); }
+.btn-sens-tension  { background: rgba(217,83,79,0.25); color: #FFA69E; border-color: rgba(217,83,79,0.4); }
+.btn-sens-tension:hover { background: rgba(217,83,79,0.45); }
+.btn-sens-remove   { background: rgba(255,255,255,0.06); color: rgba(253,250,246,0.5); }
+.btn-sens-remove:hover { background: rgba(255,255,255,0.12); color: #FDFAF6; }
+
+.selected-zones-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.zone-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.chip-agreable { background: rgba(74,124,89,0.2); border: 1px solid rgba(74,124,89,0.4); color: #74C69D; }
+.chip-tension  { background: rgba(217,83,79,0.2); border: 1px solid rgba(217,83,79,0.4); color: #FFA69E; }
+.zone-chip-close { cursor: pointer; opacity: 0.6; }
+.zone-chip-close:hover { opacity: 1; }
+
+/* Checkbox & textarea */
+.intro-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+.intro-checkbox {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: #D97706;
+  margin-top: 2px;
+  cursor: pointer;
+}
+.intro-checkbox-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  color: rgba(253,250,246,0.8);
+  line-height: 1.5;
+}
+.intro-textarea {
+  width: 100%;
+  height: 70px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: #FDFAF6;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  resize: none;
+  outline: none;
+}
+.intro-textarea:focus { border-color: #D97706; }
+.intro-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 20px 0; }
+
+/* Synthèse Radar */
+.synthesis-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 24px 20px;
   margin-bottom: 24px;
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: none; }
+.synthesis-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  color: #FDFAF6;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.synthesis-radar { display: flex; justify-content: center; margin-bottom: 16px; }
+.synthesis-svg   { max-width: 210px; width: 100%; }
+.synthesis-text {
+  font-family: 'Lora', serif;
+  font-size: 14px;
+  color: rgba(253,250,246,0.8);
+  line-height: 1.75;
+  font-style: italic;
+  border-left: 3px solid #D97706;
+  padding-left: 14px;
+  margin-top: 14px;
 }
 
-.sd-situation {
-  background: linear-gradient(135deg, rgba(195,101,27,0.06), rgba(61,31,0,0.04));
-  border: 1px solid rgba(195,101,27,0.2);
-  border-left: 4px solid var(--orange);
-  border-radius: 0 16px 16px 0;
-  padding: 24px;
+/* ── Phase Scénario Pratique ── */
+.exp-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 24px 20px;
+  margin-bottom: 20px;
+}
+
+.exp-situation-context {
   font-family: 'Lora', serif;
   font-size: 16px;
-  color: var(--brown-dark);
+  color: #FDFAF6;
   line-height: 1.8;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
-.sd-dialogue {
-  background: var(--cream-dark);
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin-top: 14px;
+.exp-dialogue {
+  background: rgba(217,119,6,0.12);
+  border-left: 4px solid #D97706;
+  border-radius: 0 14px 14px 0;
+  padding: 16px 18px;
   font-family: 'Playfair Display', serif;
   font-size: 17px;
   font-style: italic;
-  color: var(--brown-dark);
-  line-height: 1.6;
-  border-left: 3px solid var(--amber);
+  color: #FDFAF6;
+  margin-top: 14px;
 }
 
-/* ── Options Selection ── */
-.sd-options-grid {
+/* Options interactives réflexes */
+.exp-options-grid {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 18px;
 }
-.sd-option-card {
+.exp-option-card {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  background: white;
-  border: 2px solid var(--border);
+  gap: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid rgba(255,255,255,0.1);
   border-radius: 16px;
-  padding: 18px 20px;
+  padding: 16px 18px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
   text-align: left;
-  width: 100%;
 }
-.sd-option-card:hover {
-  border-color: var(--orange);
-  background: rgba(195,101,27,0.02);
+.exp-option-card:hover {
+  border-color: rgba(217,119,6,0.6);
+  background: rgba(217,119,6,0.08);
   transform: translateY(-2px);
 }
-.sd-option-card.selected {
-  border-color: var(--orange);
-  background: rgba(195,101,27,0.06);
-  box-shadow: 0 4px 16px rgba(195,101,27,0.15);
+.exp-option-card.selected {
+  border-color: #D97706;
+  background: rgba(217,119,6,0.18);
+  box-shadow: 0 4px 16px rgba(217,119,6,0.25);
 }
-.sd-opt-icon {
-  font-size: 24px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.sd-opt-title {
+.exp-opt-icon { font-size: 24px; flex-shrink: 0; }
+.exp-opt-title {
   font-family: 'Nunito', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--brown-dark);
+  color: #FDFAF6;
   margin-bottom: 4px;
 }
-.sd-opt-sub {
-  font-family: 'Nunito', sans-serif;
-  font-size: 13px;
-  color: var(--brown-mid);
+.exp-opt-sub {
+  font-size: 12px;
+  color: rgba(253,250,246,0.6);
   line-height: 1.5;
 }
 
-/* ── Feedback & Comparison Blocks ── */
-.sd-feedback-box {
-  background: var(--cream-dark);
-  border-radius: 16px;
-  padding: 24px;
+/* Miroir */
+.mirror-box {
+  background: linear-gradient(135deg, rgba(217,119,6,0.12), rgba(180,83,9,0.04));
+  border: 1.5px solid rgba(217,119,6,0.3);
+  border-radius: 18px;
+  padding: 22px 20px;
   margin-bottom: 20px;
 }
-.sd-reaction-auto {
-  background: rgba(143,0,0,0.06);
-  border: 1px solid rgba(143,0,0,0.15);
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin-bottom: 12px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 14px;
-  color: var(--brown-dark);
-  line-height: 1.7;
-}
-.sd-reaction-label {
-  font-size: 10px;
+.mirror-pattern-badge {
+  display: inline-block;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #8B2020;
-  margin-bottom: 6px;
-}
-.sd-reponse-saine {
-  background: rgba(90,138,58,0.1);
-  border: 1px solid rgba(90,138,58,0.2);
-  border-radius: 12px;
-  padding: 16px 18px;
+  letter-spacing: 0.1em;
+  color: #D97706;
+  background: rgba(217,119,6,0.15);
+  padding: 4px 12px;
+  border-radius: 20px;
   margin-bottom: 12px;
-  font-family: 'Lora', serif;
-  font-size: 15px;
-  color: var(--brown-dark);
-  line-height: 1.7;
+}
+.mirror-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
   font-style: italic;
+  color: #FDFAF6;
+  margin-bottom: 12px;
 }
-.sd-reponse-label {
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--green);
-  margin-bottom: 6px;
-  font-family: 'Nunito', sans-serif;
-  font-style: normal;
+.mirror-desc {
+  font-family: 'Lora', serif;
+  font-size: 14px;
+  color: rgba(253,250,246,0.8);
+  line-height: 1.8;
 }
 
-/* ── Navigation Bottom Bar ── */
-.sd-nav {
+/* Réponse saine */
+.comparison-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.reflexe-box {
+  background: rgba(230,57,70,0.08);
+  border: 1px solid rgba(230,57,70,0.25);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.reflexe-tag {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #FFA69E;
+  margin-bottom: 6px;
+}
+.reflexe-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: #FDFAF6;
+  line-height: 1.6;
+}
+.congruent-box {
+  background: rgba(74,124,89,0.15);
+  border: 1.5px solid rgba(74,124,89,0.35);
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+.congruent-tag {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #74C69D;
+  margin-bottom: 6px;
+}
+.congruent-text {
+  font-family: 'Lora', serif;
+  font-size: 16px;
+  font-style: italic;
+  color: #FDFAF6;
+  line-height: 1.7;
+}
+
+/* Navigation bottom */
+.intro-nav {
+  padding: 16px 20px 32px;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
+  gap: 12px;
+  box-sizing: border-box;
 }
-.sd-nav-btn {
+.intro-prev {
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.07);
+  color: rgba(253,250,246,0.7);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50px;
   font-family: 'Nunito', sans-serif;
-  font-size: 14px;
   font-weight: 700;
-  padding: 12px 24px;
-  border-radius: 50px;
-  border: 2px solid var(--border);
-  background: white;
-  color: var(--brown-dark);
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-}
-.sd-nav-btn:hover { border-color: var(--orange); color: var(--orange); }
-.sd-nav-btn.primary {
-  background: var(--orange);
-  color: white;
-  border-color: var(--orange);
-  box-shadow: 0 4px 14px rgba(195,101,27,0.3);
-}
-.sd-nav-btn.primary:hover {
-  background: var(--orange-dark);
-  transform: translateY(-1px);
-}
-.sd-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-
-/* ── TTS Float Button ── */
-.sd-tts-float {
-  position: fixed;
-  bottom: 24px;
-  right: 20px;
-  z-index: 500;
-  background: var(--brown-dark);
-  border-radius: 50px;
-  padding: 10px 18px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Nunito', sans-serif;
   font-size: 13px;
-  color: #FDFAF6;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
   cursor: pointer;
   transition: all 0.2s;
-  border: 1.5px solid rgba(255,255,255,0.1);
 }
-.sd-tts-float:hover { background: var(--orange); }
-.sd-tts-float.speaking { background: var(--orange); border-color: var(--amber); }
-.sd-tts-float button {
+.intro-prev:hover { background: rgba(255,255,255,0.12); }
+.intro-prev:disabled { opacity: 0.25; cursor: not-allowed; }
+.intro-next {
+  flex: 1;
+  max-width: 260px;
+  padding: 14px 24px;
+  background: #D97706;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  text-align: center;
+}
+.intro-next:hover { background: #B45309; transform: translateY(-1px); }
+.intro-skip {
+  font-size: 12px;
+  color: rgba(253,250,246,0.35);
+  cursor: pointer;
   background: none;
   border: none;
-  color: inherit;
-  cursor: pointer;
-  font-size: 14px;
-  padding: 0 2px;
-  font-family: inherit;
+  padding: 8px;
+}
+.intro-skip:hover { color: rgba(253,250,246,0.7); }
+
+@media (max-width: 480px) {
+  .emotion-grid { grid-template-columns: repeat(3, 1fr); }
+  .intro-content { padding: 24px 16px 16px; }
+  .intro-nav { flex-wrap: wrap; }
+  .intro-next { max-width: none; }
 }
 </style>
 </head>
 <body>
 
-<!-- ═══ NAVBAR UNIFIÉE ═══ -->
-<nav class="navbar">
-  <a href="index.html" class="logo">
-    <img src="logo.jpg" alt="BEE Congruence">
-    <div class="logo-fallback"><span class="logo-bee">BEE</span><span class="logo-cong">Congruence</span></div>
-  </a>
-  <ul class="nav-links">
-    <li><a href="index.html" class="nav-link">Accueil</a></li>
-    <li><a href="experience.html" class="nav-link active">Expérience 7 min</a></li>
-    <li><a href="approche.html" class="nav-link">Notre approche</a></li>
-    <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
-    <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
-  </ul>
-  <div class="nav-actions">
-    <a href="connexion.html" class="btn-outline">Se connecter</a>
-    <a href="inscription.html" class="btn-primary">Rejoins la ruche</a>
+<div class="intro-wrap">
+
+  <!-- Header sticky -->
+  <div class="intro-header">
+    <a href="index.html" class="intro-logo">
+      <span>🐝</span> BEE Congruence
+    </a>
+    <div class="intro-stepper" id="stepperDots"></div>
+    <span class="intro-step-label" id="stepLabel">1 / 9</span>
   </div>
-</nav>
 
-<!-- ═══ TTS FLOAT ═══ -->
-<div class="sd-tts-float" id="sdTtsFloat" onclick="toggleTTS()">
-  <span id="sdTtsIcon">🔊</span>
-  <span id="sdTtsLabel">Écouter</span>
-  <button onclick="event.stopPropagation();stopTTS();" title="Arrêter">⏹</button>
-</div>
+  <!-- TTS Float Button -->
+  <button class="tts-float" id="ttsBtn" onclick="toggleTTS()" title="Écouter cette étape">
+    🔊 <span id="ttsBtnLabel">Écouter</span>
+  </button>
 
-<!-- ═══ MAIN CONTENT WRAPPER ═══ -->
-<div class="sd-wrapper">
+  <!-- Contenu principal -->
+  <div class="intro-content">
 
-  <a href="index.html" class="sd-back">← Retour à l'accueil</a>
-
-  <!-- Header -->
-  <div class="sd-header">
-    <div class="sd-meta">
-      <span class="sd-tag sd-tag-theme">✨ Déclic relationnel</span>
-      <span class="sd-tag sd-tag-duration">⏱ ≈ 7 minutes chrono</span>
-      <span class="sd-tag sd-tag-free">✓ Accès libre</span>
+    <!-- Scénario cible -->
+    <div class="scenario-target-box">
+      <div class="sct-icon">✨</div>
+      <div style="flex:1;">
+        <div class="sct-label">Expérience interactive libre · ⏱ ≈ 7 min</div>
+        <div class="sct-title" id="scenarioHeading">L'Expérience 7 Minutes : Réagir ou Répondre</div>
+      </div>
     </div>
-    <h1 class="sd-title">L'Expérience 7 Minutes</h1>
-    <p class="sd-desc">
-      Une situation réelle du quotidien. Un temps d'arrêt. Observez votre automatisme réflexe et découvrez comment formuler une réponse claire, sereine et congruente.
-    </p>
-  </div>
 
-  <!-- Situations Selector -->
-  <div class="exp-situations-bar" id="situationsBar"></div>
+    <!-- Sélecteur de situation (accessible pour la phase pratique) -->
+    <div class="situations-bar" id="situationsBar" style="display:none;"></div>
 
-  <!-- Phase bar -->
-  <div class="sd-phase-bar" id="phaseBar">
-    <div class="sd-phase-item active" data-phase="0">1 · Situation</div>
-    <div class="sd-phase-item" data-phase="1">2 · Automatisme</div>
-    <div class="sd-phase-item" data-phase="2">3 · Le Miroir</div>
-    <div class="sd-phase-item" data-phase="3">4 · Réponse</div>
-    <div class="sd-phase-item" data-phase="4">5 · Synthèse</div>
-  </div>
+    <!-- ═══ ÉTAPE 1 — État émotionnel ═══ -->
+    <div class="intro-step active" id="step-0">
+      <div class="step-badge">💛 Étape 1 / 4 — Scan Émotionnel</div>
+      <h2 class="intro-step-title">Comment te sens-tu en ce moment ?</h2>
+      <p class="intro-step-sub">Prends un instant pour observer tes émotions actuelles. Sélectionne 1 à 3 émotions qui te correspondent.</p>
 
-  <!-- Stepper Tabs -->
-  <div class="sd-stepper" id="stepperTabs"></div>
+      <div class="emotion-grid" id="emotionGrid"></div>
 
-  <!-- Step Content Container -->
-  <div id="stepContainer"></div>
+      <div class="slider-group">
+        <div class="slider-top">
+          <span class="slider-name">Intensité ressentie</span>
+          <span class="slider-val" id="intensiteVal">5</span>
+        </div>
+        <input type="range" class="irange" id="intensiteSlider" min="1" max="10" value="5"
+               oninput="updateSliderVal('intensiteSlider','intensiteVal'); updateIntensityDesc(this.value)">
+        <div class="slider-poles"><span>Légère</span><span>Très intense</span></div>
+        <div class="intensity-desc" id="intensityDesc">Intensité modérée</div>
+      </div>
 
-  <!-- Navigation -->
-  <div class="sd-nav" id="bottomNav">
-    <button class="sd-nav-btn" id="btnPrev" onclick="navigateStep(-1)">← Précédent</button>
-    <span style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--brown-light);" id="stepProgressText">Étape 1 sur 5</span>
-    <button class="sd-nav-btn primary" id="btnNext" onclick="navigateStep(1)">Suivant →</button>
-  </div>
-
-</div>
-
-<!-- ═══ FOOTER ═══ -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-logo">
-      <img src="logo.jpg" alt="BEE Congruence" style="height:76px;">
-      <p class="footer-tagline">Équilibre &amp; Harmonie Relationnelle</p>
+      <div class="intro-divider"></div>
+      <div class="zone-section-label">Émotions secondaires présentes (max 2)</div>
+      <div class="body-zones" id="secEmotionZones"></div>
     </div>
-    <nav class="footer-nav">
-      <a href="mentions-legales.html">Mentions légales</a>
-      <a href="confidentialite.html">Confidentialité (RGPD)</a>
-      <a href="contact.html">Contact</a>
-    </nav>
+
+    <!-- ═══ ÉTAPE 2 — Ressenti corporel ═══ -->
+    <div class="intro-step" id="step-1">
+      <div class="step-badge">⚡ Étape 2 / 4 — Scan Corporel</div>
+      <h2 class="intro-step-title">Comment est ton corps ?</h2>
+      <p class="intro-step-sub">Évalue ton état physique. Ces données permettront de mesurer ton relâchement après l'expérience.</p>
+
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">⚡ Énergie</span><span class="slider-val" id="energieVal">5</span></div>
+        <input type="range" class="irange" id="energieSlider" min="0" max="10" value="5" oninput="updateSliderVal('energieSlider','energieVal')">
+        <div class="slider-poles"><span>Épuisé(e)</span><span>Plein(e) d'énergie</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">🔧 Tensions</span><span class="slider-val" id="tensionsVal">3</span></div>
+        <input type="range" class="irange" id="tensionsSlider" min="0" max="10" value="3" oninput="updateSliderVal('tensionsSlider','tensionsVal')">
+        <div class="slider-poles"><span>Détendu(e)</span><span>Très tendu(e)</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">😴 Fatigue</span><span class="slider-val" id="fatigueVal">3</span></div>
+        <input type="range" class="irange" id="fatigueSlider" min="0" max="10" value="3" oninput="updateSliderVal('fatigueSlider','fatigueVal')">
+        <div class="slider-poles"><span>Reposé(e)</span><span>Épuisé(e)</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">🌿 Légèreté</span><span class="slider-val" id="legereteVal">6</span></div>
+        <input type="range" class="irange" id="legereteSlider" min="0" max="10" value="6" oninput="updateSliderVal('legereteSlider','legereteVal')">
+        <div class="slider-poles"><span>Lourd(e)</span><span>Léger(e)</span></div>
+      </div>
+
+      <div class="intro-divider"></div>
+      <div class="zone-section-label">Carte corporelle interactive — Touche une zone pour qualifier ton ressenti</div>
+
+      <div class="silhouette-container">
+        <div class="silhouette-tabs">
+          <button type="button" class="silhouette-tab active" id="tabFace" onclick="switchSilhouetteView('face')">👤 Vue de Face</button>
+          <button type="button" class="silhouette-tab" id="tabDos" onclick="switchSilhouetteView('dos')">🔄 Vue de Dos</button>
+        </div>
+
+        <div class="silhouette-viewport">
+          <svg class="body-svg" id="svgFace" viewBox="0 0 160 300">
+            <ellipse cx="80" cy="32" rx="18" ry="22" class="body-part" data-zone="Tête" data-view="face"/>
+            <rect x="74" y="54" width="12" height="14" rx="3" class="body-part" data-zone="Gorge" data-view="face"/>
+            <path d="M 40 76 C 52 64, 68 64, 74 68 L 86 68 C 92 64, 108 64, 120 76 L 114 86 C 102 76, 92 78, 86 78 L 74 78 C 68 78, 58 76, 46 86 Z" class="body-part" data-zone="Épaules" data-view="face"/>
+            <path d="M 52 82 L 108 82 C 112 104, 102 118, 80 120 C 58 118, 48 104, 52 82 Z" class="body-part" data-zone="Poitrine" data-view="face"/>
+            <path d="M 54 122 C 70 120, 90 120, 106 122 C 108 142, 100 156, 80 158 C 60 156, 52 142, 54 122 Z" class="body-part" data-zone="Ventre" data-view="face"/>
+            <path d="M 38 84 C 44 82, 48 88, 46 98 L 38 148 C 36 156, 26 156, 24 148 L 32 98 C 32 88, 35 84, 38 84 Z" class="body-part" data-zone="Bras" data-view="face"/>
+            <path d="M 122 84 C 116 82, 112 88, 114 98 L 122 148 C 124 156, 134 156, 136 148 L 128 98 C 128 88, 125 84, 122 84 Z" class="body-part" data-zone="Bras" data-view="face"/>
+            <path d="M 54 160 C 70 159, 90 159, 106 160 L 108 182 C 95 190, 88 190, 80 186 C 72 190, 65 190, 52 182 Z" class="body-part" data-zone="Bassin" data-view="face"/>
+            <path d="M 53 184 C 64 188, 75 186, 76 184 L 72 232 C 70 252, 72 280, 64 284 C 58 284, 54 267, 54 247 L 50 197 C 50 190, 51 186, 53 184 Z" class="body-part" data-zone="Jambes" data-view="face"/>
+            <path d="M 107 184 C 96 188, 85 186, 84 184 L 88 232 C 90 252, 88 280, 96 284 C 102 284, 106 267, 106 247 L 110 197 C 110 190, 109 186, 107 184 Z" class="body-part" data-zone="Jambes" data-view="face"/>
+          </svg>
+
+          <svg class="body-svg" id="svgDos" viewBox="0 0 160 300" style="display:none;">
+            <ellipse cx="80" cy="32" rx="18" ry="22" class="body-part" data-zone="Tête" data-view="dos"/>
+            <rect x="74" y="54" width="12" height="16" rx="4" class="body-part" data-zone="Nuque" data-view="dos"/>
+            <path d="M 40 76 C 52 64, 68 64, 74 68 L 86 68 C 92 64, 108 64, 120 76 L 108 114 C 90 114, 70 114, 52 114 Z" class="body-part" data-zone="Haut du dos" data-view="dos"/>
+            <path d="M 52 116 C 70 116, 90 116, 108 116 L 105 154 C 90 156, 70 156, 55 154 Z" class="body-part" data-zone="Bas du dos" data-view="dos"/>
+            <path d="M 38 84 C 44 82, 48 88, 46 98 L 38 148 C 36 156, 26 156, 24 148 L 32 98 C 32 88, 35 84, 38 84 Z" class="body-part" data-zone="Bras" data-view="dos"/>
+            <path d="M 122 84 C 116 82, 112 88, 114 98 L 122 148 C 124 156, 134 156, 136 148 L 128 98 C 128 88, 125 84, 122 84 Z" class="body-part" data-zone="Bras" data-view="dos"/>
+            <path d="M 54 156 C 70 158, 90 158, 106 156 C 112 176, 102 188, 80 188 C 58 188, 48 176, 54 156 Z" class="body-part" data-zone="Fessiers" data-view="dos"/>
+            <path d="M 53 184 C 64 188, 75 186, 76 184 L 72 232 C 70 252, 72 280, 64 284 C 58 284, 54 267, 54 247 L 50 197 C 50 190, 51 186, 53 184 Z" class="body-part" data-zone="Jambes" data-view="dos"/>
+            <path d="M 107 184 C 96 188, 85 186, 84 184 L 88 232 C 90 252, 88 280, 96 284 C 102 284, 106 267, 106 247 L 110 197 C 110 190, 109 186, 107 184 Z" class="body-part" data-zone="Jambes" data-view="dos"/>
+          </svg>
+        </div>
+
+        <div class="sensation-dialog" id="sensationDialog">
+          <div class="sensation-dialog-title" id="sensationDialogTitle">Zone sélectionnée</div>
+          <div class="sensation-dialog-sub">Que ressens-tu dans cette zone ?</div>
+          <div class="sensation-options">
+            <button type="button" class="sensation-btn btn-sens-agreable" onclick="applySensation('agreable')">🟢 Agréable (détente, ouverture)</button>
+            <button type="button" class="sensation-btn btn-sens-tension" onclick="applySensation('tension')">🔴 Inconfort / Tension (serrement)</button>
+            <button type="button" class="sensation-btn btn-sens-remove" onclick="applySensation('remove')">✕ Retirer</button>
+          </div>
+        </div>
+
+        <div class="selected-zones-list" id="selectedZonesList"></div>
+      </div>
+
+      <div style="text-align:center;margin-bottom:20px;">
+        <button type="button" class="zone-btn" id="btnNullePart" onclick="resetAllBodyZones()">✨ Tout mon corps est détendu (aucune tension)</button>
+      </div>
+    </div>
+
+    <!-- ═══ ÉTAPE 3 — État mental ═══ -->
+    <div class="intro-step" id="step-2">
+      <div class="step-badge">🧠 Étape 3 / 4 — Scan Mental</div>
+      <h2 class="intro-step-title">Comment est ton esprit ?</h2>
+      <p class="intro-step-sub">Évalue ta disponibilité mentale avant de vivre la mise en situation.</p>
+
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">☀️ Clarté d'esprit</span><span class="slider-val" id="clarteVal">6</span></div>
+        <input type="range" class="irange" id="clarteSlider" min="0" max="10" value="6" oninput="updateSliderVal('clarteSlider','clarteVal')">
+        <div class="slider-poles"><span>Brouillard</span><span>Très clair</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">🎯 Concentration</span><span class="slider-val" id="concentrationVal">5</span></div>
+        <input type="range" class="irange" id="concentrationSlider" min="0" max="10" value="5" oninput="updateSliderVal('concentrationSlider','concentrationVal')">
+        <div class="slider-poles"><span>Dispersé(e)</span><span>Très concentré(e)</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">📦 Charge mentale</span><span class="slider-val" id="chargeVal">4</span></div>
+        <input type="range" class="irange" id="chargeSlider" min="0" max="10" value="4" oninput="updateSliderVal('chargeSlider','chargeVal')">
+        <div class="slider-poles"><span>Légère</span><span>Surchargé(e)</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="slider-name">🌀 Disponibilité</span><span class="slider-val" id="disponibiliteVal">7</span></div>
+        <input type="range" class="irange" id="disponibiliteSlider" min="0" max="10" value="7" oninput="updateSliderVal('disponibiliteSlider','disponibiliteVal')">
+        <div class="slider-poles"><span>Fermé(e)</span><span>Pleinement disponible</span></div>
+      </div>
+
+      <div class="intro-divider"></div>
+      <label class="intro-checkbox-row">
+        <input type="checkbox" class="intro-checkbox" id="penseeCheck" onchange="togglePenseeField()">
+        <span class="intro-checkbox-label">Une pensée occupe-t-elle ton esprit en ce moment ?</span>
+      </label>
+      <div id="penseeField" style="display:none;">
+        <textarea class="intro-textarea" id="penseeText" placeholder="Note librement ce qui occupe ton esprit… ça restera privé."></textarea>
+      </div>
+    </div>
+
+    <!-- ═══ ÉTAPE 4 — Synthèse initiale ═══ -->
+    <div class="intro-step" id="step-3">
+      <div class="step-badge">🕸️ Étape 4 / 4 — Photographie Initiale</div>
+      <h2 class="intro-step-title">Ton état de départ</h2>
+      <p class="intro-step-sub">Voici ta photographie intérieure. Elle sera mise en regard avec ton ancrage après la situation.</p>
+
+      <div class="synthesis-box">
+        <div class="synthesis-title">Toile d'état — 6 dimensions</div>
+        <div class="synthesis-radar">
+          <svg class="synthesis-svg" viewBox="-110 -110 220 220" id="synthesisSvg">
+            <g id="synthGrid"></g>
+            <g id="synthAxes"></g>
+            <polygon id="synthPolygon" style="fill:rgba(217,119,6,0.25);stroke:#D97706;stroke-width:2;stroke-linejoin:round;"/>
+            <g id="synthLabels"></g>
+          </svg>
+        </div>
+        <div class="synthesis-text" id="synthesisText">Calcul en cours…</div>
+      </div>
+    </div>
+
+    <!-- ═══ ÉTAPE 5 — Situation Pratique ═══ -->
+    <div class="intro-step" id="step-4">
+      <div class="step-badge">🎯 Étape 5 / 9 — Mise en situation</div>
+      <h2 class="intro-step-title" id="sitTitle">Une situation réelle du quotidien</h2>
+      <p class="intro-step-sub" id="sitSubtitle">Prenez un instant pour vous immerger dans ce contexte.</p>
+
+      <div class="exp-card">
+        <div class="exp-situation-context" id="sitContext">Chargement du contexte…</div>
+        <div class="exp-dialogue" id="sitDialogue">« Dialogue »</div>
+      </div>
+    </div>
+
+    <!-- ═══ ÉTAPE 6 — Réaction Réflexe ═══ -->
+    <div class="intro-step" id="step-5">
+      <div class="step-badge">⚡ Étape 6 / 9 — Automatisme réflexe</div>
+      <h2 class="intro-step-title">Votre première réaction spontanée</h2>
+      <p class="intro-step-sub" id="sitQuestion">Quelle est votre première impulsion intérieure ? (Sans vous juger)</p>
+
+      <div class="exp-options-grid" id="optionsGrid"></div>
+    </div>
+
+    <!-- ═══ ÉTAPE 7 — Le Miroir ═══ -->
+    <div class="intro-step" id="step-6">
+      <div class="step-badge">🪞 Étape 7 / 9 — Décryptage du pattern</div>
+      <h2 class="intro-step-title">Le Miroir du Réflexe</h2>
+      <p class="intro-step-sub">Comprendre le besoin caché derrière l'automatisme.</p>
+
+      <div class="mirror-box">
+        <div class="mirror-pattern-badge" id="mirrorPattern">Pattern</div>
+        <div class="mirror-title" id="mirrorTitle">Ce qui se joue en vous</div>
+        <div class="mirror-desc" id="mirrorDesc">Explication du fonctionnement réflexe…</div>
+      </div>
+    </div>
+
+    <!-- ═══ ÉTAPE 8 — Réponse Saine Congruente ═══ -->
+    <div class="intro-step" id="step-7">
+      <div class="step-badge">🌿 Étape 8 / 9 — Réponse saine & choisie</div>
+      <h2 class="intro-step-title">Choisir de répondre au lieu de réagir</h2>
+      <p class="intro-step-sub">Comparez la réaction réflexe avec une formulation congruente, claire et respectueuse.</p>
+
+      <div class="comparison-card" id="comparisonContainer"></div>
+    </div>
+
+    <!-- ═══ ÉTAPE 9 — Synthèse Finale & Ancrage ═══ -->
+    <div class="intro-step" id="step-8">
+      <div class="step-badge">✨ Étape 9 / 9 — Bilan & Ancrage</div>
+      <h2 class="intro-step-title">Votre déclic relationnel</h2>
+      <p class="intro-step-sub">Vous venez d'expérimenter la puissance du choix conscient entre stimulus et réponse.</p>
+
+      <div class="synthesis-box">
+        <div class="synthesis-title">Évolution avant / après l'expérience</div>
+        <div class="synthesis-text" id="finalEvolutionText">
+          En prenant ces quelques minutes pour identifier votre automatisme réflexe et formuler une réponse saine, vous avez désamorcé la réactivité de votre système nerveux.
+        </div>
+      </div>
+
+      <div class="exp-card" style="text-align:center;padding:28px 20px;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-style:italic;color:#FDFAF6;margin-top:0;">Prêt(e) à ancrer ces réflexes dans votre quotidien ?</h3>
+        <p style="font-size:13px;color:rgba(253,250,246,0.7);max-width:480px;margin:0 auto 20px;line-height:1.6;">
+          Découvrez la bibliothèque complète des 8 scénarios d'entraînement interactifs de BEE Congruence.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <a href="dashboard.html" class="intro-next" style="text-decoration:none;display:inline-block;padding:12px 24px;flex:none;">
+            Accéder à l'espace d'entraînement →
+          </a>
+          <button type="button" class="intro-prev" onclick="restartExperience()" style="flex:none;">
+            Tester une autre situation 🔄
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /intro-content -->
+
+  <!-- Navigation Bottom Bar -->
+  <div class="intro-nav">
+    <button class="intro-prev" id="prevBtn" onclick="navigate(-1)" disabled>← Retour</button>
+    <button class="intro-skip" id="skipBtn" onclick="skipToIntroOrScenario()">Passer →</button>
+    <button class="intro-next" id="nextBtn" onclick="navigate(1)">Continuer →</button>
   </div>
-</footer>
+
+</div><!-- /intro-wrap -->
 
 <script src="supabase.js"></script>
-<script src="sync-helper.js"></script>
-<script src="notification-helper.js"></script>
-<script src="nav.js"></script>
-
 <script>
 // ════════════════════════════════════════════════════════
-//  EXPERIENCE 7 MINUTES — Scénarios & Logique Homogène
+//  DATA & SITUATIONS
 // ════════════════════════════════════════════════════════
 
 const SITUATIONS = [
   {
     id: 'msg-sans-reponse',
     tab: '1. Silence relationnel',
-    badge: 'Situation 1 · Message sans réponse',
-    title: 'Vous envoyez un message important à quelqu\'un.',
-    context: 'Quatre heures passent. Le message est vu. Aucune réponse.',
+    badge: 'Situation 1 · Silence relationnel',
+    title: 'Vous envoyez un message important à un proche ou collègue.',
+    context: 'Quatre heures se sont écoulées. Le message est marqué comme « Lu ». Aucune réponse ne vient.',
+    dialogue: '« Lu il y a 4h — Aucun message en retour »',
     question: 'Quelle est votre première réaction intérieure spontanée ?',
     options: [
       {
         id: 'relance',
         icon: '⚡',
-        label: 'Je relance immédiatement ou peu après.',
-        sub: 'L\'incertitude est intolérable, j\'ai besoin d\'une réponse pour me calmer.',
+        title: 'Je relance immédiatement ou avec insistance.',
+        sub: 'L\'incertitude est inconfortable, j\'ai besoin d\'une confirmation rapide.',
         mirror: {
           pattern: 'La réduction immédiate de l\'inconfort par l\'action précipitée.',
-          desc: 'Votre premier réflexe cherche à soulager la tension en comblant le silence. Ce réflexe part d\'une volonté louable de clarifier, mais lorsqu\'il est automatique, il peut être perçu comme de la pression par l\'autre et maintenir votre système nerveux en état d\'alerte.'
-        }
+          desc: 'Votre système nerveux cherche à soulager la tension en comblant le vide. Ce réflexe part d\'un désir louable de clarté, mais lorsqu\'il est impulsif, il est souvent vécu comme une pression par l\'autre et entretient votre hyper-vigilance.'
+        },
+        reponse_auto: '« Pourquoi tu ne réponds jamais quand je t\'écris ? C\'est vraiment pénible. »',
+        reponse_saine: '« C\'est un sujet important pour moi, fais-moi signe quand tu auras 5 minutes sereines pour échanger. »'
       },
       {
         id: 'inquietude',
         icon: '😟',
-        label: 'Je commence à m\'inquiéter ou à culpabiliser.',
+        title: 'Je m\'inquiète et je commence à culpabiliser.',
         sub: '« Qu\'est-ce que j\'ai fait de mal ? Est-ce qu\'il/elle m\'en veut ? »',
         mirror: {
           pattern: 'L\'anticipation anxieuse et l\'auto-reproche.',
-          desc: 'Votre esprit se précipite pour trouver une explication négative avant même d\'avoir le moindre élément de fait. Ce réflexe cherche à vous préparer au rejet, mais il consomme une énergie psychique précieuse sur des scénarios imaginés.'
-        }
+          desc: 'Votre esprit se précipite pour trouver une explication négative sans fait tangible. Ce réflexe cherche à vous prémunir du rejet, mais il consomme une précieuse énergie sur des scénarios imaginaires.'
+        },
+        reponse_auto: '« Excuse-moi si je t\'ai dérangé(e), j\'aurais peut-être pas dû envoyer ça... »',
+        reponse_saine: '« J\'aimerais simplement savoir si tu as besoin de temps avant de répondre ou si tu es très pris(e). »'
       },
       {
         id: 'fermeture',
         icon: '🛡️',
-        label: 'Je me ferme et je prends mes distances.',
+        title: 'Je me ferme et je prends mes distances.',
         sub: '« C\'est toujours pareil. Puisque c\'est comme ça, je ne dirai plus rien. »',
         mirror: {
-          pattern: 'La protection préventive par le retrait émotionnel.',
-          desc: 'Vous coupez préventivement le lien pour ne pas risquer d\'être blessé(e) ou ignoré(e). Ce réflexe vous donne une illusion de contrôle, mais il érige un mur et empêche l\'autre de comprendre ce que vous vivez.'
-        }
-      },
-      {
-        id: 'detachement',
-        icon: '🧊',
-        label: 'Je fais comme si cela ne me faisait absolument rien.',
-        sub: 'Je minimise mon besoin et je passe à autre chose en surface.',
-        mirror: {
-          pattern: 'L\'évitement affectif par la rationalisation.',
-          desc: 'Vous anesthésiez votre ressenti pour préserver votre fierté ou votre tranquillité apparente. Ce réflexe protège votre vulnérabilité, mais à force d\'étouffer vos attentes légitimes, il crée de la rancœur sous-jacente.'
-        }
-      }
-    ],
-    responses: [
-      {
-        id: 'reproche',
-        type: 'Réaction réflexe automatique',
-        text: '« Pourquoi tu ne réponds jamais quand je t\'écris ? C\'est vraiment irrespectueux. »',
-        impact: 'Attaque l\'autre, suscite immédiatement de la justification ou de la fermeture.'
-      },
-      {
-        id: 'evitement',
-        type: 'Évitement & bouderie',
-        text: '« Laisse tomber, oublie ce que j\'ai dit. »',
-        impact: 'Masque votre besoin réel, installe un non-dit toxique.'
-      },
-      {
-        id: 'curiosite',
-        type: 'Réponse choisie & ouverte',
-        text: '« J\'aimerais comprendre si tu as besoin de temps avant de répondre ou si tu es simplement pris(e). »',
-        impact: 'Écoute sincère, sans accuser ni capituler.'
-      },
-      {
-        id: 'affirmation',
-        type: 'Clarté & affirmation bienveillante (Congruente)',
-        text: '« C\'est un sujet important pour moi, fais-moi signe quand tu auras 5 minutes sereines pour échanger. »',
-        impact: 'Pose l\'importance pour vous tout en respectant l\'espace de l\'autre.'
+          pattern: 'La protection préventive par le retrait affectif.',
+          desc: 'Vous coupez le lien pour ne pas risquer d\'être blessé(e) ou ignoré(e). Ce réflexe donne une illusion de contrôle, mais il érige une barrière et prive l\'autre de l\'opportunité de comprendre votre vécu.'
+        },
+        reponse_auto: '« Laisse tomber, oublie ce que j\'ai dit. » (avec froideur)',
+        reponse_saine: '« Quand je vois le message lu sans retour, j\'ai tendance à me refermer. Je préfère te le dire simplement pour garder le lien ouvert. »'
       }
     ]
   },
@@ -576,59 +1048,46 @@ const SITUATIONS = [
     id: 'critique-publique',
     tab: '2. Critique en public',
     badge: 'Situation 2 · Remarque déstabilisante',
-    title: 'Un proche ou collègue critique votre travail ou attitude devant d\'autres.',
-    context: '« Franchement, tu as toujours tendance à compliquer les choses simplement. »',
+    title: 'Un proche ou un collègue critique votre attitude devant d\'autres personnes.',
+    context: 'Lors d\'un moment partagé, la personne lâche sur un ton agacé :',
+    dialogue: '« — Franchement, tu as toujours tendance à compliquer les choses simplement. »',
     question: 'Quelle est votre première réaction intérieure spontanée ?',
     options: [
       {
         id: 'attaque',
         icon: '⚔️',
-        label: 'J\'attaque ou je réplique sur un ton piquant.',
-        sub: '« Regarde-toi d\'abord avant de donner des leçons ! »',
+        title: 'J\'attaque ou je réplique sur un ton piquant.',
+        sub: '« Regarde-toi d\'abord avant de donner des leçons aux autres ! »',
         mirror: {
-          pattern: 'La contre-attaque réflexe pour ne pas paraître vulnérable.',
-          desc: 'Votre système perçoit la remarque comme une atteinte directe à votre valeur. Vous répliquez immédiatement pour reprendre l\'ascendant, mais cela enclenche une escalade stérile.'
-        }
+          pattern: 'La contre-attaque réflexe pour masquer la vulnérabilité.',
+          desc: 'Votre système perçoit la remarque comme une atteinte à votre valeur. Vous répliquez immédiatement pour reprendre le dessus, mais cela enclenche une escalade stérile.'
+        },
+        reponse_auto: '« Tu dis n\'importe quoi, de toute façon tu ne comprends jamais rien ! »',
+        reponse_saine: '« Je n\'apprécie pas qu\'on aborde ce sujet sur ce ton devant tout le monde. Parlons-en calmement en tête-à-tête. »'
       },
       {
         id: 'surjustif',
         icon: '📜',
-        label: 'Je me surjustifie longuement pour convaincre.',
-        sub: 'J\'explique minutieusement toutes mes raisons pour me dédouaner.',
+        title: 'Je me surjustifie longuement pour me dédouaner.',
+        sub: 'J\'explique minutieusement mes raisons pour obtenir l\'approbation.',
         mirror: {
           pattern: 'La dépendance à la validation extérieure.',
-          desc: 'Vous donnez à l\'autre le pouvoir de décider si vous êtes légitime. Plus vous vous justifiez sous l\'émotion, plus vous semblez affaibli(e).'
-        }
+          desc: 'Vous donnez à l\'autre le pouvoir exclusif de décider de votre légitimité. Plus vous vous justifiez sous le coup de l\'émotion, plus votre position semble fragilisée.'
+        },
+        reponse_auto: '« Mais non, tu ne comprends pas, j\'ai fait ça parce que... et puis après il y a eu... »',
+        reponse_saine: '« Qu\'est-ce qui te fait dire ça concrètement ? Parlons d\'un élément précis quand nous serons au calme. »'
       },
       {
         id: 'inhibition',
         icon: '🤐',
-        label: 'J\'encaisse en souriant gêné(e), puis je rumine.',
+        title: 'J\'encaisse en souriant gêné(e), puis je rumine.',
         sub: 'Je n\'ose rien dire sur le moment, mais la rancœur reste bloquée.',
         mirror: {
           pattern: 'L\'effacement de soi pour éviter le conflit.',
-          desc: 'Vous sacrifiez votre limite pour maintenir la paix extérieure. Mais cette émotion non exprimée se transforme en fatigue ou amertume.'
-        }
-      }
-    ],
-    responses: [
-      {
-        id: 'escalade',
-        type: 'Réaction automatique réflexe',
-        text: '« Tu dis n\'importe quoi, de toute façon tu ne comprends jamais rien. »',
-        impact: 'Nourrit le conflit et braque l\'interlocuteur.'
-      },
-      {
-        id: 'cadre_calme',
-        type: 'Recadrage calme & adulte (Congruent)',
-        text: '« Je n\'apprécie pas qu\'on aborde ce sujet sur ce ton devant tout le monde. Parlons-en calmement en tête-à-tête. »',
-        impact: 'Pose une limite ferme et digne, sans agressivité ni fuite.'
-      },
-      {
-        id: 'question_precision',
-        type: 'Question de clarté factuelle',
-        text: '« Qu\'est-ce qui te fait dire ça concrètement ? Quel élément précis te semble perfectible ? »',
-        impact: 'Ramène la conversation sur des faits tangibles et désamorce les jugements gratuits.'
+          desc: 'Vous sacrifiez votre limite pour maintenir une paix de façade. Cette émotion non exprimée se transforme en fatigue et en ressentiment silencieux.'
+        },
+        reponse_auto: '(Sourire figé, silence pesant, digestion difficile)',
+        reponse_saine: '« Ta remarque me met mal à l\'aise ici. Je t\'invite à me partager tes retours en privé. »'
       }
     ]
   },
@@ -636,381 +1095,614 @@ const SITUATIONS = [
     id: 'demande-trop',
     tab: '3. Difficulté à dire non',
     badge: 'Situation 3 · Frontière personnelle',
-    title: 'On vous sollicite pour un service urgent alors que vous êtes déjà débordé(e).',
-    context: '« S\'il te plaît, je suis coincé(e), il n\'y a que toi qui peux me sauver sur ce coup ! »',
+    title: 'On vous sollicite pour un service urgent alors que vous êtes débordé(e).',
+    context: 'Une personne proche insiste avec un mélange d\'urgence et de flatterie :',
+    dialogue: '« — S\'il te plaît, je suis coincé(e), il n\'y a vraiment que toi qui peux m\'aider sur ce coup ! »',
     question: 'Quelle est votre première réaction intérieure spontanée ?',
     options: [
       {
         id: 'suradaptation',
         icon: '😔',
-        label: 'Je dis oui malgré moi, puis je m\'en veux.',
-        sub: 'La peur de décevoir ou de passer pour égoïste l\'emporte sur ma fatigue.',
+        title: 'Je dis oui malgré moi, puis je m\'en veux.',
+        sub: 'La peur de décevoir ou de paraître égoïste l\'emporte sur ma fatigue.',
         mirror: {
-          pattern: 'La suradaptation et le sacrifice de ses propres besoins.',
-          desc: 'Vous dites oui aux autres et non à vous-même. À terme, cette dynamique engendre un épuisement silencieux et un sentiment d\'être exploité(e).'
-        }
+          pattern: 'La suradaptation et le sacrifice de ses propres limites.',
+          desc: 'Vous dites oui aux autres et non à vous-même. À terme, cette dynamique engendre un épuisement silencieux et un sentiment de subir la relation.'
+        },
+        reponse_auto: '« Bon... d\'accord, je vais me débrouiller pour trouver le temps... » (en soupirant)',
+        reponse_saine: '« Je comprends ton urgence, mais je ne pourrai pas t\'aider aujourd\'hui car mon planning est complet. Bon courage pour trouver une solution. »'
       },
       {
-        id: 'agacement_brut',
+        id: 'agacement',
         icon: '😤',
-        label: 'Je refuse avec agacement ou irritation.',
-        sub: '« Vous abusez tous ! Vous ne voyez pas que j\'ai déjà trop de travail ? »',
+        title: 'Je refuse avec agacement ou irritation.',
+        sub: '« Vous abusez ! Vous ne voyez pas que je n\'ai pas une minute ? »',
         mirror: {
           pattern: 'Le rejet agressif par saturation.',
-          desc: 'N\'arrivant pas à poser un non calme et posé, vous avez besoin de convoquer la colère pour réussir à vous défendre.'
-        }
+          desc: 'N\'arrivant pas à poser un « non » calme et affirmé, vous avez besoin de convoquer la colère pour réussir à vous faire respecter.'
+        },
+        reponse_auto: '« Arrête de toujours me solliciter à la dernière minute ! C\'est non ! »',
+        reponse_saine: '« Je ne peux pas prendre en charge cette demande complète, en revanche je peux t\'accorder 10 minutes demain matin si cela peut t\'orienter. »'
       },
       {
         id: 'esquive',
         icon: '🏃',
-        label: 'J\'esquive ou je repousse ma réponse indéfiniment.',
-        sub: 'Je tarde à répondre en espérant que la personne trouvera une autre solution.',
+        title: 'J\'esquive ou je repousse ma réponse indéfiniment.',
+        sub: 'Je tarde à répondre en espérant que la personne trouvera ailleurs.',
         mirror: {
-          pattern: 'L\'évitement par inconfort de la confrontation.',
+          pattern: 'L\'évitement par inconfort de la confrontation directe.',
           desc: 'Vous gagnez du temps à court terme mais conservez une anxiété latente et une image fuyante.'
-        }
-      }
-    ],
-    responses: [
-      {
-        id: 'oui_amer',
-        type: 'Réaction réflexe de soumission',
-        text: '« Bon... d\'accord, mais c\'est bien parce que c\'est toi... » (en soupirant)',
-        impact: 'Installe de la rancœur et valide le fait qu\'on peut empiéter sur votre temps.'
-      },
-      {
-        id: 'non_ferme',
-        type: 'Refus clair, bienveillant & sans culpabilité (Congruent)',
-        text: '« Je comprends ton urgence, mais je ne pourrai pas t\'aider aujourd\'hui car mon planning est complet. Bon courage pour trouver une solution. »',
-        impact: 'Respecte votre limite sans agressivité et responsabilise l\'autre avec bienveillance.'
-      },
-      {
-        id: 'compromis',
-        type: 'Contre-proposition mesurée',
-        text: '« Je ne peux pas prendre en charge le dossier complet, en revanche je peux t\'accorder 15 minutes demain matin pour relire la synthèse. »',
-        impact: 'Définit précisément ce que vous pouvez offrir sans vous mettre en difficulté.'
+        },
+        reponse_auto: '« Je te redis plus tard peut-être si j\'ai un moment... » (sans donner suite)',
+        reponse_saine: '« Je préfère te dire tout de suite que je ne serai pas disponible, pour que tu puisses t\'organiser sans attendre. »'
       }
     ]
   }
 ];
 
-const STEPS_CONFIG = [
-  { id: 'situation',  label: '1. Situation',     phase: 0 },
-  { id: 'automatisme',label: '2. Réaction',      phase: 1 },
-  { id: 'miroir',     label: '3. Le Miroir',     phase: 2 },
-  { id: 'reponse',    label: '4. Réponse saine', phase: 3 },
-  { id: 'synthese',   label: '5. Synthèse',      phase: 4 },
+const EMOTIONS = [
+  { emoji: '😊', label: 'Bien' },
+  { emoji: '😌', label: 'Calme' },
+  { emoji: '😔', label: 'Triste' },
+  { emoji: '😤', label: 'Frustré(e)' },
+  { emoji: '😰', label: 'Anxieux(se)' },
+  { emoji: '😴', label: 'Fatigué(e)' },
+  { emoji: '😡', label: 'En colère' },
+  { emoji: '🥰', label: 'Aimant(e)' },
+  { emoji: '😕', label: 'Confus(e)' },
+  { emoji: '💪', label: 'Motivé(e)' },
+  { emoji: '😶', label: 'Vide' },
+  { emoji: '🤩', label: 'Enthousiaste' },
 ];
 
-let currentSituationIdx = 0;
-let currentStepIdx = 0;
-let selectedOption = null;
-let selectedResponse = null;
+const SEC_EMOTIONS = [
+  'Joie', 'Sérénité', 'Incertitude', 'Impatience',
+  'Nostalgie', 'Espoir', 'Culpabilité', 'Fierté',
+];
 
-// ── Initialisation ──
-document.addEventListener('DOMContentLoaded', () => {
+const RADAR_DIMS = [
+  { label: 'Émotionnel', key: 'emotionnel' },
+  { label: 'Énergie',    key: 'energie' },
+  { label: 'Légèreté',  key: 'legerete' },
+  { label: 'Clarté',     key: 'clarte' },
+  { label: 'Dispo.',     key: 'disponibilite' },
+  { label: 'Sérénité',  key: 'serenite' },
+];
+
+const INTENSITY_DESCS = [
+  '', 'Très légère', 'Légère', 'Modérée légère', 'Modérée',
+  'Modérée', 'Assez forte', 'Forte', 'Très forte', 'Intense', 'Très intense',
+];
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+
+let currentStep = 0;
+const TOTAL_STEPS = 9;
+let currentSituationIdx = 0;
+let selectedOption = null;
+
+const state = {
+  emotions: [],
+  emotionsSecondaires: [],
+  intensite: 5,
+  corps: { energie: 5, tensions: 3, fatigue: 3, legerete: 6 },
+  bodyZonesDetail: [],
+  zonesTension: [],
+  mental: { clarte: 6, concentration: 5, charge: 4, disponibilite: 7 },
+  penseeOccupante: ''
+};
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+
+function init() {
+  buildEmotionGrid();
+  buildSecEmotions();
+  initBodySilhouette();
+  buildStepper();
   renderSituationsBar();
-  renderStepper();
-  renderCurrentStep();
-});
+  loadSituationData(0);
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('exp') === 'practice') {
+    currentStep = 4; // Start right at situation
+  }
+
+  showStep(currentStep);
+}
+
+function buildEmotionGrid() {
+  const grid = document.getElementById('emotionGrid');
+  grid.innerHTML = '';
+  EMOTIONS.forEach(e => {
+    const btn = document.createElement('button');
+    btn.className = 'emotion-btn';
+    btn.innerHTML = `<span class="emotion-emoji">${e.emoji}</span><span class="emotion-label">${e.label}</span>`;
+    btn.onclick = () => toggleEmotion(btn, e.emoji, e.label);
+    grid.appendChild(btn);
+  });
+}
+
+function buildSecEmotions() {
+  const container = document.getElementById('secEmotionZones');
+  container.innerHTML = '';
+  SEC_EMOTIONS.forEach(label => {
+    const btn = document.createElement('button');
+    btn.className = 'zone-btn';
+    btn.textContent = label;
+    btn.onclick = () => toggleSecEmotion(btn, label);
+    container.appendChild(btn);
+  });
+}
 
 function renderSituationsBar() {
   const bar = document.getElementById('situationsBar');
-  if (!bar) return;
   bar.innerHTML = SITUATIONS.map((s, idx) => `
-    <button class="exp-situation-tab ${idx === currentSituationIdx ? 'active' : ''}" onclick="switchSituation(${idx})">
+    <button class="sit-tab ${idx === currentSituationIdx ? 'active' : ''}" onclick="selectSituation(${idx})">
       ${s.tab}
     </button>
   `).join('');
 }
 
-function switchSituation(idx) {
+function selectSituation(idx) {
   currentSituationIdx = idx;
-  currentStepIdx = 0;
   selectedOption = null;
-  selectedResponse = null;
   renderSituationsBar();
-  renderStepper();
-  renderCurrentStep();
+  loadSituationData(idx);
+  if (currentStep > 4) {
+    showStep(4);
+  } else {
+    loadSituationData(idx);
+  }
 }
 
-function renderStepper() {
-  const stepper = document.getElementById('stepperTabs');
-  if (!stepper) return;
-  stepper.innerHTML = STEPS_CONFIG.map((st, idx) => `
-    <button class="sd-step-btn ${idx === currentStepIdx ? 'active' : ''} ${idx < currentStepIdx ? 'done' : ''}" onclick="goToStep(${idx})">
-      ${st.label}
-    </button>
-  `).join('');
+function loadSituationData(idx) {
+  const sit = SITUATIONS[idx];
+  document.getElementById('sitTitle').textContent = sit.title;
+  document.getElementById('sitContext').textContent = sit.context;
+  document.getElementById('sitDialogue').textContent = sit.dialogue;
+  document.getElementById('sitQuestion').textContent = sit.question;
 
-  // Update phase bar
-  const currentPhase = STEPS_CONFIG[currentStepIdx].phase;
-  document.querySelectorAll('.sd-phase-item').forEach((item, idx) => {
-    item.classList.remove('active', 'done');
-    if (idx === currentPhase) item.classList.add('active');
-    else if (idx < currentPhase) item.classList.add('done');
+  // Build Options Grid for Step 6
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = sit.options.map((opt, oIdx) => `
+    <div class="exp-option-card" id="optCard-${oIdx}" onclick="chooseOption(${oIdx})">
+      <span class="exp-opt-icon">${opt.icon}</span>
+      <div>
+        <div class="exp-opt-title">${opt.title}</div>
+        <div class="exp-opt-sub">${opt.sub}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function chooseOption(oIdx) {
+  const sit = SITUATIONS[currentSituationIdx];
+  selectedOption = sit.options[oIdx];
+
+  document.querySelectorAll('.exp-option-card').forEach((c, i) => {
+    c.classList.toggle('selected', i === oIdx);
   });
 
-  // Update nav buttons
-  const btnPrev = document.getElementById('btnPrev');
-  const btnNext = document.getElementById('btnNext');
-  const progressText = document.getElementById('stepProgressText');
+  // Populate Mirror
+  document.getElementById('mirrorPattern').textContent = selectedOption.mirror.pattern;
+  document.getElementById('mirrorTitle').textContent = selectedOption.title;
+  document.getElementById('mirrorDesc').textContent = selectedOption.mirror.desc;
 
-  if (btnPrev) btnPrev.disabled = (currentStepIdx === 0);
-  if (btnNext) {
-    if (currentStepIdx === STEPS_CONFIG.length - 1) {
-      btnNext.textContent = 'Terminer l\'expérience ✓';
-      btnNext.className = 'sd-nav-btn primary';
-    } else {
-      btnNext.textContent = 'Suivant →';
-      btnNext.className = 'sd-nav-btn primary';
-    }
-  }
-  if (progressText) {
-    progressText.textContent = `Étape ${currentStepIdx + 1} sur ${STEPS_CONFIG.length}`;
+  // Populate Comparison
+  const comp = document.getElementById('comparisonContainer');
+  comp.innerHTML = `
+    <div class="reflexe-box">
+      <div class="reflexe-tag">⚡ Votre réaction réflexe automatique</div>
+      <div class="reflexe-text">${selectedOption.reponse_auto}</div>
+    </div>
+    <div class="congruent-box">
+      <div class="congruent-tag">🌿 Réponse saine, calme & congruente</div>
+      <div class="congruent-text">${selectedOption.reponse_saine}</div>
+    </div>
+  `;
+
+  // Auto-advance after small feedback delay
+  setTimeout(() => navigate(1), 350);
+}
+
+// ════════════════════════════════════════════════════════
+//  STEPPER & NAVIGATION
+// ════════════════════════════════════════════════════════
+
+function buildStepper() {
+  const dots = document.getElementById('stepperDots');
+  dots.innerHTML = '';
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'intro-step-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => { if (i <= currentStep) showStep(i); };
+    dots.appendChild(dot);
   }
 }
 
-function goToStep(stepIdx) {
-  // Empêcher d'avancer à l'étape 3 sans avoir sélectionné une option
-  if (stepIdx >= 2 && !selectedOption) {
-    if (typeof showToast === 'function') {
-      showToast('Veuillez d\'abord choisir une réaction spontanée à l\'étape 2.', 'warning');
-    }
+function navigate(dir) {
+  const newStep = currentStep + dir;
+  if (newStep < 0 || newStep >= TOTAL_STEPS) return;
+
+  if (currentStep === 0) collectStep0();
+  if (currentStep === 1) collectStep1();
+  if (currentStep === 2) collectStep2();
+
+  if (newStep === 3) buildSynthesis();
+
+  if (currentStep === 5 && !selectedOption && dir > 0) {
+    // Force user to pick an option
+    const firstOpt = document.querySelector('.exp-option-card');
+    if (firstOpt) firstOpt.classList.add('selected');
+    chooseOption(0);
     return;
   }
-  currentStepIdx = stepIdx;
-  renderStepper();
-  renderCurrentStep();
-  window.scrollTo({ top: 120, behavior: 'smooth' });
+
+  showStep(newStep);
 }
 
-function navigateStep(direction) {
-  const nextIdx = currentStepIdx + direction;
-  if (nextIdx < 0) return;
-  if (nextIdx >= STEPS_CONFIG.length) {
-    // Fin de l'expérience : enregistrement et redirection
-    saveExperienceRecord();
-    window.location.href = 'dashboard.html?from_exp=1';
-    return;
-  }
-  goToStep(nextIdx);
+function showStep(index) {
+  document.querySelectorAll('.intro-step').forEach(s => s.classList.remove('active'));
+  const targetStep = document.getElementById(`step-${index}`);
+  if (targetStep) targetStep.classList.add('active');
+  currentStep = index;
+
+  // Stepper dots
+  document.querySelectorAll('.intro-step-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === index);
+    d.classList.toggle('done', i < index);
+  });
+
+  // Step label
+  document.getElementById('stepLabel').textContent = `${index + 1} / ${TOTAL_STEPS}`;
+
+  // Situation bar visibility
+  const sitBar = document.getElementById('situationsBar');
+  sitBar.style.display = (index >= 4) ? 'flex' : 'none';
+
+  // Update Nav buttons
+  updateNavButtons();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function selectOption(optId) {
-  const sit = SITUATIONS[currentSituationIdx];
-  selectedOption = sit.options.find(o => o.id === optId);
-  renderCurrentStep();
-}
+function updateNavButtons() {
+  const isFirst = currentStep === 0;
+  const isLast  = currentStep === TOTAL_STEPS - 1;
 
-function selectResponse(respId) {
-  const sit = SITUATIONS[currentSituationIdx];
-  selectedResponse = sit.responses.find(r => r.id === respId);
-  renderCurrentStep();
-}
+  document.getElementById('prevBtn').disabled = isFirst;
+  const nextBtn = document.getElementById('nextBtn');
+  const skipBtn = document.getElementById('skipBtn');
 
-function renderCurrentStep() {
-  const container = document.getElementById('stepContainer');
-  if (!container) return;
-
-  const sit = SITUATIONS[currentSituationIdx];
-  const step = STEPS_CONFIG[currentStepIdx];
-
-  if (step.id === 'situation') {
-    container.innerHTML = `
-      <div class="sd-card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
-          <span class="sd-tag sd-tag-theme">${sit.badge}</span>
-          <span style="font-family:'Nunito',sans-serif; font-size:12px; font-weight:700; color:var(--brown-light);">Phase 1 · Observation</span>
-        </div>
-        <h2 class="sd-title">${sit.title}</h2>
-        <div class="sd-situation">
-          ${sit.context}
-        </div>
-        <p style="font-family:'Nunito',sans-serif; font-size:15px; color:var(--brown-mid); line-height:1.7;">
-          Dans ce type de moment précis, notre système nerveux réagit en quelques millisecondes avant même que la pensée consciente n'intervienne.
-        </p>
-        <div style="margin-top:24px; text-align:right;">
-          <button class="sd-nav-btn primary" onclick="navigateStep(1)">Découvrir mes réactions spontanées →</button>
-        </div>
-      </div>
-    `;
-  } else if (step.id === 'automatisme') {
-    container.innerHTML = `
-      <div class="sd-card">
-        <span class="sd-tag sd-tag-theme">${sit.badge}</span>
-        <h2 class="sd-title" style="margin-top:12px;">${sit.question}</h2>
-        <p style="font-family:'Nunito',sans-serif; font-size:14px; color:var(--brown-mid); margin-bottom:20px;">
-          Choisissez l'option la plus proche de votre réflexe naturel, sans vous juger :
-        </p>
-        <div class="sd-options-grid">
-          ${sit.options.map(opt => `
-            <div class="sd-option-card ${selectedOption && selectedOption.id === opt.id ? 'selected' : ''}" onclick="selectOption('${opt.id}')">
-              <div class="sd-opt-icon">${opt.icon}</div>
-              <div style="flex:1;">
-                <div class="sd-opt-title">${opt.label}</div>
-                <div class="sd-opt-sub">${opt.sub}</div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  } else if (step.id === 'miroir') {
-    const mirror = selectedOption ? selectedOption.mirror : sit.options[0].mirror;
-    container.innerHTML = `
-      <div class="sd-card">
-        <span class="sd-tag sd-tag-theme">Phase 3 · Analyse Réflexive</span>
-        <h2 class="sd-title" style="margin-top:12px;">Le Miroir de votre réaction</h2>
-        
-        <div class="sd-feedback-box" style="margin-top:20px;">
-          <div style="font-family:'Nunito',sans-serif; font-size:12px; font-weight:800; text-transform:uppercase; color:var(--orange); letter-spacing:0.1em; margin-bottom:8px;">
-            Schéma identifié
-          </div>
-          <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--brown-dark); font-style:italic; margin-bottom:12px;">
-            « ${mirror.pattern} »
-          </div>
-          <p style="font-family:'Lora',serif; font-size:15px; color:var(--brown-dark); line-height:1.8;">
-            ${mirror.desc}
-          </p>
-        </div>
-
-        <div style="background:white; border:1.5px dashed var(--amber); border-radius:16px; padding:20px; margin-top:20px;">
-          <div style="font-weight:700; font-family:'Nunito',sans-serif; color:var(--brown-dark); font-size:14px; margin-bottom:6px;">
-            💡 Le déclic de la congruence :
-          </div>
-          <p style="font-size:13px; color:var(--brown-mid); font-family:'Nunito',sans-serif; line-height:1.6; margin:0;">
-            Réagir est automatique, mais répondre est un choix conscient. En marquant une pause de quelques secondes, vous reprenez la maîtrise de votre réponse.
-          </p>
-        </div>
-      </div>
-    `;
-  } else if (step.id === 'reponse') {
-    container.innerHTML = `
-      <div class="sd-card">
-        <span class="sd-tag sd-tag-theme">Phase 4 · Entraînement au choix</span>
-        <h2 class="sd-title" style="margin-top:12px;">Choisir une réponse constructive</h2>
-        <p style="font-family:'Nunito',sans-serif; font-size:14px; color:var(--brown-mid); margin-bottom:20px;">
-          Comparez les différentes façons d'exprimer vos besoins dans cette situation :
-        </p>
-
-        <div style="display:flex; flex-direction:column; gap:16px;">
-          ${sit.responses.map(resp => `
-            <div style="background:${resp.type.includes('Congruente') || resp.type.includes('choisie') ? 'rgba(90,138,58,0.08)' : 'var(--cream-dark)'}; border:1.5px solid ${resp.type.includes('Congruente') || resp.type.includes('choisie') ? 'rgba(90,138,58,0.25)' : 'var(--border)'}; border-radius:16px; padding:18px 20px;">
-              <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:${resp.type.includes('Congruente') || resp.type.includes('choisie') ? 'var(--green)' : '#8B2020'}; margin-bottom:6px;">
-                ${resp.type}
-              </div>
-              <div style="font-family:'Lora',serif; font-size:16px; font-style:italic; color:var(--brown-dark); margin-bottom:8px; line-height:1.6;">
-                ${resp.text}
-              </div>
-              <div style="font-family:'Nunito',sans-serif; font-size:13px; color:var(--brown-mid);">
-                <strong>Impact :</strong> ${resp.impact}
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  } else if (step.id === 'synthese') {
-    container.innerHTML = `
-      <div class="sd-card" style="text-align:center;">
-        <div style="font-size:48px; margin-bottom:12px;">🌟</div>
-        <h2 class="sd-title">Félicitations !</h2>
-        <p style="font-family:'Nunito',sans-serif; font-size:15px; color:var(--brown-mid); max-width:540px; margin:0 auto 28px; line-height:1.7;">
-          Vous venez d'expérimenter la boucle fondamentale de BEE Congruence : <strong>Perception → Pause réflexive → Réponse affirmée et apaisée</strong>.
-        </p>
-
-        <div style="background:var(--warm-white); border:1.5px solid var(--border); border-radius:20px; padding:24px; max-width:500px; margin:0 auto 28px; text-align:left;">
-          <div style="font-family:'Nunito',sans-serif; font-size:12px; font-weight:800; text-transform:uppercase; color:var(--orange); letter-spacing:0.1em; margin-bottom:10px;">
-            Vos acquis de cette session 7 min :
-          </div>
-          <ul style="font-family:'Nunito',sans-serif; font-size:14px; color:var(--brown-dark); line-height:1.8; padding-left:20px; margin:0;">
-            <li>Identification du déclencheur émotionnel</li>
-            <li>Prise de conscience du réflexe automatique</li>
-            <li>Désamorçage de l'escalade conflictuelle</li>
-            <li>Formulation d'une posture congruente</li>
-          </ul>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:12px; max-width:400px; margin:0 auto;">
-          <a href="dashboard.html" class="sd-nav-btn primary" style="padding:14px 28px; text-align:center;">
-            ⚡ Découvrir mes scénarios d'entraînement →
-          </a>
-          <a href="questionnaire.html" class="sd-nav-btn" style="padding:12px 24px; text-align:center;">
-            🧭 Passer le diagnostic complet (5 axes)
-          </a>
-        </div>
-      </div>
-    `;
-  }
-}
-
-function saveExperienceRecord() {
-  try {
-    const sit = SITUATIONS[currentSituationIdx];
-    const record = {
-      situation_id: sit.id,
-      situation_title: sit.title,
-      selected_option: selectedOption ? selectedOption.label : null,
-      completed_at: new Date().toISOString()
-    };
-    const history = JSON.parse(localStorage.getItem('bee_7min_history') || '[]');
-    history.unshift(record);
-    localStorage.setItem('bee_7min_history', JSON.stringify(history.slice(0, 10)));
-  } catch(e) {}
-}
-
-// ── Text-to-Speech (TTS) Homogène avec scenario-detail ──
-let ttsUtter = null;
-let ttsActive = false;
-
-function toggleTTS() {
-  if (ttsActive) {
-    stopTTS();
+  if (isLast) {
+    nextBtn.textContent = 'Explorer les scénarios 🚀';
+    nextBtn.onclick = () => window.location.href = 'dashboard.html';
+    skipBtn.style.display = 'none';
+  } else if (currentStep === 3) {
+    nextBtn.textContent = 'Passer à la situation 🎯';
+    nextBtn.onclick = () => navigate(1);
+    skipBtn.style.display = 'none';
   } else {
-    startTTS();
+    nextBtn.textContent = 'Continuer →';
+    nextBtn.onclick = () => navigate(1);
+    skipBtn.style.display = (currentStep < 4) ? 'block' : 'none';
   }
 }
 
-function startTTS() {
-  if (!('speechSynthesis' in window)) {
-    if (typeof showToast === 'function') showToast('Synthèse vocale non supportée par votre navigateur.', 'warning');
+function skipToIntroOrScenario() {
+  if (currentStep < 4) {
+    showStep(4);
+  } else {
+    showStep(TOTAL_STEPS - 1);
+  }
+}
+
+function restartExperience() {
+  currentStep = 4;
+  selectedOption = null;
+  const nextIdx = (currentSituationIdx + 1) % SITUATIONS.length;
+  selectSituation(nextIdx);
+  showStep(4);
+}
+
+// ════════════════════════════════════════════════════════
+//  INTROSPECTION HELPERS
+// ════════════════════════════════════════════════════════
+
+function toggleEmotion(btn, emoji, label) {
+  if (btn.classList.contains('sel')) {
+    btn.classList.remove('sel');
+    state.emotions = state.emotions.filter(e => e.emoji !== emoji);
+  } else {
+    if (state.emotions.length >= 3) {
+      const first = document.querySelector('.emotion-btn.sel');
+      if (first) { first.classList.remove('sel'); state.emotions.shift(); }
+    }
+    btn.classList.add('sel');
+    state.emotions.push({ emoji, label });
+  }
+}
+
+function toggleSecEmotion(btn, label) {
+  if (btn.classList.contains('sel')) {
+    btn.classList.remove('sel');
+    state.emotionsSecondaires = state.emotionsSecondaires.filter(e => e !== label);
+  } else {
+    if (state.emotionsSecondaires.length >= 2) {
+      const first = document.querySelector('#secEmotionZones .zone-btn.sel');
+      if (first) { first.classList.remove('sel'); state.emotionsSecondaires.shift(); }
+    }
+    btn.classList.add('sel');
+    state.emotionsSecondaires.push(label);
+  }
+}
+
+let currentActiveZone = null;
+function switchSilhouetteView(view) {
+  const isFace = view === 'face';
+  document.getElementById('tabFace').classList.toggle('active', isFace);
+  document.getElementById('tabDos').classList.toggle('active', !isFace);
+  document.getElementById('svgFace').style.display = isFace ? 'block' : 'none';
+  document.getElementById('svgDos').style.display = !isFace ? 'block' : 'none';
+  closeSensationDialog();
+}
+
+function initBodySilhouette() {
+  document.querySelectorAll('.body-part').forEach(part => {
+    part.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openSensationDialog(part);
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    const dialog = document.getElementById('sensationDialog');
+    if (dialog && !dialog.contains(e.target) && !e.target.classList.contains('body-part')) {
+      closeSensationDialog();
+    }
+  });
+}
+
+function openSensationDialog(part) {
+  const zone = part.dataset.zone;
+  const view = part.dataset.view;
+  currentActiveZone = { el: part, zone, view };
+
+  const dialog = document.getElementById('sensationDialog');
+  const title = document.getElementById('sensationDialogTitle');
+  if (title) title.textContent = `${zone} (${view === 'face' ? 'Vue de face' : 'Vue de dos'})`;
+  if (dialog) dialog.classList.add('active');
+}
+
+function closeSensationDialog() {
+  const dialog = document.getElementById('sensationDialog');
+  if (dialog) dialog.classList.remove('active');
+  currentActiveZone = null;
+}
+
+function applySensation(type) {
+  if (!currentActiveZone) return;
+  const { el, zone, view } = currentActiveZone;
+
+  const nullePartBtn = document.getElementById('btnNullePart');
+  if (nullePartBtn) nullePartBtn.classList.remove('sel');
+
+  if (type === 'remove') {
+    el.classList.remove('selected-agreable', 'selected-tension');
+    state.bodyZonesDetail = state.bodyZonesDetail.filter(z => !(z.zone === zone && z.view === view));
+  } else if (type === 'agreable') {
+    el.classList.remove('selected-tension');
+    el.classList.add('selected-agreable');
+    const existing = state.bodyZonesDetail.find(z => z.zone === zone && z.view === view);
+    if (existing) existing.sensation = 'agreable';
+    else state.bodyZonesDetail.push({ zone, view, sensation: 'agreable' });
+  } else if (type === 'tension') {
+    el.classList.remove('selected-agreable');
+    el.classList.add('selected-tension');
+    const existing = state.bodyZonesDetail.find(z => z.zone === zone && z.view === view);
+    if (existing) existing.sensation = 'tension';
+    else state.bodyZonesDetail.push({ zone, view, sensation: 'tension' });
+  }
+
+  syncZonesTension();
+  renderSelectedZones();
+  closeSensationDialog();
+}
+
+function syncZonesTension() {
+  state.zonesTension = Array.from(new Set(
+    state.bodyZonesDetail.filter(z => z.sensation === 'tension').map(z => z.zone)
+  ));
+}
+
+function renderSelectedZones() {
+  const container = document.getElementById('selectedZonesList');
+  if (!container) return;
+  if (state.bodyZonesDetail.length === 0) { container.innerHTML = ''; return; }
+
+  container.innerHTML = state.bodyZonesDetail.map(z => {
+    const isAg = z.sensation === 'agreable';
+    return `
+      <div class="zone-chip ${isAg ? 'chip-agreable' : 'chip-tension'}">
+        <span>${isAg ? '🟢' : '🔴'} ${z.zone} <small style="opacity:0.7">(${z.view === 'face' ? 'Face' : 'Dos'})</small></span>
+        <span class="zone-chip-close" onclick="removeZoneFromList('${z.zone}','${z.view}')">✕</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function removeZoneFromList(zone, view) {
+  const svg = view === 'face' ? document.getElementById('svgFace') : document.getElementById('svgDos');
+  if (svg) {
+    const el = svg.querySelector(`.body-part[data-zone="${zone}"]`);
+    if (el) el.classList.remove('selected-agreable', 'selected-tension');
+  }
+  state.bodyZonesDetail = state.bodyZonesDetail.filter(z => !(z.zone === zone && z.view === view));
+  syncZonesTension();
+  renderSelectedZones();
+}
+
+function resetAllBodyZones() {
+  document.querySelectorAll('.body-part').forEach(p => p.classList.remove('selected-agreable', 'selected-tension'));
+  state.bodyZonesDetail = [];
+  state.zonesTension = ['Nulle part'];
+  closeSensationDialog();
+  const container = document.getElementById('selectedZonesList');
+  if (container) container.innerHTML = '<div class="zone-chip chip-agreable"><span>✨ Tout le corps est détendu</span></div>';
+  const btn = document.getElementById('btnNullePart');
+  if (btn) btn.classList.add('sel');
+}
+
+function updateSliderVal(sliderId, valId) {
+  const v = document.getElementById(sliderId).value;
+  document.getElementById(valId).textContent = v;
+  const pct = (v / document.getElementById(sliderId).max) * 100;
+  document.getElementById(sliderId).style.background =
+    `linear-gradient(to right, #D97706 0%, #D97706 ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
+}
+
+function updateIntensityDesc(val) {
+  document.getElementById('intensityDesc').textContent = INTENSITY_DESCS[val] || '';
+}
+
+function togglePenseeField() {
+  const show = document.getElementById('penseeCheck').checked;
+  document.getElementById('penseeField').style.display = show ? 'block' : 'none';
+}
+
+function collectStep0() {
+  state.intensite = parseInt(document.getElementById('intensiteSlider').value);
+}
+function collectStep1() {
+  state.corps = {
+    energie: parseInt(document.getElementById('energieSlider').value),
+    tensions: parseInt(document.getElementById('tensionsSlider').value),
+    fatigue: parseInt(document.getElementById('fatigueSlider').value),
+    legerete: parseInt(document.getElementById('legereteSlider').value),
+  };
+  syncZonesTension();
+}
+function collectStep2() {
+  state.mental = {
+    clarte: parseInt(document.getElementById('clarteSlider').value),
+    concentration: parseInt(document.getElementById('concentrationSlider').value),
+    charge: parseInt(document.getElementById('chargeSlider').value),
+    disponibilite: parseInt(document.getElementById('disponibiliteSlider').value),
+  };
+  state.penseeOccupante = document.getElementById('penseeCheck').checked ? document.getElementById('penseeText').value : '';
+}
+
+function computeScores() {
+  const emotionnel = (state.intensite / 10) * 100;
+  const energie = state.corps.energie * 10;
+  const legerete = state.corps.legerete * 10;
+  const clarte = state.mental.clarte * 10;
+  const disponibilite = state.mental.disponibilite * 10;
+  const serenite = Math.max(0, 100 - state.corps.tensions * 10);
+  return { emotionnel, energie, legerete, clarte, disponibilite, serenite };
+}
+
+function buildSynthesis() {
+  const scores = computeScores();
+  const R = 85;
+  const n = RADAR_DIMS.length;
+  const angles = Array.from({ length: n }, (_, i) => -Math.PI / 2 + (2 * Math.PI * i) / n);
+
+  const gridEl = document.getElementById('synthGrid');
+  gridEl.innerHTML = '';
+  [0.25, 0.5, 0.75, 1].forEach(frac => {
+    const pts = angles.map(a => `${Math.round(R * frac * Math.cos(a))},${Math.round(R * frac * Math.sin(a))}`).join(' ');
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    poly.setAttribute('points', pts);
+    poly.setAttribute('style', 'fill:none;stroke:rgba(255,255,255,0.08);stroke-width:1;');
+    gridEl.appendChild(poly);
+  });
+
+  const axesEl = document.getElementById('synthAxes');
+  axesEl.innerHTML = '';
+  angles.forEach(a => {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', 0); line.setAttribute('y1', 0);
+    line.setAttribute('x2', Math.round(R * Math.cos(a)));
+    line.setAttribute('y2', Math.round(R * Math.sin(a)));
+    line.setAttribute('style', 'stroke:rgba(255,255,255,0.1);stroke-width:1;');
+    axesEl.appendChild(line);
+  });
+
+  const pts = angles.map((a, i) => {
+    const key = RADAR_DIMS[i].key;
+    const val = (scores[key] || 50) / 100;
+    return `${Math.round(R * val * Math.cos(a))},${Math.round(R * val * Math.sin(a))}`;
+  }).join(' ');
+  document.getElementById('synthPolygon').setAttribute('points', pts);
+
+  const labelsEl = document.getElementById('synthLabels');
+  labelsEl.innerHTML = '';
+  const LR = R + 18;
+  angles.forEach((a, i) => {
+    const lx = Math.round(LR * Math.cos(a));
+    const ly = Math.round(LR * Math.sin(a));
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', lx); t.setAttribute('y', ly);
+    t.setAttribute('style', 'font-family:Nunito,sans-serif;font-size:9px;fill:rgba(253,250,246,0.6);text-anchor:middle;dominant-baseline:middle;');
+    t.textContent = RADAR_DIMS[i].label;
+    labelsEl.appendChild(t);
+  });
+
+  const mainEmo = state.emotions[0];
+  const energyLevel = scores.energie >= 70 ? 'élevé' : scores.energie >= 40 ? 'moyen' : 'bas';
+  document.getElementById('synthesisText').textContent =
+    `Vous abordez cette situation ${mainEmo ? `avec une teinte émotionnelle de ${mainEmo.label.toLowerCase()}` : 'prêt(e)'}, ` +
+    `un niveau d'énergie ${energyLevel} et un état mental disponible. Passons maintenant à l'observation de vos réflexes relationnels.`;
+}
+
+// ════════════════════════════════════════════════════════
+//  TTS AUDIO
+// ════════════════════════════════════════════════════════
+
+let ttsActive = false;
+function toggleTTS() {
+  const btn = document.getElementById('ttsBtn');
+  const label = document.getElementById('ttsBtnLabel');
+
+  if (!window.speechSynthesis) {
+    alert('La synthèse vocale n\'est pas disponible sur votre appareil.');
     return;
   }
-  window.speechSynthesis.cancel();
 
-  const container = document.getElementById('stepContainer');
-  const text = container ? container.innerText : '';
-  if (!text) return;
-
-  ttsUtter = new SpeechSynthesisUtterance(text);
-  ttsUtter.lang = 'fr-FR';
-  ttsUtter.rate = 0.95;
-
-  ttsUtter.onstart = () => {
-    ttsActive = true;
-    const btn = document.getElementById('sdTtsFloat');
-    const label = document.getElementById('sdTtsLabel');
-    if (btn) btn.classList.add('speaking');
-    if (label) label.textContent = 'En lecture…';
-  };
-
-  ttsUtter.onend = () => stopTTS();
-  ttsUtter.onerror = () => stopTTS();
-
-  window.speechSynthesis.speak(ttsUtter);
-}
-
-function stopTTS() {
-  if ('speechSynthesis' in window) {
+  if (ttsActive) {
     window.speechSynthesis.cancel();
+    ttsActive = false;
+    btn.classList.remove('speaking');
+    label.textContent = 'Écouter';
+  } else {
+    let textToSpeak = '';
+    if (currentStep === 0) textToSpeak = 'Étape 1 : Observez vos émotions du moment.';
+    else if (currentStep === 1) textToSpeak = 'Étape 2 : Évaluez votre ressenti corporel et vos tensions.';
+    else if (currentStep === 2) textToSpeak = 'Étape 3 : Scannez votre disponibilité mentale.';
+    else if (currentStep === 3) textToSpeak = document.getElementById('synthesisText').textContent;
+    else if (currentStep === 4) textToSpeak = document.getElementById('sitContext').textContent + ' ' + document.getElementById('sitDialogue').textContent;
+    else if (currentStep === 5) textToSpeak = 'Quelle est votre première réaction intérieure spontanée ?';
+    else if (currentStep === 6) textToSpeak = document.getElementById('mirrorDesc').textContent;
+    else if (currentStep === 7) textToSpeak = 'Comparaison entre réaction réflexe et réponse congruente.';
+    else textToSpeak = 'Bilan de votre expérience 7 minutes.';
+
+    const utter = new SpeechSynthesisUtterance(textToSpeak);
+    utter.lang = 'fr-FR';
+    utter.rate = 0.95;
+    utter.onend = () => { ttsActive = false; btn.classList.remove('speaking'); label.textContent = 'Écouter'; };
+    window.speechSynthesis.speak(utter);
+    ttsActive = true;
+    btn.classList.add('speaking');
+    label.textContent = 'Pause';
   }
-  ttsActive = false;
-  const btn = document.getElementById('sdTtsFloat');
-  const label = document.getElementById('sdTtsLabel');
-  if (btn) btn.classList.remove('speaking');
-  if (label) label.textContent = 'Écouter';
 }
+
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
