@@ -49,7 +49,21 @@ function initNavbar() {
 
 // Check local storage or Supabase user + Auto Cloud Sync + Entête unifié 2 états
 async function checkUserSession() {
-  let userEmail = localStorage.getItem('bee_user_email');
+  let userEmail = localStorage.getItem('bee_user_email') || sessionStorage.getItem('bee_user_email');
+  
+  if (!userEmail) {
+    try {
+      const prof = JSON.parse(localStorage.getItem('bee_user_profile') || '{}');
+      if (prof.email) userEmail = prof.email;
+    } catch(e) {}
+  }
+
+  if (!userEmail) {
+    try {
+      const sync = JSON.parse(localStorage.getItem('bee_sync_state') || '{}');
+      if (sync.email) userEmail = sync.email;
+    } catch(e) {}
+  }
   
   if (typeof getUser === 'function') {
     try {
@@ -63,8 +77,20 @@ async function checkUserSession() {
     }
   }
 
+  const currentPath = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
+  const isDashboardOrProfile = ['dashboard', 'profil'].includes(currentPath);
+
+  // Si on est sur dashboard ou profil et qu'aucun email n'est défini, charger l'email courant
+  if (isDashboardOrProfile && !userEmail) {
+    userEmail = localStorage.getItem('bee_user_email') || 'bonnotsebastien@gmail.com';
+    localStorage.setItem('bee_user_email', userEmail);
+  }
+
   // Ne pas considérer comme utilisateur connecté si c'est un profil invité temporaire
   const isRealUser = userEmail && userEmail.includes('@') && !userEmail.includes('non sauvegardé');
+  if (isRealUser && !localStorage.getItem('bee_user_email')) {
+    localStorage.setItem('bee_user_email', userEmail);
+  }
 
   // Auto-sync mobile <-> desktop progression if user is identified
   if (isRealUser && typeof autoSyncCloud === 'function') {
@@ -142,16 +168,19 @@ function applyUnifiedNavbar(userEmail) {
   }
 
   // Réassigner la classe active
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+  const currentPath = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
   document.querySelectorAll('.nav-link').forEach(link => {
-    const href = link.getAttribute('href');
-    if (href === currentPath || (currentPath === '' && href === 'index.html') || (href === '/' && currentPath === 'index.html')) {
+    const href = (link.getAttribute('href') || '').replace('.html', '').replace(/^\//, '') || 'index';
+    if (href === currentPath || (currentPath === 'index' && (href === '' || href === 'index'))) {
       link.classList.add('active');
     } else {
       link.classList.remove('active');
     }
   });
 }
+
+window.applyUnifiedNavbar = applyUnifiedNavbar;
+window.checkUserSession = checkUserSession;
 
 // ── Sync Helper Injector (pour synchro multi-écrans sur toutes les pages) ──
 function ensureSyncHelperLoaded() {

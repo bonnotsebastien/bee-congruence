@@ -981,6 +981,9 @@ async function initProfilePage() {
   } catch(e) {}
 
   document.getElementById('profileEmail').value = email;
+  if (typeof applyUnifiedNavbar === 'function' && email) {
+    applyUnifiedNavbar(email);
+  }
   const navEmail = document.getElementById('nav-user-email');
   if (navEmail) navEmail.textContent = `🐝 ${email}`;
 

@@ -905,6 +905,11 @@ async function init() {
 
   globalUser = user;
 
+  // Mettre à jour l'entête connecté avec le bouton Se déconnecter et les onglets Espace d'entraînement + Profil
+  if (typeof applyUnifiedNavbar === 'function' && user && user.email) {
+    applyUnifiedNavbar(user.email);
+  }
+
   // Email
   const navEmail = document.getElementById('nav-user-email');
   if (navEmail) navEmail.textContent = `🐝 ${user.email}`;
