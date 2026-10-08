@@ -641,11 +641,12 @@
 
     <!-- NOTIFICATION PREFERENCES -->
     <div class="profile-card">
-      <div class="profile-card-header">
+      <div class="profile-card-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
         <div>
           <h2 class="profile-card-title"><span>⏰</span> Notifications d'entraînement ("Mes rappels")</h2>
           <p class="profile-card-desc">Configurez vos rituels pour ancrer durablement la congruence dans votre quotidien.</p>
         </div>
+        <div id="webNotificationStatusBadge"></div>
       </div>
 
       <form id="reminderPrefsForm" onsubmit="saveReminderSettings(event)">
@@ -671,10 +672,10 @@
               <div style="font-size:13px;color:var(--brown-mid,#6B4C2A);">Où souhaitez-vous recevoir votre déclic du jour ?</div>
             </div>
             <div>
-              <select class="form-select" id="remChannel" style="min-width:200px;">
-                <option value="both">Email &amp; Notification mobile</option>
+              <select class="form-select" id="remChannel" style="min-width:200px;" onchange="handleReminderChannelChange()">
+                <option value="both">Email &amp; Notification Web / Mobile</option>
+                <option value="mobile">Notification Web / Mobile uniquement</option>
                 <option value="email">Email uniquement</option>
-                <option value="mobile">Notification mobile uniquement</option>
               </select>
             </div>
           </div>
@@ -690,9 +691,12 @@
           </div>
         </div>
 
-        <div style="margin-top:20px;">
+        <div style="margin-top:20px; display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
           <button type="submit" class="btn-save-profile">
             <span>🔔</span> Enregistrer mes préférences de rappels
+          </button>
+          <button type="button" class="btn-outline" onclick="testInstantNotification()" style="font-size:13px; padding:10px 18px; border-radius:50px; font-weight:700; cursor:pointer; background:white;">
+            <span>📲</span> Tester une notification instantanée
           </button>
         </div>
       </form>
@@ -971,6 +975,27 @@ async function savePersonalInfo(e) {
   }
 }
 
+// ── Gestion et test des notifications Web ──
+async function handleReminderChannelChange() {
+  const channel = document.getElementById('remChannel').value;
+  if ((channel === 'both' || channel === 'mobile') && window.BeeNotifications) {
+    if (BeeNotifications.getPermission() === 'default') {
+      await BeeNotifications.requestPermission();
+    }
+    BeeNotifications.updateUiBadges();
+  }
+}
+
+async function testInstantNotification() {
+  if (window.BeeNotifications) {
+    await BeeNotifications.sendTestNotification();
+  } else {
+    if (typeof showToast === 'function') {
+      showToast('⚠️ Moteur de notifications en cours de chargement…', 'warning');
+    }
+  }
+}
+
 // ── Sauvegarde des rappels ──
 async function saveReminderSettings(e) {
   e.preventDefault();
@@ -981,6 +1006,20 @@ async function saveReminderSettings(e) {
 
   if (typeof saveReminderPreferences === 'function') {
     await saveReminderPreferences(email, { frequency, channel, preferred_time });
+  }
+
+  // Si l'utilisateur choisit Web/Mobile ou Both, solliciter l'autorisation du navigateur si besoin
+  if ((channel === 'both' || channel === 'mobile') && window.BeeNotifications) {
+    const perm = BeeNotifications.getPermission();
+    if (perm === 'default') {
+      await BeeNotifications.requestPermission();
+    }
+    BeeNotifications.updateUiBadges();
+    if (BeeNotifications.getPermission() === 'granted') {
+      BeeNotifications.sendNotification('🐝 BEE Congruence — Rappels enregistrés', {
+        body: `Vos rappels sont actifs (${frequency === 'daily' ? 'quotidien' : frequency}) à ${preferred_time}.`
+      });
+    }
   }
 
   if (typeof showToast === 'function') {

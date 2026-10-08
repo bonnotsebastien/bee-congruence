@@ -1,10 +1,24 @@
 // ════════════════════════════════════════════════════════
 //  BEE Congruence — Client Supabase & Offline Demo Fallback
 //  v1.02 — Monétisation + Compétences + Scénarios enrichis
+//  v1.05 — Base de données réelle + synchro automatique
+//          ordinateur ⇄ mobile (voir section BeeCloud en bas)
 // ════════════════════════════════════════════════════════
 
-const SUPABASE_URL  = 'https://VOTRE_PROJECT_ID.supabase.co';
-const SUPABASE_ANON = 'VOTRE_ANON_KEY';
+// ── Identifiants du projet Supabase ───────────────────────────────
+// À récupérer dans Supabase → Project Settings → API :
+//   • Project URL         → SUPABASE_URL
+//   • anon / public key   → SUPABASE_ANON  (clé publique, sans danger côté navigateur
+//                                           car les données sont protégées par RLS)
+// Tant que ces valeurs ne sont pas renseignées, le site fonctionne en
+// « mode démo » : tout reste dans le navigateur de l'appareil.
+const SUPABASE_URL  = 'https://myorjseztwqhicdvmigc.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15b3Jqc2V6dHdxaGljZHZtaWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0NTEyOTQsImV4cCI6MjEwNzAyNzI5NH0.y6WwAMGYTXbobFlmNAZRdYPmPRiA0xfEskXOFB3DxiE';
+
+// Tables relationnelles détaillées (diagnostic_results, user_scenarios…).
+// Désactivées : la source de vérité cloud est la table unique `user_sync_state`
+// (instantané complet de la progression de l'utilisateur), synchronisée par BeeCloud.
+const BEE_USE_RELATIONAL_TABLES = false;
 
 // Verification des identifiants Supabase
 const isSupabaseConfigured = () => {
@@ -18,18 +32,73 @@ const isSupabaseConfigured = () => {
 };
 
 const _supabase = isSupabaseConfigured()
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+    })
   : null;
 
+const _sbTables = BEE_USE_RELATIONAL_TABLES ? _supabase : null;
+
+// Indicateur global utilisable par toutes les pages
+window.BEE_CLOUD_ENABLED = !!_supabase;
+
 // ── Auth helpers ──────────────────────────────────────────────────
+
+/** URL absolue d'une page du site (fonctionne avec ou sans cleanUrls Vercel) */
+function _beeSiteUrl(page) {
+  const base = window.location.pathname.replace(/\/[^/]*$/, '/');
+  return window.location.origin + base + page;
+}
+
+/** Session Supabase courante (lecture locale, fonctionne hors-ligne) */
+async function _beeGetSession() {
+  if (!_supabase) return null;
+  try {
+    const { data } = await _supabase.auth.getSession();
+    return data && data.session ? data.session : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/** Traduit les erreurs Supabase Auth en messages clairs pour l'utilisateur */
+function beeAuthErrorMessage(err) {
+  const msg = String((err && (err.message || err.error_description)) || err || '').toLowerCase();
+  const code = (err && err.code) || '';
+  if (msg.includes('invalid login') || code === 'invalid_credentials') return 'Email ou mot de passe incorrect.';
+  if (msg.includes('email not confirmed') || code === 'email_not_confirmed') return 'Votre email n’est pas encore confirmé : cliquez sur le lien reçu par email, puis reconnectez-vous.';
+  if (msg.includes('already registered') || code === 'user_already_exists') return 'Un compte existe déjà avec cet email. Connectez-vous plutôt.';
+  if (msg.includes('password') && (msg.includes('at least') || msg.includes('short') || msg.includes('weak'))) return 'Le mot de passe doit contenir au moins 6 caractères.';
+  if (msg.includes('rate limit') || msg.includes('too many')) return 'Trop de tentatives. Patientez quelques minutes avant de réessayer.';
+  if (msg.includes('failed to fetch') || msg.includes('network')) return 'Connexion internet indisponible. Réessayez dans un instant.';
+  return 'Une erreur est survenue : ' + ((err && err.message) || err);
+}
 
 async function signUp(email, password) {
   if (!_supabase) {
     localStorage.setItem('bee_user_email', email);
     return { id: 'demo_user_' + Date.now(), email };
   }
-  const { data, error } = await _supabase.auth.signUp({ email, password });
+  const { data, error } = await _supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: _beeSiteUrl('dashboard.html') },
+  });
   if (error) throw error;
+
+  // Supabase renvoie un utilisateur sans identité si l'email existe déjà
+  if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+    const e = new Error('User already registered');
+    e.code = 'user_already_exists';
+    throw e;
+  }
+
+  // Confirmation par email activée : pas encore de session
+  if (!data.session) {
+    return { ...(data.user || { email }), needsEmailConfirmation: true };
+  }
+
+  localStorage.setItem('bee_user_email', email);
   return data.user;
 }
 
@@ -40,29 +109,65 @@ async function signIn(email, password) {
   }
   const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
+  localStorage.setItem('bee_user_email', data.user.email || email);
   return data.user;
 }
 
-async function signOut() {
+/**
+ * Déconnexion : envoie d'abord les dernières modifications dans le cloud,
+ * puis efface les données personnelles de l'appareil (elles restent dans le
+ * compte et réapparaissent à la prochaine connexion, sur n'importe quel écran).
+ */
+async function signOut(options = {}) {
   if (_supabase) {
+    let pushed = false;
+    try { pushed = await BeeCloud.flush(); } catch (e) {}
     await _supabase.auth.signOut().catch(() => {});
+    if (pushed) BeeCloud.clearLocalUserData();
   }
   localStorage.removeItem('bee_user_email');
-  window.location.href = 'index.html';
+  if (options.redirect !== false) window.location.href = 'index.html';
 }
 
+/** Envoie l'email de réinitialisation du mot de passe */
+async function requestPasswordReset(email) {
+  if (!_supabase) throw new Error('La base de données n’est pas encore configurée.');
+  const { error } = await _supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: _beeSiteUrl('connexion.html?reset=1'),
+  });
+  if (error) throw error;
+}
+
+/** Enregistre un nouveau mot de passe (après clic sur le lien de réinitialisation) */
+async function updatePassword(newPassword) {
+  if (!_supabase) throw new Error('La base de données n’est pas encore configurée.');
+  const { error } = await _supabase.auth.updateUser({ password: newPassword });
+  if (error) throw error;
+}
+
+/**
+ * Utilisateur courant.
+ * Avec Supabase : renvoie l'utilisateur de la session ET attend la synchro
+ * cloud (une seule fois par page), pour que chaque page s'affiche avec les
+ * données à jour, quel que soit l'appareil.
+ */
 async function getUser() {
   if (!_supabase) {
     const email = localStorage.getItem('bee_user_email');
     return email ? { id: email, email } : null;
   }
-  try {
-    const { data: { user } } = await _supabase.auth.getUser();
-    if (user && user.id) return user;
-  } catch (e) {}
 
-  const email = localStorage.getItem('bee_user_email');
-  return email ? { id: email, email } : null;
+  const session = await _beeGetSession();
+  if (!session || !session.user) {
+    // Plus de session valide : ne pas afficher un faux état « connecté »
+    localStorage.removeItem('bee_user_email');
+    return null;
+  }
+
+  const user = session.user;
+  if (user.email) localStorage.setItem('bee_user_email', user.email);
+  try { await BeeCloud.sync(); } catch (e) {}
+  return user;
 }
 
 // ════════════════════════════════════════════════════════
@@ -103,9 +208,9 @@ async function getUserAccess(userId) {
   const local = localStorage.getItem('bee_user_access');
   let access = local ? JSON.parse(local) : { plan: 'free', expiresAt: null, unitPurchases: [] };
 
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      const { data, error } = await _supabase
+      const { data, error } = await _sbTables
         .from('user_subscriptions')
         .select('*')
         .eq('user_id', userId)
@@ -193,9 +298,9 @@ async function saveSubscription(userId, plan, stripeSessionId) {
     unitPurchases: preservedUnits,
   }));
 
-  if (_supabase) {
+  if (_sbTables) {
     try {
-      await _supabase.from('user_subscriptions').upsert(payload, { onConflict: 'user_id' });
+      await _sbTables.from('user_subscriptions').upsert(payload, { onConflict: 'user_id' });
     } catch (e) {
       console.warn('Sauvegarde abonnement Supabase ignorée.');
     }
@@ -213,9 +318,9 @@ async function saveUnitPurchase(userId, scenarioId) {
   }
   localStorage.setItem('bee_user_access', JSON.stringify(access));
 
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      await _supabase
+      await _sbTables
         .from('user_subscriptions')
         .update({ unit_purchases: access.unitPurchases })
         .eq('user_id', userId);
@@ -326,9 +431,9 @@ function computeSkillScores(completedScenarioIds) {
  * Retourne un tableau chronologique de snapshots.
  */
 async function getSkillHistory(userId) {
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      const { data, error } = await _supabase
+      const { data, error } = await _sbTables
         .from('skill_history')
         .select('*')
         .eq('user_id', userId)
@@ -368,9 +473,9 @@ async function saveSkillSnapshot(userId, skills, scenarioId) {
     scenario_id: scenarioId,
     recorded_at: new Date().toISOString(),
   };
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      await _supabase.from('skill_history').insert(payload);
+      await _sbTables.from('skill_history').insert(payload);
     } catch (e) {}
   }
 }
@@ -676,9 +781,9 @@ async function saveUserScenarios(userId, diagnosticId, scores) {
 
   localStorage.setItem('bee_user_scenarios', JSON.stringify(rows));
 
-  if (_supabase) {
+  if (_sbTables) {
     try {
-      const { data, error } = await _supabase
+      const { data, error } = await _sbTables
         .from('user_scenarios')
         .insert(rows)
         .select();
@@ -692,9 +797,9 @@ async function saveUserScenarios(userId, diagnosticId, scores) {
 }
 
 async function getUserScenarios(userId) {
-  if (_supabase) {
+  if (_sbTables) {
     try {
-      const { data, error } = await _supabase
+      const { data, error } = await _sbTables
         .from('user_scenarios')
         .select('*')
         .eq('user_id', userId)
@@ -731,9 +836,9 @@ async function updateScenarioStatus(scenarioRowId, statut) {
     } catch (e) {}
   }
 
-  if (_supabase) {
+  if (_sbTables) {
     try {
-      await _supabase
+      await _sbTables
         .from('user_scenarios')
         .update({ statut, updated_at: new Date().toISOString() })
         .eq('id', scenarioRowId);
@@ -763,9 +868,9 @@ async function saveDiagnosticResults(userId, scores, axisLabels) {
     localStorage.setItem('bee_diagnostic_results', JSON.stringify(existing.slice(0, 10)));
   } catch(e) {}
 
-  if (_supabase) {
+  if (_sbTables) {
     try {
-      const { data, error } = await _supabase
+      const { data, error } = await _sbTables
         .from('diagnostic_results')
         .insert(payload)
         .select()
@@ -787,9 +892,9 @@ async function getDiagnosticResults(userId) {
   const email = localStorage.getItem('bee_user_email');
   const targetId = userId || email;
 
-  if (_supabase && targetId) {
+  if (_sbTables && targetId) {
     try {
-      const { data, error } = await _supabase
+      const { data, error } = await _sbTables
         .from('diagnostic_results')
         .select('*')
         .or(`user_id.eq.${targetId}${email ? `,user_id.eq.${email}` : ''}`)
@@ -846,9 +951,9 @@ async function saveUserProfile(userId, profileData) {
   const merged   = existing ? { ...JSON.parse(existing), ...payload } : payload;
   localStorage.setItem('bee_user_profile', JSON.stringify(merged));
 
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      await _supabase
+      await _sbTables
         .from('user_profiles')
         .upsert(payload, { onConflict: 'user_id' });
     } catch (e) {
@@ -859,9 +964,9 @@ async function saveUserProfile(userId, profileData) {
 }
 
 async function getUserProfile(userId) {
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      const { data, error } = await _supabase
+      const { data, error } = await _sbTables
         .from('user_profiles')
         .select('*')
         .eq('user_id', userId)
@@ -889,9 +994,9 @@ async function saveIntroSession(userId, scenarioId, introData) {
   };
   localStorage.setItem(`bee_intro_${scenarioId}`, JSON.stringify({ ...introData, scenario_id: scenarioId }));
 
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      await _supabase.from('intro_sessions').insert(payload);
+      await _sbTables.from('intro_sessions').insert(payload);
     } catch (e) {
       console.warn('saveIntroSession remote error:', e);
     }
@@ -900,9 +1005,9 @@ async function saveIntroSession(userId, scenarioId, introData) {
 }
 
 async function getIntroSession(userId, scenarioId) {
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      const { data, error } = await _supabase
+      const { data, error } = await _sbTables
         .from('intro_sessions')
         .select('*')
         .eq('user_id', userId)
@@ -939,9 +1044,9 @@ async function saveStepReflectionDB(userId, scenarioId, stepIndex, reflectionDat
   localStorage.setItem(`bee_step_reflections_${scenarioId}`, JSON.stringify(all));
 
   // Remote
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      await _supabase.from('step_reflections').insert(payload);
+      await _sbTables.from('step_reflections').insert(payload);
     } catch (e) {
       console.warn('saveStepReflectionDB remote error:', e);
     }
@@ -954,9 +1059,9 @@ async function saveStepReflectionDB(userId, scenarioId, stepIndex, reflectionDat
 // ════════════════════════════════════════════════════════
 
 async function upsertSyncState(userId, stateData) {
-  if (!_supabase || !userId || userId.startsWith('demo')) return;
+  if (!_sbTables || !userId || userId.startsWith('demo')) return;
   try {
-    await _supabase.from('user_sync_state').upsert({
+    await _sbTables.from('user_sync_state').upsert({
       user_id:   userId,
       ...stateData,
       synced_at: new Date().toISOString(),
@@ -967,9 +1072,9 @@ async function upsertSyncState(userId, stateData) {
 }
 
 async function getSyncState(userId) {
-  if (!_supabase || !userId || userId.startsWith('demo')) return null;
+  if (!_sbTables || !userId || userId.startsWith('demo')) return null;
   try {
-    const { data, error } = await _supabase
+    const { data, error } = await _sbTables
       .from('user_sync_state')
       .select('*')
       .eq('user_id', userId)
@@ -992,9 +1097,9 @@ async function getFamilyChildren(parentId) {
     if (local) list = JSON.parse(local);
   } catch (e) {}
 
-  if (_supabase && parentId && !parentId.startsWith('demo')) {
+  if (_sbTables && parentId && !parentId.startsWith('demo')) {
     try {
-      const { data, error } = await _supabase
+      const { data, error } = await _sbTables
         .from('family_children')
         .select('*')
         .eq('parent_id', parentId)
@@ -1038,9 +1143,9 @@ async function saveFamilyChild(parentId, childData) {
   localStorage.setItem(`${FAMILY_STORAGE_KEY}_${parentId}`, JSON.stringify(children));
   localStorage.setItem(FAMILY_STORAGE_KEY, JSON.stringify(children));
 
-  if (_supabase && parentId && !parentId.startsWith('demo')) {
+  if (_sbTables && parentId && !parentId.startsWith('demo')) {
     try {
-      await _supabase.from('family_children').upsert(childRecord, { onConflict: 'id' });
+      await _sbTables.from('family_children').upsert(childRecord, { onConflict: 'id' });
     } catch (e) {}
   }
   return childRecord;
@@ -1052,9 +1157,9 @@ async function deleteFamilyChild(parentId, childId) {
   localStorage.setItem(`${FAMILY_STORAGE_KEY}_${parentId}`, JSON.stringify(filtered));
   localStorage.setItem(FAMILY_STORAGE_KEY, JSON.stringify(filtered));
 
-  if (_supabase && parentId && !parentId.startsWith('demo')) {
+  if (_sbTables && parentId && !parentId.startsWith('demo')) {
     try {
-      await _supabase.from('family_children').delete().eq('id', childId);
+      await _sbTables.from('family_children').delete().eq('id', childId);
     } catch (e) {}
   }
   return filtered;
@@ -1080,9 +1185,9 @@ async function saveReminderPreferences(userId, prefs) {
   localStorage.setItem(`${REMINDERS_KEY}_${userId}`, JSON.stringify(merged));
   localStorage.setItem(REMINDERS_KEY, JSON.stringify(merged));
 
-  if (_supabase && userId && !userId.startsWith('demo')) {
+  if (_sbTables && userId && !userId.startsWith('demo')) {
     try {
-      await _supabase.from('user_profiles').update({ notification_preferences: merged }).eq('user_id', userId);
+      await _sbTables.from('user_profiles').update({ notification_preferences: merged }).eq('user_id', userId);
     } catch (e) {}
   }
   return merged;

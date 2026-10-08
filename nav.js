@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
   checkUserSession();
   ensureSyncHelperLoaded();
+  ensureNotificationHelperLoaded();
   ensureCookieConsentLoaded();
   ensureFooterCookieLink();
 });
@@ -166,6 +167,23 @@ function ensureSyncHelperLoaded() {
     document.head.appendChild(s);
   } else {
     window.checkAutoSync();
+  }
+}
+
+// ── Notification Helper Injector ──
+function ensureNotificationHelperLoaded() {
+  if (typeof window.BeeNotifications === 'undefined') {
+    const s = document.createElement('script');
+    s.src = 'notification-helper.js';
+    s.async = true;
+    s.onload = () => {
+      if (window.BeeNotifications && typeof window.BeeNotifications.init === 'function') {
+        window.BeeNotifications.init();
+      }
+    };
+    document.head.appendChild(s);
+  } else {
+    window.BeeNotifications.init();
   }
 }
 
