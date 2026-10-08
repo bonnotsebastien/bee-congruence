@@ -705,50 +705,6 @@
       </div>
     </div>
 
-    <!-- ── Résultats du diagnostic ── -->
-    <div id="section-results">
-      <div class="dash-section-title">🧭 Résultats de mon diagnostic</div>
-      <div class="result-date" id="result-date"></div>
-
-      <!-- Radar Chart SVG enrichi (2 couches) -->
-      <div class="radar-chart-container">
-        <svg class="radar-chart-svg" viewBox="-180 -170 360 340" id="radarSvg">
-          <!-- Grille -->
-          <g id="radarGrid"></g>
-          <!-- Axes -->
-          <g id="radarAxes"></g>
-          <!-- Couche Diagnostic -->
-          <polygon class="radar-area-diag" id="radarDiagPolygon" points="0,0"/>
-          <g id="radarDiagPoints"></g>
-          <!-- Couche Compétences -->
-          <polygon class="radar-area-skills" id="radarSkillsPolygon" points="0,0"/>
-          <g id="radarSkillsPoints"></g>
-          <!-- Labels (dernier pour être au-dessus) -->
-          <g id="radarLabels"></g>
-          <!-- Tooltip -->
-          <g id="radarTooltip" style="display:none;">
-            <rect id="radarTooltipBg" rx="6" fill="white" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
-            <text id="radarTooltipText" class="radar-tooltip" x="0" y="0"></text>
-          </g>
-        </svg>
-      </div>
-
-      <!-- Légende -->
-      <div class="radar-legend" id="radarLegend">
-        <div class="radar-legend-item active" data-layer="diag" onclick="toggleLayer('diag')">
-          <div class="radar-legend-dot" style="background:var(--orange);"></div>
-          <span>Profil diagnostique</span>
-        </div>
-        <div class="radar-legend-item active" data-layer="skills" onclick="toggleLayer('skills')">
-          <div class="radar-legend-dash"></div>
-          <span>Compétences entraînées</span>
-        </div>
-      </div>
-
-      <!-- Barres horizontales -->
-      <div class="results-axes" id="results-axes"></div>
-    </div>
-
     <!-- ── Évolution des compétences ── -->
     <div class="evolution-section" id="section-evolution">
       <div class="dash-section-title">📈 Évolution de mes compétences</div>
@@ -980,7 +936,8 @@ async function init() {
 
   if (!results || results.length === 0) {
     document.getElementById('dash-content').style.display = 'block';
-    document.getElementById('section-results').style.display = 'none';
+    const sRes = document.getElementById('section-results');
+    if (sRes) sRes.style.display = 'none';
     document.getElementById('section-scenarios').style.display = 'none';
     document.getElementById('section-evolution').style.display = 'none';
     document.getElementById('section-empty').style.display = 'block';
@@ -998,11 +955,12 @@ async function init() {
   // Badge plan
   renderPlanBadge(access);
 
-  // ── Résultats ──
+  // ── Résultats du diagnostic (si présent) ──
   const latest = results[0];
   const dateStr = new Date(latest.completed_at || Date.now())
     .toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-  document.getElementById('result-date').textContent = `Complété le ${dateStr}`;
+  const dateEl = document.getElementById('result-date');
+  if (dateEl) dateEl.textContent = `Complété le ${dateStr}`;
 
   const scores    = latest.scores || {};
   const labels    = latest.axis_labels || AXE_LABELS;
@@ -1010,23 +968,25 @@ async function init() {
   const labelVals = [];
 
   const axesContainer = document.getElementById('results-axes');
-  axesContainer.innerHTML = '';
-  Object.entries(scores).forEach(([key, pct], i) => {
-    const label = labels[i] || key;
-    scoreVals.push(pct);
-    labelVals.push(label);
+  if (axesContainer) {
+    axesContainer.innerHTML = '';
+    Object.entries(scores).forEach(([key, pct], i) => {
+      const label = labels[i] || key;
+      scoreVals.push(pct);
+      labelVals.push(label);
 
-    const row = document.createElement('div');
-    row.className = 'result-axis-row';
-    row.innerHTML = `
-      <div class="result-axis-name">${label}</div>
-      <div class="result-axis-bar-track">
-        <div class="result-axis-bar-fill" style="width:0%" data-width="${pct}"></div>
-      </div>
-      <div class="result-axis-pct">${pct}%</div>
-    `;
-    axesContainer.appendChild(row);
-  });
+      const row = document.createElement('div');
+      row.className = 'result-axis-row';
+      row.innerHTML = `
+        <div class="result-axis-name">${label}</div>
+        <div class="result-axis-bar-track">
+          <div class="result-axis-bar-fill" style="width:0%" data-width="${pct}"></div>
+        </div>
+        <div class="result-axis-pct">${pct}%</div>
+      `;
+      axesContainer.appendChild(row);
+    });
+  }
 
   // Calculer les compétences entraînées
   const completedIds = globalScenarios
@@ -1034,10 +994,12 @@ async function init() {
     .map(s => s.scenario_id || s.id);
   const skillScores = computeSkillScores(completedIds);
 
-  // Render radar enrichi
-  renderRadarEnriched(scoreVals, labelVals, skillScores);
+  // Render radar enrichi si le SVG existe
+  if (document.getElementById('radarSvg')) {
+    renderRadarEnriched(scoreVals, labelVals, skillScores);
+  }
 
-  // Animer les barres
+  // Animer les barres si présentes
   setTimeout(() => {
     document.querySelectorAll('.result-axis-bar-fill').forEach(el => {
       el.style.width = el.dataset.width + '%';

@@ -293,6 +293,76 @@
 }
 
 /* ── FAMILY PACK STYLES ── */
+/* ══════════════════════════════════════════════
+   RÉSULTATS DIAGNOSTIC DANS LE PROFIL
+══════════════════════════════════════════════ */
+.results-axes { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; margin-bottom: 24px; }
+.result-axis-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.result-axis-name {
+  font-family: 'Nunito', sans-serif; font-size: 13.5px; font-weight: 700;
+  color: var(--brown-dark, #3D2710); min-width: 220px; flex-shrink: 0;
+}
+.result-axis-bar-track {
+  flex: 1; min-width: 140px; height: 10px; background: var(--cream-dark, #EDE0CC); border-radius: 99px; overflow: hidden;
+}
+.result-axis-bar-fill {
+  height: 100%; border-radius: 99px; background: var(--amber, #E8A020);
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+}
+.result-axis-pct {
+  font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700;
+  color: var(--orange, #D97706); min-width: 44px; text-align: right;
+}
+.result-date { font-family: 'Nunito', sans-serif; font-size: 12px; color: var(--brown-light, #9E7B58); }
+
+/* Radar Chart SVG enrichi (2 couches) */
+.radar-chart-container {
+  display: flex; justify-content: center; align-items: center;
+  padding: 20px 0; margin-bottom: 20px;
+  background: #FAF7F2; border: 1px solid var(--border, #EDE0CC);
+  border-radius: 20px;
+}
+.radar-chart-svg { width: 100%; max-width: 480px; height: auto; overflow: visible; }
+.radar-polygon-grid { fill: none; stroke: var(--border, #EDE0CC); stroke-width: 1; }
+.radar-axis-line { stroke: var(--border, #EDE0CC); stroke-width: 0.8; }
+.radar-area-diag {
+  fill: rgba(217,119,6,0.18); stroke: var(--orange, #D97706);
+  stroke-width: 2; stroke-linejoin: round;
+}
+.radar-point-diag { fill: var(--orange, #D97706); r: 4; }
+.radar-area-skills {
+  fill: rgba(90,138,58,0.18); stroke: var(--green, #5A8A3A);
+  stroke-width: 2; stroke-linejoin: round; stroke-dasharray: 6 3;
+}
+.radar-point-skills { fill: var(--green, #5A8A3A); r: 4; }
+.radar-label {
+  font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 700; fill: var(--brown-dark, #3D2710);
+  text-anchor: middle; dominant-baseline: middle;
+}
+.radar-label-small {
+  font-family: 'Nunito', sans-serif; font-size: 9px; font-weight: 600; fill: var(--brown-mid, #6B4C2A);
+  text-anchor: middle; dominant-baseline: middle;
+}
+.radar-tooltip {
+  font-family: 'Nunito', sans-serif; font-size: 11px;
+  fill: var(--brown-dark, #3D2710); pointer-events: none;
+}
+.radar-legend {
+  display: flex; gap: 16px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 20px;
+  font-family: 'Nunito', sans-serif; font-size: 13px;
+}
+.radar-legend-item {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; padding: 5px 12px; border-radius: 20px;
+  transition: background 0.2s; border: 1.5px solid transparent;
+}
+.radar-legend-item:hover { background: var(--cream-dark, #EDE0CC); }
+.radar-legend-item.active { border-color: var(--border, #EDE0CC); }
+.radar-legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.radar-legend-dash { width: 18px; height: 3px; border-radius: 2px; flex-shrink: 0;
+  background: repeating-linear-gradient(90deg, var(--green, #5A8A3A) 0 5px, transparent 5px 8px); }
+
 .family-banner-top {
   background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
   border: 2px solid #FCD34D;
@@ -639,6 +709,76 @@
       </div>
     </div>
 
+    <!-- ── RÉSULTATS DU DIAGNOSTIC ── -->
+    <div class="profile-card" id="section-results">
+      <div class="profile-card-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 class="profile-card-title"><span>🧭</span> Résultats de mon diagnostic</h2>
+          <p class="profile-card-desc">Votre cartographie relationnelle révélée lors de votre diagnostic.</p>
+        </div>
+        <div id="result-date" class="result-date" style="margin-bottom:0; font-weight:700; color:var(--orange,#D97706);"></div>
+      </div>
+
+      <div id="profile-diag-empty" style="display:none; text-align:center; padding:32px 16px;">
+        <div style="font-size:36px; margin-bottom:10px;">🧭</div>
+        <p style="font-family:'Nunito',sans-serif; font-size:15px; font-weight:700; color:var(--brown-dark,#3D2710); margin-bottom:6px;">
+          Vous n'avez pas encore passé votre diagnostic relationnel.
+        </p>
+        <p style="font-family:'Nunito',sans-serif; font-size:13.5px; color:var(--brown-mid,#6B4C2A); margin-bottom:20px;">
+          Passez le diagnostic gratuit en 7 minutes pour révéler votre cartographie relationnelle et débloquer vos analyses.
+        </p>
+        <a href="questionnaire.html" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+          Faire mon diagnostic (7 min) →
+        </a>
+      </div>
+
+      <div id="profile-diag-content">
+        <!-- Radar Chart SVG enrichi (2 couches) -->
+        <div class="radar-chart-container">
+          <svg class="radar-chart-svg" viewBox="-180 -170 360 340" id="radarSvg">
+            <!-- Grille -->
+            <g id="radarGrid"></g>
+            <!-- Axes -->
+            <g id="radarAxes"></g>
+            <!-- Couche Diagnostic -->
+            <polygon class="radar-area-diag" id="radarDiagPolygon" points="0,0"/>
+            <g id="radarDiagPoints"></g>
+            <!-- Couche Compétences -->
+            <polygon class="radar-area-skills" id="radarSkillsPolygon" points="0,0"/>
+            <g id="radarSkillsPoints"></g>
+            <!-- Labels (dernier pour être au-dessus) -->
+            <g id="radarLabels"></g>
+            <!-- Tooltip -->
+            <g id="radarTooltip" style="display:none;">
+              <rect id="radarTooltipBg" rx="6" fill="white" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
+              <text id="radarTooltipText" class="radar-tooltip" x="0" y="0"></text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Légende -->
+        <div class="radar-legend" id="radarLegend">
+          <div class="radar-legend-item active" data-layer="diag" onclick="toggleLayer('diag')">
+            <div class="radar-legend-dot" style="background:var(--orange,#D97706);"></div>
+            <span>Profil diagnostique</span>
+          </div>
+          <div class="radar-legend-item active" data-layer="skills" onclick="toggleLayer('skills')">
+            <div class="radar-legend-dash"></div>
+            <span>Compétences entraînées</span>
+          </div>
+        </div>
+
+        <!-- Barres horizontales -->
+        <div class="results-axes" id="results-axes"></div>
+
+        <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+          <a href="questionnaire.html" class="btn-outline" style="font-size:13px; padding:9px 18px; border-radius:50px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+            <span>🔄</span> Refaire le diagnostic
+          </a>
+        </div>
+      </div>
+    </div>
+
     <!-- NOTIFICATION PREFERENCES -->
     <div class="profile-card">
       <div class="profile-card-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
@@ -885,6 +1025,9 @@ async function initProfilePage() {
     document.getElementById('fbEvolution').textContent = (evol >= 0 ? '+' : '') + evol + '%';
     document.getElementById('fbEncouragement').textContent = `« ${report.encouragement} »`;
   }
+
+  // Charger résultats du diagnostic
+  await loadDiagnosticResultsInProfile(email);
 
   // Charger enfants de la famille
   loadFamilyChildren();
@@ -1159,6 +1302,300 @@ function handleLogout() {
   if (typeof signOut === 'function') signOut();
   localStorage.removeItem('bee_user_email');
   window.location.href = 'connexion.html';
+}
+
+// ════════════════════════════════════════════════════════
+//  RÉSULTATS DIAGNOSTIC DANS LE PROFIL
+// ════════════════════════════════════════════════════════
+const AXE_LABELS = [
+  'Axe 1 — Blessures primaires',
+  'Axe 2 — Mécanismes de défense',
+  'Axe 3 — Profil émotionnel et relationnel',
+  'Axe 4 — Besoins relationnels fondamentaux',
+  'Axe 5 — Dynamiques relationnelles récurrentes'
+];
+let radarLayerState = { diag: true, skills: true };
+
+async function loadDiagnosticResultsInProfile(email) {
+  let results = [];
+  let scenarios = [];
+  try {
+    const user = await getUser();
+    const userId = user ? user.id : email;
+    if (typeof getDiagnosticResults === 'function') {
+      results = await getDiagnosticResults(userId);
+    }
+    if (typeof getUserScenarios === 'function') {
+      scenarios = await getUserScenarios(userId);
+    }
+  } catch(e) {}
+
+  // Fallback local si vide
+  if (!results || results.length === 0) {
+    const localRes = localStorage.getItem('bee_diagnostic_results') || localStorage.getItem('bee_sync_state');
+    if (localRes) {
+      try {
+        const parsed = JSON.parse(localRes);
+        results = parsed.diagnostic_results || (parsed.scores ? [parsed] : []);
+      } catch(e) {}
+    }
+  }
+
+  const emptyEl = document.getElementById('profile-diag-empty');
+  const contentEl = document.getElementById('profile-diag-content');
+
+  if (!results || results.length === 0) {
+    if (emptyEl) emptyEl.style.display = 'block';
+    if (contentEl) contentEl.style.display = 'none';
+    return;
+  }
+
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (contentEl) contentEl.style.display = 'block';
+
+  const latest = results[0];
+  const dateStr = new Date(latest.completed_at || Date.now())
+    .toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+  const dateEl = document.getElementById('result-date');
+  if (dateEl) dateEl.textContent = `Complété le ${dateStr}`;
+
+  const scores = latest.scores || {};
+  const labels = latest.axis_labels || AXE_LABELS;
+  const scoreVals = [];
+  const labelVals = [];
+
+  const axesContainer = document.getElementById('results-axes');
+  if (axesContainer) {
+    axesContainer.innerHTML = '';
+    Object.entries(scores).forEach(([key, pct], i) => {
+      const label = labels[i] || key;
+      scoreVals.push(pct);
+      labelVals.push(label);
+
+      const row = document.createElement('div');
+      row.className = 'result-axis-row';
+      row.innerHTML = `
+        <div class="result-axis-name">${label}</div>
+        <div class="result-axis-bar-track">
+          <div class="result-axis-bar-fill" style="width:0%" data-width="${pct}"></div>
+        </div>
+        <div class="result-axis-pct">${pct}%</div>
+      `;
+      axesContainer.appendChild(row);
+    });
+  }
+
+  // Compétences entraînées
+  const completedIds = (scenarios || [])
+    .filter(s => s.statut === 'termine')
+    .map(s => s.scenario_id || s.id);
+  const skillScores = typeof computeSkillScores === 'function' ? computeSkillScores(completedIds) : {};
+
+  renderRadarEnriched(scoreVals, labelVals, skillScores);
+
+  setTimeout(() => {
+    document.querySelectorAll('.result-axis-bar-fill').forEach(el => {
+      el.style.width = el.dataset.width + '%';
+    });
+  }, 300);
+}
+
+function renderRadarEnriched(diagValues, axisNames, skillScores) {
+  const svg = document.getElementById('radarSvg');
+  if (!svg) return;
+  const R = 120;
+  const n = axisNames.length || 5;
+  const angles = Array.from({ length: n }, (_, i) => -Math.PI / 2 + (2 * Math.PI * i) / n);
+
+  // Grille
+  const gridEl = document.getElementById('radarGrid');
+  if (gridEl) {
+    gridEl.innerHTML = '';
+    [0.25, 0.5, 0.75, 1].forEach(frac => {
+      const pts = angles.map(a =>
+        `${Math.round(R * frac * Math.cos(a))},${Math.round(R * frac * Math.sin(a))}`
+      ).join(' ');
+      const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      poly.setAttribute('points', pts);
+      poly.setAttribute('class', 'radar-polygon-grid');
+      gridEl.appendChild(poly);
+    });
+  }
+
+  // Axes
+  const axesEl = document.getElementById('radarAxes');
+  if (axesEl) {
+    axesEl.innerHTML = '';
+    angles.forEach(a => {
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('class', 'radar-axis-line');
+      line.setAttribute('x1', 0); line.setAttribute('y1', 0);
+      line.setAttribute('x2', Math.round(R * Math.cos(a)));
+      line.setAttribute('y2', Math.round(R * Math.sin(a)));
+      axesEl.appendChild(line);
+    });
+  }
+
+  // Couche Diagnostic
+  const diagPts = angles.map((a, i) => {
+    const val = diagValues[i] !== undefined ? diagValues[i] : 50;
+    const pct = Math.max(10, Math.min(100, val)) / 100;
+    const r = R * pct;
+    return { x: Math.round(r * Math.cos(a)), y: Math.round(r * Math.sin(a)), val };
+  });
+
+  const diagPoly = document.getElementById('radarDiagPolygon');
+  if (diagPoly) diagPoly.setAttribute('points', diagPts.map(p => `${p.x},${p.y}`).join(' '));
+
+  const diagPtsEl = document.getElementById('radarDiagPoints');
+  if (diagPtsEl) {
+    diagPtsEl.innerHTML = '';
+    diagPts.forEach(p => {
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('class', 'radar-point-diag'); c.setAttribute('cx', p.x); c.setAttribute('cy', p.y);
+      c.setAttribute('r', 4); c.setAttribute('style', 'cursor:pointer;');
+      diagPtsEl.appendChild(c);
+    });
+  }
+
+  // Couche Compétences
+  const skillRef = typeof SKILLS_REFERENCE !== 'undefined' ? SKILLS_REFERENCE : [];
+  const skillKeys = skillRef.map(s => s.id);
+  const skillPts = angles.map((a, i) => {
+    const key = skillKeys[i % (skillKeys.length || 1)];
+    const val = (skillScores && skillScores[key]) || 5;
+    const pct = Math.max(5, Math.min(100, val)) / 100;
+    const r = R * pct;
+    return { x: Math.round(r * Math.cos(a)), y: Math.round(r * Math.sin(a)), val, key };
+  });
+
+  const skillsPoly = document.getElementById('radarSkillsPolygon');
+  if (skillsPoly) skillsPoly.setAttribute('points', skillPts.map(p => `${p.x},${p.y}`).join(' '));
+
+  const skillPtsEl = document.getElementById('radarSkillsPoints');
+  if (skillPtsEl) {
+    skillPtsEl.innerHTML = '';
+    skillPts.forEach(p => {
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('class', 'radar-point-skills'); c.setAttribute('cx', p.x); c.setAttribute('cy', p.y);
+      c.setAttribute('r', 4); c.setAttribute('style', 'cursor:pointer;');
+      skillPtsEl.appendChild(c);
+    });
+  }
+
+  // Labels
+  const labelsEl = document.getElementById('radarLabels');
+  if (labelsEl) {
+    labelsEl.innerHTML = '';
+    const LR = R + 28;
+    angles.forEach((a, i) => {
+      const lx = Math.round(LR * Math.cos(a));
+      const ly = Math.round(LR * Math.sin(a));
+      const diagLabel = (axisNames[i] || '').replace(/^Axe \d+ — /, '');
+      const skill = skillRef[i % (skillRef.length || 1)];
+      const skillLabel = skill ? skill.label : '';
+      const lines = splitLabel(diagLabel, 16);
+
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('style', 'cursor:pointer;');
+
+      lines.forEach((line, li) => {
+        const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        t.setAttribute('class', 'radar-label');
+        t.setAttribute('x', lx);
+        t.setAttribute('y', ly + li * 13);
+        t.textContent = line;
+        g.appendChild(t);
+      });
+
+      if (skillLabel) {
+        const skillLines = splitLabel(skillLabel, 14);
+        skillLines.forEach((line, li) => {
+          const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          t.setAttribute('class', 'radar-label-small');
+          t.setAttribute('x', lx);
+          t.setAttribute('y', ly + lines.length * 13 + 3 + li * 11);
+          t.setAttribute('fill', '#5a8a3a');
+          t.textContent = line;
+          g.appendChild(t);
+        });
+      }
+
+      const diagVal = diagValues[i] !== undefined ? diagValues[i] : 0;
+      const skillVal = skill ? ((skillScores || {})[skill.id] || 0) : 0;
+      const fullName = axisNames[i] || '';
+
+      g.addEventListener('mouseenter', () => showRadarTooltip(lx, ly, fullName, diagVal, skillLabel, skillVal));
+      g.addEventListener('mouseleave', () => hideRadarTooltip());
+      labelsEl.appendChild(g);
+    });
+  }
+}
+
+function splitLabel(text, maxLen) {
+  if (!text) return [''];
+  if (text.length <= maxLen) return [text];
+  const words = text.split(' ');
+  const lines = [];
+  let current = '';
+  words.forEach(w => {
+    if ((current + (current ? ' ' : '') + w).length <= maxLen) {
+      current += (current ? ' ' : '') + w;
+    } else {
+      if (current) lines.push(current);
+      current = w.length > maxLen ? w.substring(0, maxLen - 1) + '…' : w;
+    }
+  });
+  if (current) lines.push(current);
+  return lines.slice(0, 2);
+}
+
+function showRadarTooltip(x, y, axisName, diagVal, skillName, skillVal) {
+  const tt = document.getElementById('radarTooltip');
+  const ttBg = document.getElementById('radarTooltipBg');
+  const ttTxt = document.getElementById('radarTooltipText');
+  if (!tt || !ttBg || !ttTxt) return;
+
+  const line1 = axisName.replace(/^Axe \d+ — /, '');
+  const line2 = `Diagnostic : ${diagVal}%`;
+  const line3 = skillName ? `${skillName} : ${skillVal}%` : '';
+
+  ttTxt.innerHTML = '';
+  [line1, line2, line3].filter(Boolean).forEach((line, i) => {
+    const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+    tspan.setAttribute('x', x + 8);
+    tspan.setAttribute('dy', i === 0 ? '0.3em' : '1.3em');
+    tspan.setAttribute('font-weight', i === 0 ? '700' : '400');
+    tspan.textContent = line;
+    ttTxt.appendChild(tspan);
+  });
+
+  ttTxt.setAttribute('x', x + 8);
+  ttTxt.setAttribute('y', y - 35);
+  ttBg.setAttribute('x', x + 4);
+  ttBg.setAttribute('y', y - 48);
+  ttBg.setAttribute('width', 150);
+  ttBg.setAttribute('height', line3 ? 52 : 38);
+  tt.style.display = 'block';
+}
+
+function hideRadarTooltip() {
+  const tt = document.getElementById('radarTooltip');
+  if (tt) tt.style.display = 'none';
+}
+
+function toggleLayer(layer) {
+  radarLayerState[layer] = !radarLayerState[layer];
+  const elId = layer === 'diag' ? 'radarDiagPolygon' : 'radarSkillsPolygon';
+  const ptsId = layer === 'diag' ? 'radarDiagPoints' : 'radarSkillsPoints';
+  const el = document.getElementById(elId);
+  const pts = document.getElementById(ptsId);
+  const vis = radarLayerState[layer] ? '' : 'none';
+  if (el) el.style.display = vis;
+  if (pts) pts.style.display = vis;
+
+  const legendItem = document.querySelector(`[data-layer="${layer}"]`);
+  if (legendItem) legendItem.classList.toggle('active', radarLayerState[layer]);
 }
 
 initProfilePage();
