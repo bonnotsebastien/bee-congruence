@@ -99,88 +99,6 @@
   color: white;
 }
 
-/* ── Bannières d'information ── */
-.training-banner {
-  background: linear-gradient(135deg, rgba(232,160,32,0.12), rgba(195,101,27,0.06));
-  border: 1.5px solid var(--orange, #D97706);
-  border-radius: 18px;
-  padding: 18px 22px;
-  margin-bottom: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.training-banner-icon { font-size: 32px; flex-shrink: 0; }
-.training-banner-text {
-  flex: 1 1 260px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 13.5px;
-  color: var(--brown-dark, #3D2710);
-  line-height: 1.55;
-}
-.training-banner-text strong { display: block; font-size: 14.5px; margin-bottom: 2px; }
-.training-banner-cta {
-  background: var(--orange, #D97706);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 13.5px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.2s;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-}
-.training-banner-cta:hover { background: #B45309; }
-
-/* ── Bandeau Régularité Hebdomadaire ── */
-.streak-card {
-  background: linear-gradient(135deg, #2D1F0E 0%, #1A1612 100%);
-  border-radius: 20px;
-  padding: 22px 26px;
-  margin-bottom: 36px;
-  border: 1px solid rgba(217,119,6,0.3);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 18px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-.streak-info {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.streak-icon { font-size: 38px; }
-.streak-tag {
-  font-family: 'Nunito', sans-serif;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: #F59E0B;
-  letter-spacing: 0.1em;
-}
-.streak-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 19px;
-  color: #FEF3C7;
-  margin: 2px 0 4px;
-}
-.streak-sub {
-  font-family: 'Nunito', sans-serif;
-  font-size: 13px;
-  color: rgba(255,255,255,0.75);
-}
-
 /* ── Sélecteur de Domaines ── */
 .domain-filter-wrapper {
   margin-bottom: 28px;
@@ -675,43 +593,6 @@
       </div>
     </div>
 
-    <!-- ── Bannière invité / sans compte ── -->
-    <div id="guest-save-banner" class="training-banner" style="display:none;">
-      <div class="training-banner-icon">💡</div>
-      <div class="training-banner-text">
-        <strong>Session invité active</strong>
-        Le 1er scénario est accessible gratuitement. Pour enregistrer vos réflexions et synchroniser votre progression sur smartphone et ordinateur, créez votre compte gratuit.
-      </div>
-      <a href="inscription.html" class="training-banner-cta">Créer mon compte gratuit →</a>
-    </div>
-
-    <!-- ── Bannière invitation diagnostic si aucun diagnostic ── -->
-    <div id="no-diag-banner" class="training-banner" style="display:none;background:linear-gradient(135deg,rgba(90,138,58,0.12),rgba(232,160,32,0.08));border-color:rgba(90,138,58,0.4);">
-      <div class="training-banner-icon">🎯</div>
-      <div class="training-banner-text">
-        <strong>Personnalisez votre parcours d'entraînement</strong>
-        Passez le diagnostic gratuit en 7 minutes pour obtenir une recommandation sur-mesure adaptée à votre profil émotionnel.
-      </div>
-      <a href="questionnaire.html" class="training-banner-cta" style="background:#2D6A4F;">Faire le diagnostic (7 min) →</a>
-    </div>
-
-    <!-- ── Bilan & Régularité Hebdomadaire ── -->
-    <div class="streak-card">
-      <div class="streak-info">
-        <div class="streak-icon">🔥</div>
-        <div>
-          <div class="streak-tag">Régularité &amp; Suivi Hebdomadaire</div>
-          <div class="streak-title" id="streak-title-text">Pratique relationnelle en cours</div>
-          <div class="streak-sub" id="streak-sub-text">Chaque entraînement consolide vos automatismes bienveillants et affirmés.</div>
-        </div>
-      </div>
-      <div>
-        <a href="profil.html?tab=rappels" class="training-banner-cta" style="background:#D97706;font-size:13px;padding:9px 18px;">
-          Voir mes rappels &amp; progression →
-        </a>
-      </div>
-    </div>
-
     <!-- ── Section Scénarios ── -->
     <div id="section-scenarios">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
@@ -903,22 +784,8 @@ async function init() {
   document.getElementById('dash-loading').style.display = 'none';
   document.getElementById('dash-content').style.display = 'block';
 
-  // Gestion des bannières
-  if (isGuest) {
-    const guestBanner = document.getElementById('guest-save-banner');
-    if (guestBanner) guestBanner.style.display = 'flex';
-  }
-
-  if (!hasLocalDiag) {
-    const noDiagBanner = document.getElementById('no-diag-banner');
-    if (noDiagBanner) noDiagBanner.style.display = 'flex';
-  }
-
   // Badge d'abonnement
   renderPlanBadge(access);
-
-  // Mettre à jour la carte de régularité
-  updateStreakCard(scenarios);
 
   // Rendu de la grille des scénarios
   renderScenarios(globalScenarios, access);
@@ -943,24 +810,6 @@ function renderPlanBadge(access) {
   badgeEl.innerHTML = `<span class="dash-plan-badge ${c.cls}">${c.text}</span>`;
   if (plan === 'free') {
     badgeEl.innerHTML += `&nbsp;<a href="offres.html" style="font-family:'Nunito',sans-serif;font-size:12px;color:var(--orange,#D97706);font-weight:700;text-decoration:none;">→ Débloquer tous les scénarios</a>`;
-  }
-}
-
-// ════════════════════════════════════════════════════════
-//  Suivi & Régularité
-// ════════════════════════════════════════════════════════
-function updateStreakCard(scenarios) {
-  const completed = (scenarios || []).filter(s => s.statut === 'termine').length;
-  const streakTitle = document.getElementById('streak-title-text');
-  const streakSub = document.getElementById('streak-sub-text');
-  if (streakTitle && streakSub) {
-    if (completed > 0) {
-      streakTitle.textContent = `${completed} scénario(s) complété(s) · Pratique assidue`;
-      streakSub.textContent = `Bravo pour votre investissement relationnel. Continuez sur votre lancée !`;
-    } else {
-      streakTitle.textContent = `Prêt pour votre 1er entraînement ?`;
-      streakSub.textContent = `Le scénario n°1 est gratuit et prend environ 10 minutes. Commencez dès maintenant !`;
-    }
   }
 }
 
