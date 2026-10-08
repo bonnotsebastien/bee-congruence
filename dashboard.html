@@ -705,25 +705,6 @@
       </div>
     </div>
 
-    <!-- ── Évolution des compétences ── -->
-    <div class="evolution-section" id="section-evolution">
-      <div class="dash-section-title">📈 Évolution de mes compétences</div>
-
-      <div class="evolution-toggle">
-        <button class="evol-tab active" data-chart="line" onclick="switchChart('line', this)">📊 Progression par compétence</button>
-        <button class="evol-tab" data-chart="radar" onclick="switchChart('radar', this)">🕸️ Avant / Après</button>
-      </div>
-
-      <div class="chart-container" id="chartContainer">
-        <div class="evolution-empty" id="evolutionEmpty" style="display:none;">
-          <div style="font-size:40px;margin-bottom:12px;">🌱</div>
-          Terminez votre premier scénario pour voir votre progression !<br>
-          <a href="#section-scenarios">Voir mes scénarios →</a>
-        </div>
-        <canvas id="evolutionChart" style="display:none;"></canvas>
-      </div>
-    </div>
-
     <!-- ── Espace d'entraînement ── -->
     <div id="section-scenarios" style="margin-top: 40px;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
@@ -1256,6 +1237,7 @@ function toggleLayer(layer) {
 function renderEvolutionChart(history, type) {
   const canvas   = document.getElementById('evolutionChart');
   const emptyEl  = document.getElementById('evolutionEmpty');
+  if (!canvas || !emptyEl) return;
 
   if (!history || history.length === 0) {
     canvas.style.display = 'none';

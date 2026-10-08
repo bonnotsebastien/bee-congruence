@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 /* ── Layout & Wrapper ── */
@@ -362,6 +363,36 @@
 .radar-legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 .radar-legend-dash { width: 18px; height: 3px; border-radius: 2px; flex-shrink: 0;
   background: repeating-linear-gradient(90deg, var(--green, #5A8A3A) 0 5px, transparent 5px 8px); }
+
+/* ══════════════════════════════════════════════
+   GRAPHIQUE ÉVOLUTION (Chart.js)
+══════════════════════════════════════════════ */
+.evolution-section { margin-top: 24px; margin-bottom: 24px; }
+.evolution-toggle {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.evol-tab {
+  padding: 8px 18px; border-radius: 50px; border: 1.5px solid var(--border, #EDE0CC);
+  background: white; font-family: 'Nunito', sans-serif; font-size: 13px;
+  font-weight: 700; color: var(--brown-mid, #6B4C2A); cursor: pointer; transition: all 0.2s;
+}
+.evol-tab.active { background: var(--orange, #D97706); color: white; border-color: var(--orange, #D97706); }
+.evol-tab:hover:not(.active) { border-color: var(--orange, #D97706); color: var(--orange, #D97706); }
+
+.chart-container {
+  background: #FAF7F2; border: 1.5px solid var(--border, #EDE0CC); border-radius: 20px;
+  padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  position: relative;
+}
+.chart-container canvas { max-height: 320px; }
+
+.evolution-empty {
+  text-align: center; padding: 48px 20px;
+  font-family: 'Nunito', sans-serif; color: var(--brown-mid, #6B4C2A); font-size: 14px;
+  line-height: 1.7;
+}
+.evolution-empty a { color: var(--orange, #D97706); font-weight: 700; text-decoration: none; }
+.evolution-empty a:hover { text-decoration: underline; }
 
 .family-banner-top {
   background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
@@ -776,6 +807,30 @@
             <span>🔄</span> Refaire le diagnostic
           </a>
         </div>
+      </div>
+    </div>
+
+    <!-- ── ÉVOLUTION DES COMPÉTENCES ── -->
+    <div class="profile-card evolution-section" id="section-evolution">
+      <div class="profile-card-header">
+        <div>
+          <h2 class="profile-card-title"><span>📈</span> Évolution de mes compétences</h2>
+          <p class="profile-card-desc">Suivez votre progression au fil des scénarios interactifs complétés.</p>
+        </div>
+      </div>
+
+      <div class="evolution-toggle">
+        <button type="button" class="evol-tab active" data-chart="line" onclick="switchChart('line', this)">📊 Progression par compétence</button>
+        <button type="button" class="evol-tab" data-chart="radar" onclick="switchChart('radar', this)">🕸️ Avant / Après</button>
+      </div>
+
+      <div class="chart-container" id="chartContainer">
+        <div class="evolution-empty" id="evolutionEmpty" style="display:none;">
+          <div style="font-size:40px;margin-bottom:12px;">🌱</div>
+          Terminez votre premier scénario pour voir votre progression !<br>
+          <a href="dashboard.html">Accéder à l'espace d'entraînement →</a>
+        </div>
+        <canvas id="evolutionChart" style="display:none;"></canvas>
       </div>
     </div>
 
@@ -1401,6 +1456,18 @@ async function loadDiagnosticResultsInProfile(email) {
       el.style.width = el.dataset.width + '%';
     });
   }, 300);
+
+  // Charger et afficher l'évolution des compétences
+  let skillHistory = [];
+  try {
+    const user = await getUser();
+    const userId = user ? user.id : email;
+    if (typeof getSkillHistory === 'function') {
+      skillHistory = await getSkillHistory(userId);
+    }
+  } catch(e) {}
+  globalUserSkillHistory = skillHistory || [];
+  renderEvolutionChart(globalUserSkillHistory, currentChartType);
 }
 
 function renderRadarEnriched(diagValues, axisNames, skillScores) {
@@ -1599,6 +1666,136 @@ function toggleLayer(layer) {
 
   const legendItem = document.querySelector(`[data-layer="${layer}"]`);
   if (legendItem) legendItem.classList.toggle('active', radarLayerState[layer]);
+}
+
+// ════════════════════════════════════════════════════════
+//  GRAPHIQUE D'ÉVOLUTION (Chart.js)
+// ════════════════════════════════════════════════════════
+let chartInstance = null;
+let currentChartType = 'line';
+let globalUserSkillHistory = [];
+
+function renderEvolutionChart(history, type) {
+  const canvas = document.getElementById('evolutionChart');
+  const emptyEl = document.getElementById('evolutionEmpty');
+  if (!canvas || !emptyEl) return;
+
+  if (!history || history.length === 0) {
+    canvas.style.display = 'none';
+    emptyEl.style.display = 'block';
+    return;
+  }
+
+  canvas.style.display = 'block';
+  emptyEl.style.display = 'none';
+
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+  const ctx = canvas.getContext('2d');
+  const skillRef = typeof SKILLS_REFERENCE !== 'undefined' ? SKILLS_REFERENCE : [];
+  const colors = skillRef.map(s => s.color);
+
+  if (type === 'line') {
+    const labels = history.map((h, i) =>
+      h.scenario_label
+        ? h.scenario_label.replace(/["""]/g, '').substring(0, 20)
+        : `Étape ${i + 1}`
+    );
+    const datasets = skillRef.map((skill, i) => ({
+      label: `${skill.icon} ${skill.label}`,
+      data: history.map(h => (h.skills || {})[skill.id] || 0),
+      borderColor: colors[i],
+      backgroundColor: colors[i] + '22',
+      tension: 0.4,
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      fill: false,
+    }));
+
+    chartInstance = new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { font: { family: 'Nunito', size: 12 }, padding: 16, boxWidth: 14 },
+          },
+          tooltip: {
+            bodyFont: { family: 'Nunito' },
+            titleFont: { family: 'Playfair Display' },
+            callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}%` },
+          },
+        },
+        scales: {
+          y: { min: 0, max: 100, ticks: { font: { family: 'Nunito' }, callback: v => v + '%' } },
+          x: { ticks: { font: { family: 'Nunito', size: 11 }, maxRotation: 20 } },
+        },
+      },
+    });
+
+  } else {
+    const first = history[0];
+    const last  = history[history.length - 1];
+    const radarLabels = skillRef.map(s => s.label);
+
+    chartInstance = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: radarLabels,
+        datasets: [
+          {
+            label: 'Avant (1er scénario)',
+            data: skillRef.map(s => (first.skills || {})[s.id] || 0),
+            borderColor: '#aaa',
+            backgroundColor: 'rgba(150,150,150,0.1)',
+            pointBackgroundColor: '#aaa',
+          },
+          {
+            label: 'Après (dernier scénario)',
+            data: skillRef.map(s => (last.skills || {})[s.id] || 0),
+            borderColor: '#5a8a3a',
+            backgroundColor: 'rgba(90,138,58,0.15)',
+            pointBackgroundColor: '#5a8a3a',
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          r: {
+            min: 0, max: 100, ticks: { display: false },
+            pointLabels: { font: { family: 'Nunito', size: 12 } },
+          },
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { font: { family: 'Nunito', size: 12 }, padding: 16 },
+          },
+        },
+      },
+    });
+  }
+}
+
+function switchChart(type, btn) {
+  document.querySelectorAll('.evol-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  currentChartType = type;
+
+  let email = localStorage.getItem('bee_user_email') || 'bonnotsebastien@gmail.com';
+  if (typeof getSkillHistory === 'function') {
+    getSkillHistory(email).then(history => {
+      globalUserSkillHistory = history || [];
+      renderEvolutionChart(globalUserSkillHistory, type);
+    });
+  } else {
+    renderEvolutionChart(globalUserSkillHistory, type);
+  }
 }
 
 initProfilePage();
