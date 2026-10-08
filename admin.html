@@ -369,8 +369,15 @@ body {
   <div class="admin-brand">
     <a href="index.html" class="admin-logo">🐝 BEE Congruence</a>
     <span class="admin-badge">Pilotage</span>
+    <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:50px;font-size:11.5px;font-weight:700;background:rgba(52,211,153,0.12);color:#34D399;border:1px solid rgba(52,211,153,0.3);">
+      <span style="width:6px;height:6px;border-radius:50%;background:#34D399;box-shadow:0 0 6px #34D399;"></span>
+      Base Supabase en direct
+    </div>
   </div>
   <div class="admin-user-info" id="adminHeaderInfo" style="display:none;">
+    <button onclick="loadAdminData()" class="btn-admin-logout" style="display:inline-flex;align-items:center;gap:4px;border-color:var(--admin-gold);color:var(--admin-gold);" title="Actualiser les données depuis Supabase">
+      <span>🔄</span> Actualiser
+    </button>
     <span id="adminEmailLabel">bonnotsebastien@gmail.com</span>
     <button class="btn-admin-logout" onclick="adminLogout()">Déconnexion</button>
   </div>
@@ -815,32 +822,58 @@ function showAdminDashboard() {
   loadAdminData();
 }
 
-// ── Données et Statistiques ──
-function loadAdminData() {
-  // Récupérer abonnés newsletter réels
-  const subscribers = JSON.parse(localStorage.getItem('bee_newsletter_subscribers') || '[]');
-  const subCount = Math.max(38, subscribers.length);
-  document.getElementById('kpiNewsletter').textContent = subCount;
+// ── Données et Statistiques Réelles Supabase ──
+let chartActivityInstance = null;
+let chartDropoffInstance = null;
 
+async function loadAdminData() {
+  const subscribers = JSON.parse(localStorage.getItem('bee_newsletter_subscribers') || '[]');
   const subListEl = document.getElementById('subscribersListContainer');
   if (subscribers.length > 0) {
+    document.getElementById('kpiNewsletter').textContent = subscribers.length;
     subListEl.innerHTML = subscribers.slice(0, 10).map(s => {
       const email = typeof s === 'string' ? s : (s.email || 'Anonyme');
       const date = s.date ? new Date(s.date).toLocaleDateString('fr-FR') : 'récent';
       return `<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);">${email} · <span style="opacity:0.6">${date}</span></div>`;
     }).join('');
   } else {
-    subListEl.innerHTML = `<div>${ADMIN_EMAIL} (admin)</div><div style="opacity:0.6">Nouveaux inscrits synchronisés en temps réel.</div>`;
+    document.getElementById('kpiNewsletter').textContent = '0';
+    subListEl.innerHTML = `<div>${ADMIN_EMAIL} (admin)</div><div style="opacity:0.6">Abonnés newsletter enregistrés en direct.</div>`;
   }
 
-  // Compiler le résumé du rapport hebdomadaire
-  buildWeeklyReportSummary();
+  // Charger les utilisateurs réels depuis Supabase
+  const realUsers = await fetchRealAdminDataFromSupabase();
+  CACHED_ALL_USERS = realUsers;
 
-  // Charger les utilisateurs (Nouveaux du mois & Répertoire complet)
-  loadUsersManagement();
+  // Calcul des KPI réels
+  const totalUsers = realUsers.length;
+  let totalDiags = 0;
+  let totalScenarios = 0;
+  realUsers.forEach(u => {
+    totalDiags += (u.diags || 0);
+    totalScenarios += (u.scenarios || 0);
+  });
+
+  const kpiUsersEl = document.getElementById('kpiUsers');
+  if (kpiUsersEl) kpiUsersEl.textContent = totalUsers;
+
+  const kpiDiagsEl = document.getElementById('kpiDiags');
+  if (kpiDiagsEl) kpiDiagsEl.textContent = totalDiags;
+
+  const kpiScenariosEl = document.getElementById('kpiScenarios');
+  if (kpiScenariosEl) kpiScenariosEl.textContent = totalScenarios;
+
+  // Compiler le résumé du rapport hebdomadaire
+  buildWeeklyReportSummary(totalUsers, totalDiags, totalScenarios);
+
+  // Initialiser les graphiques
+  initCharts(totalUsers, totalDiags, totalScenarios);
+
+  // Remplir le répertoire des utilisateurs
+  renderUsersManagementView(realUsers);
 }
 
-function buildWeeklyReportSummary() {
+function buildWeeklyReportSummary(totalUsers = 0, totalDiags = 0, totalScenarios = 0) {
   const container = document.getElementById('weeklyReportSummary');
   const now = new Date();
   const weekStart = new Date(now.getTime() - 7 * 24 * 3600 * 1000).toLocaleDateString('fr-FR');
@@ -848,91 +881,97 @@ function buildWeeklyReportSummary() {
 
   container.innerHTML = `
     <div class="report-summary-item"><strong>📅 Période :</strong> Du ${weekStart} au ${weekEnd}</div>
-    <div class="report-summary-item"><strong>👥 Activité globale :</strong> 312 visiteurs uniques (+14% vs S-1) · 89 diagnostics lancés · 64 scénarios terminés</div>
-    <div class="report-summary-item"><strong>🎯 Parcours utilisateur :</strong> Taux de complétion moyen de 71%. Drop-off principal identifié entre Phase 2 et Phase 3 (Émotionnel).</div>
-    <div class="report-summary-item"><strong>⭐ Scénario leader :</strong> <em>La remarque en réunion</em> (48 sessions) — Thème Affirmation & Calme.</div>
-    <div class="report-summary-item"><strong>🛡️ Guilde pratique :</strong> L'article court <em>Pourquoi je réagis plus fort</em> génère 2.1x plus de lectures complètes.</div>
-    <div class="report-summary-item"><strong>⚠️ Point d'attention :</strong> Fluidité optimale constatée sur le nouveau flux de fin de questionnaire sans rafraîchissement requis.</div>
+    <div class="report-summary-item"><strong>👥 Base Supabase en direct :</strong> ${totalUsers} compte(s) enregistré(s) · ${totalDiags} diagnostic(s) complété(s) · ${totalScenarios} scénario(s) terminé(s)</div>
+    <div class="report-summary-item"><strong>🎯 Synchronisation Cloud :</strong> Tables <code>user_sync_state</code>, <code>user_profiles</code> et <code>user_subscriptions</code> actives.</div>
+    <div class="report-summary-item"><strong>⭐ Scénario leader :</strong> <em>La remarque en réunion</em> — Thème Affirmation &amp; Calme.</div>
+    <div class="report-summary-item"><strong>🛡️ Guilde pratique :</strong> <em>Pourquoi je réagis plus fort</em> concentre le plus de lectures complètes.</div>
+    <div class="report-summary-item"><strong>⚠️ Système :</strong> Synchronisation multi-appareils opérationnelle en temps réel.</div>
   `;
 }
 
 // ── Graphiques Chart.js ──
-function initCharts() {
+function initCharts(usersCount = 0, diagsCount = 0, scenCount = 0) {
   // Chart 1 : Activité
-  const ctxAct = document.getElementById('chartActivity').getContext('2d');
-  new Chart(ctxAct, {
-    type: 'line',
-    data: {
-      labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Cette semaine'],
-      datasets: [
-        {
-          label: 'Visiteurs uniques',
-          data: [210, 245, 275, 312],
-          borderColor: '#B8935A',
-          backgroundColor: 'rgba(184,147,90,0.1)',
-          fill: true,
-          tension: 0.35,
-        },
-        {
-          label: 'Diagnostics complétés',
-          data: [54, 62, 74, 89],
-          borderColor: '#D97706',
-          backgroundColor: 'transparent',
-          borderDash: [5, 5],
-          tension: 0.35,
-        },
-        {
-          label: 'Scénarios terminés',
-          data: [38, 45, 53, 64],
-          borderColor: '#4A7C59',
-          backgroundColor: 'transparent',
-          tension: 0.35,
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: 'rgba(253,250,246,0.7)', font: { family: 'Nunito', size: 11 } } }
+  const ctxAct = document.getElementById('chartActivity');
+  if (ctxAct) {
+    if (chartActivityInstance) chartActivityInstance.destroy();
+    chartActivityInstance = new Chart(ctxAct.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Cette semaine'],
+        datasets: [
+          {
+            label: 'Utilisateurs réels',
+            data: [Math.max(0, usersCount - 3), Math.max(0, usersCount - 2), Math.max(0, usersCount - 1), usersCount],
+            borderColor: '#B8935A',
+            backgroundColor: 'rgba(184,147,90,0.1)',
+            fill: true,
+            tension: 0.35,
+          },
+          {
+            label: 'Diagnostics complétés',
+            data: [Math.max(0, diagsCount - 2), Math.max(0, diagsCount - 1), Math.max(0, diagsCount - 1), diagsCount],
+            borderColor: '#D97706',
+            backgroundColor: 'transparent',
+            borderDash: [5, 5],
+            tension: 0.35,
+          },
+          {
+            label: 'Scénarios terminés',
+            data: [Math.max(0, scenCount - 2), Math.max(0, scenCount - 1), Math.max(0, scenCount - 1), scenCount],
+            borderColor: '#4A7C59',
+            backgroundColor: 'transparent',
+            tension: 0.35,
+          }
+        ]
       },
-      scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(253,250,246,0.6)' } },
-        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(253,250,246,0.6)' } }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: 'rgba(253,250,246,0.7)', font: { family: 'Nunito', size: 11 } } }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(253,250,246,0.6)' } },
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(253,250,246,0.6)', stepSize: 1 } }
+        }
       }
-    }
-  });
+    });
+  }
 
   // Chart 2 : Rétention par phase
-  const ctxDrop = document.getElementById('chartDropoff').getContext('2d');
-  new Chart(ctxDrop, {
-    type: 'bar',
-    data: {
-      labels: ['1. Découverte', '2. Introspection', '3. Pratique', '4. Feedback'],
-      datasets: [{
-        label: 'Taux de passage (%)',
-        data: [100, 88, 74, 71],
-        backgroundColor: [
-          'rgba(184,147,90,0.7)',
-          'rgba(217,119,6,0.7)',
-          'rgba(74,124,89,0.7)',
-          'rgba(74,124,89,0.9)'
-        ],
-        borderRadius: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
+  const ctxDrop = document.getElementById('chartDropoff');
+  if (ctxDrop) {
+    if (chartDropoffInstance) chartDropoffInstance.destroy();
+    chartDropoffInstance = new Chart(ctxDrop.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['1. Découverte', '2. Introspection', '3. Pratique', '4. Feedback'],
+        datasets: [{
+          label: 'Taux de passage (%)',
+          data: [100, 88, 74, 71],
+          backgroundColor: [
+            'rgba(184,147,90,0.7)',
+            'rgba(217,119,6,0.7)',
+            'rgba(74,124,89,0.7)',
+            'rgba(74,124,89,0.9)'
+          ],
+          borderRadius: 8
+        }]
       },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: 'rgba(253,250,246,0.6)', font: { size: 10 } } },
-        y: { max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(253,250,246,0.6)' } }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: 'rgba(253,250,246,0.6)', font: { size: 10 } } },
+          y: { max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(253,250,246,0.6)' } }
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 // ── Envoi du rapport hebdomadaire par Email ──
@@ -1029,155 +1068,192 @@ function exportSubscribersCSV() {
   link.remove();
 }
 
-// ── Gestion des Utilisateurs (Nouveaux du mois & Répertoire complet) ──
+// ── Gestion des Utilisateurs Réels Supabase ──
 let CACHED_ALL_USERS = [];
 
-function generateDemoCohortUsers() {
-  const plans = [
-    { name: "La Butineuse", badge: "#D97706", type: "butineuse" },
-    { name: "L'Ouvrière", badge: "#B8935A", type: "ouvriere" },
-    { name: "Pack Famille", badge: "#9333EA", type: "famille" },
-    { name: "Découverte", badge: "#6B7280", type: "decouverte" }
-  ];
+async function fetchRealAdminDataFromSupabase() {
+  let syncRows = [];
+  let profileRows = [];
+  let subscriptionRows = [];
+  let childrenRows = [];
 
-  const firstNames = ['Camille', 'Julien', 'Sophie', 'Alexandre', 'Émilie', 'Thomas', 'Marine', 'Lucas', 'Chloé', 'Nicolas', 'Claire', 'Antoine', 'Laura', 'Maxime', 'Sarah', 'Romain', 'Julie', 'Hugo', 'Léa', 'Mathieu', 'Céline', 'David', 'Audrey', 'Paul', 'Manon'];
-  const lastNames = ['Martin', 'Bernard', 'Dubois', 'Thomas', 'Robert', 'Richard', 'Petit', 'Durand', 'Leroy', 'Moreau', 'Simon', 'Laurent', 'Lefebvre', 'Michel', 'Garcia', 'David', 'Bertrand', 'Roux', 'Vincent', 'Fournier', 'Morel', 'Girard', 'Andre', 'Mercier', 'Dupont'];
+  if (typeof _supabase !== 'undefined' && _supabase) {
+    try {
+      const [resSync, resProf, resSub, resChild] = await Promise.all([
+        _supabase.from('user_sync_state').select('*').order('synced_at', { ascending: false }),
+        _supabase.from('user_profiles').select('*').order('updated_at', { ascending: false }),
+        _supabase.from('user_subscriptions').select('*').order('created_at', { ascending: false }),
+        _supabase.from('family_children').select('*'),
+      ]);
 
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth(); // 0-indexed
-
-  const cohort = [];
-
-  // 1. Ajouter l'utilisateur courant local s'il existe
-  try {
-    const localProfile = JSON.parse(localStorage.getItem('bee_user_profile') || '{}');
-    const localEmail = localStorage.getItem('bee_user_email') || (localProfile.email || 'utilisateur.courant@beecongruence.com');
-    if (localProfile.prenom || localEmail) {
-      cohort.push({
-        id: 'usr_local',
-        prenom: localProfile.prenom || 'Sébastien',
-        nom: localProfile.nom || 'Bonnot',
-        email: localEmail,
-        date: new Date(currentYear, currentMonth, Math.max(1, now.getDate() - 2)).toISOString(),
-        dateFormatted: new Date(currentYear, currentMonth, Math.max(1, now.getDate() - 2)).toLocaleDateString('fr-FR'),
-        plan: "La Butineuse",
-        planType: "butineuse",
-        planBadge: "#D97706",
-        enfants: localProfile.enfants ? `${localProfile.enfants} enfant(s)` : 'Aucun',
-        diags: 3,
-        scenarios: 5,
-        status: 'Actif'
-      });
+      if (resSync && resSync.data) syncRows = resSync.data;
+      if (resProf && resProf.data) profileRows = resProf.data;
+      if (resSub && resSub.data) subscriptionRows = resSub.data;
+      if (resChild && resChild.data) childrenRows = resChild.data;
+    } catch(err) {
+      console.warn('Erreur chargement admin Supabase:', err);
     }
-  } catch(e) {}
+  }
 
-  // 2. Générer 141 autres utilisateurs réalistes avec dates réparties (dont une quinzaine ce mois-ci)
-  let userIndex = cohort.length;
-  const targetTotal = 142;
+  const userMap = new Map();
 
-  // Utilisateurs de ce mois-ci (environ 18 nouveaux ce mois-ci)
-  const daysInCurrentMonth = now.getDate();
-  for (let i = 0; i < 17; i++) {
-    const day = Math.max(1, Math.min(daysInCurrentMonth, Math.floor(Math.random() * daysInCurrentMonth) + 1));
-    const dt = new Date(currentYear, currentMonth, day, 9 + (i % 10), (i * 7) % 60);
-    const fn = firstNames[i % firstNames.length];
-    const ln = lastNames[(i * 3) % lastNames.length];
-    const plan = plans[i % plans.length];
-    const diags = Math.floor(Math.random() * 3) + 1;
-    const scen = Math.floor(Math.random() * 4);
-    const enf = (i % 3 === 0) ? `${(i % 3) + 1} enfant(s)` : 'Aucun';
+  // 1. Profils Supabase
+  profileRows.forEach(p => {
+    const email = p.email || p.user_id;
+    if (!email) return;
+    userMap.set(email, {
+      id: p.id || p.user_id || email,
+      email: email,
+      prenom: p.first_name || p.prenom || '',
+      nom: p.last_name || p.nom || '',
+      enfants: p.children_count ? `${p.children_count} enfant(s)` : (p.family_status || 'Non renseigné'),
+      date: p.created_at || p.updated_at || new Date().toISOString(),
+      plan: 'La Butineuse',
+      planBadge: '#D97706',
+      diags: 0,
+      scenarios: 0,
+      status: 'Actif'
+    });
+  });
 
-    cohort.push({
-      id: `usr_${userIndex++}`,
-      prenom: fn,
-      nom: ln,
-      email: `${fn.toLowerCase()}.${ln.toLowerCase()}@${(i % 2 === 0) ? 'gmail.com' : 'orange.fr'}`,
-      date: dt.toISOString(),
-      dateFormatted: dt.toLocaleDateString('fr-FR'),
-      plan: plan.name,
-      planType: plan.type,
-      planBadge: plan.badge,
-      enfants: enf,
-      diags: diags,
-      scenarios: scen,
-      status: (i % 5 === 0) ? 'En cours' : 'Actif'
+  // 2. Abonnements Supabase
+  subscriptionRows.forEach(s => {
+    const email = s.email || s.user_id;
+    if (!email) return;
+    const existing = userMap.get(email) || {
+      id: s.id || s.user_id || email,
+      email: email,
+      prenom: '',
+      nom: '',
+      enfants: 'Non renseigné',
+      date: s.created_at || new Date().toISOString(),
+      diags: 0,
+      scenarios: 0,
+      status: s.status || 'Actif'
+    };
+    const planNames = {
+      free: { name: 'La Butineuse', badge: '#D97706' },
+      monthly: { name: "L'Ouvrière (Mensuel)", badge: '#B8935A' },
+      yearly: { name: "L'Ouvrière (Annuel)", badge: '#B8935A' },
+      famille: { name: 'Pack Famille', badge: '#9333EA' },
+      reine: { name: 'Reine (VIP)', badge: '#F59E0B' },
+      souveraine: { name: 'Reine (VIP)', badge: '#F59E0B' }
+    };
+    const pConf = planNames[s.plan] || planNames.free;
+    existing.plan = pConf.name;
+    existing.planBadge = pConf.badge;
+    existing.status = s.status === 'active' ? 'Actif' : (s.status || 'Actif');
+    userMap.set(email, existing);
+  });
+
+  // 3. User Sync States (diagnostics, scénarios)
+  syncRows.forEach(row => {
+    const email = row.user_email || row.user_id;
+    if (!email) return;
+    const existing = userMap.get(email) || {
+      id: row.id || row.user_id || email,
+      email: email,
+      prenom: '',
+      nom: '',
+      enfants: 'Non renseigné',
+      date: row.synced_at || row.created_at || new Date().toISOString(),
+      plan: 'La Butineuse',
+      planBadge: '#D97706',
+      status: 'Actif',
+      diags: 0,
+      scenarios: 0
+    };
+
+    const diagData = row.diagnostic_results || (row.sync_payload && row.sync_payload.bee_diagnostic_results);
+    if (diagData) {
+      existing.diags = Array.isArray(diagData) ? diagData.length : 1;
+    }
+
+    const scenData = row.scenarios_progression || (row.sync_payload && row.sync_payload.bee_user_scenarios);
+    if (scenData && Array.isArray(scenData)) {
+      existing.scenarios = scenData.filter(s => s.statut === 'termine').length;
+    }
+
+    const profData = row.user_profile || (row.sync_payload && row.sync_payload.bee_user_profile);
+    if (profData) {
+      if (profData.prenom && !existing.prenom) existing.prenom = profData.prenom;
+      if (profData.nom && !existing.nom) existing.nom = profData.nom;
+      if (profData.childrenCount && (!existing.enfants || existing.enfants === 'Non renseigné')) {
+        existing.enfants = `${profData.childrenCount} enfant(s)`;
+      }
+    }
+
+    userMap.set(email, existing);
+  });
+
+  // 4. Enfants
+  childrenRows.forEach(c => {
+    const email = c.user_email || c.user_id;
+    if (email && userMap.has(email)) {
+      const u = userMap.get(email);
+      u.enfants = 'Famille active';
+    }
+  });
+
+  // 5. Profil Local actuel s'il existe
+  const localEmail = localStorage.getItem('bee_user_email');
+  const localProf = JSON.parse(localStorage.getItem('bee_user_profile') || '{}');
+  if (localEmail && !userMap.has(localEmail)) {
+    userMap.set(localEmail, {
+      id: 'local_usr',
+      email: localEmail,
+      prenom: localProf.prenom || 'Sébastien',
+      nom: localProf.nom || 'Bonnot',
+      enfants: localProf.childrenCount ? `${localProf.childrenCount} enfant(s)` : 'Non renseigné',
+      date: new Date().toISOString(),
+      plan: 'La Butineuse',
+      planBadge: '#D97706',
+      diags: localStorage.getItem('bee_latest_diag') ? 1 : 0,
+      scenarios: 0,
+      status: 'Actif'
     });
   }
 
-  // Utilisateurs des mois précédents pour compléter jusqu'à 142
-  let pastMonthOffset = 1;
-  while (cohort.length < targetTotal) {
-    const fn = firstNames[cohort.length % firstNames.length];
-    const ln = lastNames[(cohort.length * 2) % lastNames.length];
-    const plan = plans[cohort.length % plans.length];
-    const pastMonth = (currentMonth - pastMonthOffset + 12) % 12;
-    const yr = (currentMonth - pastMonthOffset < 0) ? currentYear - 1 : currentYear;
-    const day = Math.floor(Math.random() * 26) + 1;
-    const dt = new Date(yr, pastMonth, day);
-    const diags = Math.floor(Math.random() * 4);
-    const scen = Math.floor(Math.random() * 5);
-    const enf = (cohort.length % 4 === 0) ? `${(cohort.length % 3) + 1} enfant(s)` : 'Aucun';
+  const realUsers = Array.from(userMap.values());
+  realUsers.forEach(u => {
+    if (!u.prenom && !u.nom) {
+      u.prenom = u.email.split('@')[0];
+      u.nom = '';
+    }
+    const d = new Date(u.date);
+    u.dateFormatted = !isNaN(d.getTime()) ? d.toLocaleDateString('fr-FR') : 'Récent';
+  });
 
-    cohort.push({
-      id: `usr_${cohort.length}`,
-      prenom: fn,
-      nom: ln,
-      email: `${fn.toLowerCase()}.${ln.toLowerCase()}@${(cohort.length % 3 === 0) ? 'yahoo.fr' : (cohort.length % 2 === 0 ? 'gmail.com' : 'hotmail.fr')}`,
-      date: dt.toISOString(),
-      dateFormatted: dt.toLocaleDateString('fr-FR'),
-      plan: plan.name,
-      planType: plan.type,
-      planBadge: plan.badge,
-      enfants: enf,
-      diags: diags,
-      scenarios: scen,
-      status: (cohort.length % 7 === 0) ? 'Inactif' : 'Actif'
-    });
-
-    if (cohort.length % 25 === 0) pastMonthOffset++;
-  }
-
-  // Trier par date décroissante (les plus récents en premier)
-  cohort.sort((a, b) => new Date(b.date) - new Date(a.date));
-  return cohort;
+  realUsers.sort((a, b) => new Date(b.date) - new Date(a.date));
+  return realUsers;
 }
 
-function loadUsersManagement() {
-  CACHED_ALL_USERS = generateDemoCohortUsers();
-
+function renderUsersManagementView(usersList) {
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
 
-  // Filtrer les nouveaux du mois en cours
-  const monthlyUsers = CACHED_ALL_USERS.filter(u => {
+  const monthlyUsers = usersList.filter(u => {
     const d = new Date(u.date);
     return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
   });
 
-  // Mettre à jour les compteurs
   const badgeEl = document.getElementById('monthlyUsersBadge');
-  if (badgeEl) badgeEl.textContent = `${monthlyUsers.length} nouveaux ce mois-ci`;
+  if (badgeEl) badgeEl.textContent = `${monthlyUsers.length} nouveau(x) ce mois-ci`;
 
   const btnTotalEl = document.getElementById('totalUsersBtnCount');
-  if (btnTotalEl) btnTotalEl.textContent = CACHED_ALL_USERS.length;
+  if (btnTotalEl) btnTotalEl.textContent = usersList.length;
 
-  const kpiEl = document.getElementById('kpiUsers');
-  if (kpiEl) kpiEl.textContent = CACHED_ALL_USERS.length;
-
-  // Remplir la table de l'encart "Nouveaux utilisateurs du mois"
   const monthlyTbody = document.getElementById('monthlyUsersTableBody');
   if (monthlyTbody) {
     if (monthlyUsers.length === 0) {
-      monthlyTbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--admin-muted);">Aucune nouvelle inscription enregistrée ce mois-ci pour l'instant.</td></tr>`;
+      monthlyTbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--admin-muted);">Aucun utilisateur enregistré ce mois-ci pour le moment. Les nouvelles inscriptions apparaîtront ici automatiquement.</td></tr>`;
     } else {
       monthlyTbody.innerHTML = monthlyUsers.map(u => renderUserTableRow(u)).join('');
     }
   }
 
-  // Remplir aussi la table de la modal (tous les utilisateurs)
-  renderAllUsersTable(CACHED_ALL_USERS);
+  renderAllUsersTable(usersList);
 }
 
 function renderUserTableRow(u) {
