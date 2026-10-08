@@ -122,14 +122,13 @@ function applyUnifiedNavbar(userEmail) {
   if (userEmail) {
     // ══════════════════════════════════════════════════════════
     // ÉTAT 2 : UTILISATEUR CONNECTÉ
-    // Liens : Accueil | Expérience 7 min | Notre approche | Guilde pratique | Offres & Tarifs | Espace d’entraînement | Profil
+    // Liens : Accueil | Expérience 7 min | Guilde pratique | Offres & Tarifs | Espace d’entraînement | Profil
     // Actions : 🐝 email | Se déconnecter
     // ══════════════════════════════════════════════════════════
     if (navLinks) {
       navLinks.innerHTML = `
         <li><a href="index.html" class="nav-link">Accueil</a></li>
         <li><a href="experience.html" class="nav-link">Expérience 7 min</a></li>
-        <li><a href="approche.html" class="nav-link">Notre approche</a></li>
         <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
         <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
         <li><a href="dashboard.html" class="nav-link nav-link-training" style="font-weight:700;color:var(--orange,#D97706);">Espace d’entraînement</a></li>
@@ -146,14 +145,13 @@ function applyUnifiedNavbar(userEmail) {
   } else {
     // ══════════════════════════════════════════════════════════
     // ÉTAT 1 : VISITEUR SANS COMPTE
-    // Liens : Accueil | Expérience 7 min | Notre approche | Guilde pratique | Offres & Tarifs | Espace d’entraînement
+    // Liens : Accueil | Expérience 7 min | Guilde pratique | Offres & Tarifs | Espace d’entraînement
     // Actions : Se connecter | Rejoins la ruche
     // ══════════════════════════════════════════════════════════
     if (navLinks) {
       navLinks.innerHTML = `
         <li><a href="index.html" class="nav-link">Accueil</a></li>
         <li><a href="experience.html" class="nav-link">Expérience 7 min</a></li>
-        <li><a href="approche.html" class="nav-link">Notre approche</a></li>
         <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
         <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
         <li><a href="dashboard.html" class="nav-link nav-link-training" style="font-weight:700;color:var(--orange,#D97706);">Espace d’entraînement</a></li>
@@ -183,7 +181,7 @@ function applyUnifiedNavbar(userEmail) {
   const currentPath = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
   document.querySelectorAll('.nav-link').forEach(link => {
     const href = (link.getAttribute('href') || '').replace('.html', '').replace(/^\//, '') || 'index';
-    if (href === currentPath || (currentPath === 'index' && (href === '' || href === 'index'))) {
+    if (href === currentPath || (currentPath === 'index' && (href === '' || href === 'index')) || (currentPath === 'approche' && href === 'index')) {
       link.classList.add('active');
     } else {
       link.classList.remove('active');
