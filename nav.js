@@ -146,7 +146,7 @@ function applyUnifiedNavbar(userEmail) {
   } else {
     // ══════════════════════════════════════════════════════════
     // ÉTAT 1 : VISITEUR SANS COMPTE
-    // Liens : Accueil | Expérience 7 min | Notre approche | Guilde pratique | Offres & Tarifs
+    // Liens : Accueil | Expérience 7 min | Notre approche | Guilde pratique | Offres & Tarifs | Espace d’entraînement
     // Actions : Se connecter | Rejoins la ruche
     // ══════════════════════════════════════════════════════════
     if (navLinks) {
@@ -156,6 +156,7 @@ function applyUnifiedNavbar(userEmail) {
         <li><a href="approche.html" class="nav-link">Notre approche</a></li>
         <li><a href="articles.html" class="nav-link">Guilde pratique</a></li>
         <li><a href="offres.html" class="nav-link">Offres &amp; Tarifs</a></li>
+        <li><a href="dashboard.html" class="nav-link nav-link-training" style="font-weight:700;color:var(--orange,#D97706);">Espace d’entraînement</a></li>
       `;
     }
 
@@ -165,6 +166,17 @@ function applyUnifiedNavbar(userEmail) {
         <a href="inscription.html" class="btn-primary">Rejoins la ruche</a>
       `;
     }
+  }
+
+  // Fermer le menu mobile au clic sur un lien
+  if (navLinks) {
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('mobile-open');
+        const toggleBtn = navbar.querySelector('.nav-toggle');
+        if (toggleBtn) toggleBtn.innerHTML = '☰';
+      });
+    });
   }
 
   // Réassigner la classe active
